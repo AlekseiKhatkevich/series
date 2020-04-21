@@ -11,6 +11,7 @@ djangorestframework = "*"
 psycopg2 = "*"
 python-dotenv = "*"
 drf-yasg = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.8"
