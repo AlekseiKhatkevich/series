@@ -12,6 +12,7 @@ psycopg2 = "*"
 python-dotenv = "*"
 drf-yasg = "*"
 django-debug-toolbar = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.8"

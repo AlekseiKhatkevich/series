@@ -6,8 +6,7 @@ from typing import Any
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
-    for authentication instead of usernames.
-    https://testdriven.io/blog/django-custom-user-model/
+    for authentication instead of username.
     """
 
     def create_user(self, email: str, password: str, **extra_fields: Any):
