@@ -13,14 +13,36 @@ class User(AbstractUser):
 
     username = None
 
-    email = models.EmailField(verbose_name='email address', unique=True)
-
-    first_name = models.CharField(null=True, blank=False, max_length=30, verbose_name='first name')
-
-    last_name = models.CharField(null=True, blank=False, max_length=150, verbose_name='last name')
-
-    user_country = models.CharField(max_length=2, choices=countries.COUNTRY_ITERATOR, null=True,
-                                    verbose_name='user country of origin')
+    master = models.ForeignKey(
+        'self',
+        null=True,
+        db_index=False,
+        verbose_name='Slave account if not null',
+        related_name='slaves',
+        on_delete=models.SET_NULL
+    )
+    email = models.EmailField(
+        verbose_name='email address',
+        unique=True
+    )
+    first_name = models.CharField(
+        null=True,
+        blank=False,
+        max_length=30,
+        verbose_name='first name'
+    )
+    last_name = models.CharField(
+        null=True,
+        blank=False,
+        max_length=150,
+        verbose_name='last name'
+    )
+    user_country = models.CharField(
+        max_length=2,
+        choices=countries.COUNTRY_ITERATOR,
+        null=True,
+        verbose_name='user country of origin'
+    )
 
     USERNAME_FIELD = 'email'
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
@@ -38,4 +60,9 @@ class User(AbstractUser):
         verbose_name_plural = 'users'
 
     def __str__(self):
-        return f'pk - {self.pk}, full name - {self.get_full_name()}, email - {self.email}'
+        return f'{"SLAVE ACC." if self.master else "MASTER ACC." } ' \
+               f'pk - {self.pk},' \
+               f' full name - {self.get_full_name()},' \
+               f' email - {self.email}'
+
+
