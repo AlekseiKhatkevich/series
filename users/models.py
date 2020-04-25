@@ -48,7 +48,6 @@ class User(AbstractUser):
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
     REQUIRED_FIELDS = []
 
-    #default_manager = BaseUserManager()
     objects = users_managers.CustomUserManager()
 
     class Meta:
@@ -64,5 +63,15 @@ class User(AbstractUser):
                f'pk - {self.pk},' \
                f' full name - {self.get_full_name()},' \
                f' email - {self.email}'
+
+    # todo
+    @property
+    def get_absolute_url(self):
+        pass
+
+    @property
+    def my_slaves(self):
+        return self.__class__.objects.filter(master=self)
+
 
 
