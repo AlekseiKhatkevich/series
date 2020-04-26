@@ -60,6 +60,6 @@ def create_users() -> object:
 
 def delete_users() -> None:
     """
-    Deletes users from database.
+    Deletes test users from database.
     """
     get_user_model().objects.filter(email__in=users_data.keys()).delete()
