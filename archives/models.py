@@ -3,11 +3,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core import validators, exceptions
-from django.contrib.postgres import fields as postgres_fields
 from django.utils import timezone
 
-from .helpers import validators as custom_validators, file_uploads, custom_functions
+from .helpers import validators as custom_validators, file_uploads, custom_functions, custom_fields
 from archives import managers
+
+from types import MappingProxyType
+import heapq
 
 
 class GroupingModel(models.Model):
@@ -87,6 +89,12 @@ class TvSeriesModel(models.Model):
         verbose_name = 'series'
         verbose_name_plural = 'series'
         # default_permissions = []
+        constraints = [
+            models.CheckConstraint(
+                name='rating_from_1_to_10',
+                check=models.Q(rating__range=(1, 11)) | models.Q(rating__isnull=True),
+            )
+        ]
 
     def __str__(self):
         return f'{self.pk} / {self.name}'
@@ -140,16 +148,14 @@ class SeasonModel(models.Model):
         verbose_name='Number of episodes in the current season',
         validators=[non_zero_validator, ],
     )
-    episodes = postgres_fields.JSONField(
+    episodes = custom_fields.CustomJSONField(
         null=True,
         verbose_name='Episode number and issue date',
         validators=[
             custom_validators.validate_dict_key_is_digit,
             custom_validators.validate_timestamp,
         ],
-    )  # a = SeasonModel.objects.get(pk=1)
-
-    # a.episodes={"7": 145664556}
+    )
 
     class Meta:
         order_with_respect_to = 'series'
@@ -160,10 +166,21 @@ class SeasonModel(models.Model):
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'
         constraints = [
+            # (Last_watched_episodes >= 1 or None)  and  number_of_episodes >= 1.
             models.CheckConstraint(
                 name='last_watched_episode_and_number_of_episodes_are_gte_one',
                 check=(models.Q(last_watched_episode__gte=1) | models.Q(last_watched_episode__isnull=True))
-                      & models.Q(number_of_episodes__gte=1)
+                & models.Q(number_of_episodes__gte=1)
+            ),
+            #  Number_of_episodes >= last_watched_episode
+            models.CheckConstraint(
+                name='mutual_watched_episode_and_number_of_episodes_check',
+                check=(models.Q(number_of_episodes__gte=models.F('last_watched_episode')))
+            ),
+            #  season_number >= 1
+            models.CheckConstraint(
+                name='season_number_gte_1_check',
+                check=models.Q(season_number__gte=1),
             )
         ]
 
@@ -174,11 +191,11 @@ class SeasonModel(models.Model):
     @property
     def get_absolute_url(self):
         raise NotImplementedError
-
+# SeasonModel.objects.create(series_id=9, season_number=4, number_of_episodes=3,)
     def clean(self):
         #  Check if last_watched_episode number is bigger then number of episodes in season.
         errors = {}
-        if self.last_watched_episode > self.number_of_episodes:
+        if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
             errors.update(
                 {'last_watched_episode':
                      exceptions.ValidationError(f'Last watched episode number {self.last_watched_episode}'
@@ -187,17 +204,19 @@ class SeasonModel(models.Model):
             )
         # if we have a key in JSON data in episodes field with number greater then number of episodes in season.
         # 1) Filter only positive digits from JSON keys()
-        list_of_legit_episodes_keys = list(custom_functions.filter_positive_int_or_digit(self.episodes.keys()))
-        # 2) Get key with max. value from all present keys. If it is empty we use zero as zero is always smaller
-        # then any legit number of episodes.
-        max_key = max(list_of_legit_episodes_keys) if list_of_legit_episodes_keys else 0
-        # 3) Needles to explain further...
-        if max_key > self.number_of_episodes:
-            errors.update(
-                {'episodes':
-                     exceptions.ValidationError(f'Episode number {max_key} in "episodes" '
-                                                f' field is greater then number of episodes '
-                                                f'{self.number_of_episodes}')}
+        if self.episodes:
+            _episodes = MappingProxyType(self.episodes or {})
+            list_of_legit_episodes_keys = custom_functions.filter_positive_int_or_digit(_episodes.keys())
+            # 2) Get key with max. value from all present keys. If it is empty we use zero as zero is always smaller
+            # then any legit number of episodes.
+            max_key = heapq.nlargest(1, list_of_legit_episodes_keys)  # or 0
+            # 3) Needles to explain further...
+            if max_key and (max_key[0] > self.number_of_episodes):
+                errors.update(
+                    {'episodes':
+                         exceptions.ValidationError(f'Episode number {max_key} in "episodes" '
+                                                    f' field is greater then number of episodes '
+                                                    f'{self.number_of_episodes}')}
             )
         if errors:
             raise exceptions.ValidationError(errors)
@@ -208,7 +227,7 @@ class SeasonModel(models.Model):
         Save method is overridden in order to manually invoke full_clean() method to
         trigger model level validators. I dont know why this doesnt work by default. Need to think about...
         """
-        self.full_clean(exclude=('last_watched_episode',), validate_unique=True)
+        self.full_clean(exclude=('last_watched_episode', ), validate_unique=True)
         super(SeasonModel, self).save(
             force_insert=False, force_update=False, using=None, update_fields=None
         )

@@ -10,15 +10,16 @@ def filter_positive_int_or_digit(container: Iterable[Any], to_integer=True) -> I
     Filters out all str or int gte = 1 from list of mixed iterable data.
     Returns generator with legit data coerced to int.
     """
+    _container = tuple(container)
     #  Filters out all positive integers >= 1.
     positive_integers = filter(
         lambda x: isinstance(x, int) and x >= 1,
-        container
+        _container
     )
     #  Filters out all in positive digits in str.
     positive_string_digits = filter(
         lambda x: isinstance(x, str) and x.isdigit(),
-        container
+        _container
     )
     #  Combine 2 generators in one.
     final_list_of_positive_numbers_gte_zero = itertools.chain(

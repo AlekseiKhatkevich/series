@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 
 import datetime
+from types import MappingProxyType
 
 from archives.helpers import custom_functions
 
@@ -29,7 +30,7 @@ def validate_dict_key_is_digit(value: dict) -> None:
     Use case only for JSON dicts as keys in them stored as strings always, even key is integer
      originally.
     """
-
+    value = MappingProxyType(value)
     right_keys = custom_functions.filter_positive_int_or_digit(value.keys(), to_integer=False)
     wrong_keys = value.keys() - set(right_keys)
 
@@ -44,6 +45,7 @@ def validate_timestamp(value: dict) -> None:
     Validates whether or not timestamp has correct format.
     Applicable to dict like structures or JSON.
     """
+    value = MappingProxyType(value)
     wrong_timestamps = {}
     for episode, timestamp in value.items():
         try:
