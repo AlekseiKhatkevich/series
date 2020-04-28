@@ -251,3 +251,4 @@ COUNTRIES_DICT = {
 }
 
 COUNTRY_ITERATOR = [(code, country) for code, country in COUNTRIES_DICT.items()]
+CODE_ITERATOR = [code for code in COUNTRIES_DICT.keys()]

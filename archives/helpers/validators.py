@@ -16,12 +16,15 @@ def skip_if_none_none_zero_positive_validator(value: int) -> None:
     Raises Validation error in case value is les then 1. Skips if value is None.
     Useful when field can hold none as a legit value
     """
-    if value is None:
-        return None
-    elif value < 1:
-        raise ValidationError(
-            f'{value} must be greater or equal 1'
-        )
+    # In case of None or empty dict...
+    try:
+        if value < 1:
+            raise ValidationError(
+                f'{value=} must be greater or equal 1',
+                code='min_value',
+            )
+    except TypeError:
+        pass
 
 
 def validate_dict_key_is_digit(value: dict) -> None:
@@ -30,13 +33,17 @@ def validate_dict_key_is_digit(value: dict) -> None:
     Use case only for JSON dicts as keys in them stored as strings always, even key is integer
      originally.
     """
+    if not value:
+        return None
+
     value = MappingProxyType(value)
     right_keys = custom_functions.filter_positive_int_or_digit(value.keys(), to_integer=False)
     wrong_keys = value.keys() - set(right_keys)
 
     if wrong_keys:
         raise ValidationError(
-            f'Dictionary keys {wrong_keys} are not  positive integers!'
+            f'Dictionary keys {wrong_keys} are not  positive integers!',
+            code='invalid',
         )
 
 
@@ -45,6 +52,10 @@ def validate_timestamp(value: dict) -> None:
     Validates whether or not timestamp has correct format.
     Applicable to dict like structures or JSON.
     """
+    # In case of None or empty dict...
+    if not value:
+        return None
+
     value = MappingProxyType(value)
     wrong_timestamps = {}
     for episode, timestamp in value.items():
@@ -55,5 +66,6 @@ def validate_timestamp(value: dict) -> None:
 
     if wrong_timestamps:
         raise ValidationError(
-            f'List of wrong timestamps{wrong_timestamps}. Timestamp should have correct format'
+            f'List of wrong timestamps{wrong_timestamps}. Timestamp should have correct format',
+            code='invalid',
         )

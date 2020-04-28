@@ -139,8 +139,9 @@ class SeasonModel(models.Model):
         validators=[non_zero_validator, ],
         default=1,
     )
-    last_watched_episode = models.PositiveSmallIntegerField(
+    last_watched_episode = custom_fields.CustomPositiveSmallIntegerField(  # CUSTOM FIELD!!!
         null=True,
+        exclude_empty_values=(None,),
         verbose_name='Last watched episode of a current season',
         validators=[custom_validators.skip_if_none_none_zero_positive_validator, ],
     )
@@ -148,9 +149,10 @@ class SeasonModel(models.Model):
         verbose_name='Number of episodes in the current season',
         validators=[non_zero_validator, ],
     )
-    episodes = custom_fields.CustomJSONField(
+    episodes = custom_fields.CustomJSONField(  # CUSTOM FIELD!!!
         null=True,
         verbose_name='Episode number and issue date',
+        exclude_empty_values=(None, {}),
         validators=[
             custom_validators.validate_dict_key_is_digit,
             custom_validators.validate_timestamp,
@@ -170,7 +172,7 @@ class SeasonModel(models.Model):
             models.CheckConstraint(
                 name='last_watched_episode_and_number_of_episodes_are_gte_one',
                 check=(models.Q(last_watched_episode__gte=1) | models.Q(last_watched_episode__isnull=True))
-                & models.Q(number_of_episodes__gte=1)
+                      & models.Q(number_of_episodes__gte=1)
             ),
             #  Number_of_episodes >= last_watched_episode
             models.CheckConstraint(
@@ -191,16 +193,20 @@ class SeasonModel(models.Model):
     @property
     def get_absolute_url(self):
         raise NotImplementedError
-# SeasonModel.objects.create(series_id=9, season_number=4, number_of_episodes=3,)
+
     def clean(self):
-        #  Check if last_watched_episode number is bigger then number of episodes in season.
+        #  todo fix this shit!!!
+        custom_validators.skip_if_none_none_zero_positive_validator(self.last_watched_episode)
+
         errors = {}
+
+        #  Check if last_watched_episode number is bigger then number of episodes in season.
         if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
             errors.update(
                 {'last_watched_episode':
                      exceptions.ValidationError(f'Last watched episode number {self.last_watched_episode}'
                                                 f' is greater then number of episodes {self.number_of_episodes}'
-                                                f'in the whole season!!!')}
+                                                f'in the whole season!!!', code='mutual_validation_out_of_range')}
             )
         # if we have a key in JSON data in episodes field with number greater then number of episodes in season.
         # 1) Filter only positive digits from JSON keys()
@@ -209,15 +215,16 @@ class SeasonModel(models.Model):
             list_of_legit_episodes_keys = custom_functions.filter_positive_int_or_digit(_episodes.keys())
             # 2) Get key with max. value from all present keys. If it is empty we use zero as zero is always smaller
             # then any legit number of episodes.
-            max_key = heapq.nlargest(1, list_of_legit_episodes_keys)  # or 0
+            max_key = heapq.nlargest(1, list_of_legit_episodes_keys)
             # 3) Needles to explain further...
             if max_key and (max_key[0] > self.number_of_episodes):
                 errors.update(
                     {'episodes':
                          exceptions.ValidationError(f'Episode number {max_key} in "episodes" '
                                                     f' field is greater then number of episodes '
-                                                    f'{self.number_of_episodes}')}
-            )
+                                                    f'{self.number_of_episodes}',
+                                                    code='mutual_validation_out_of_range')}
+                )
         if errors:
             raise exceptions.ValidationError(errors)
 

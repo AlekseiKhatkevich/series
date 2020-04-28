@@ -88,7 +88,7 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'NAME': 'series_db'},
-    ' test_test': {  # Test database
+    'test_test': {  # Test database
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
         'USER': 'postgres',
@@ -162,3 +162,6 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.redirects.RedirectsPanel',
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
+
+TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
+

@@ -1,16 +1,16 @@
 import itertools
-from typing import Iterator, Iterable, Any, Union
-
+from typing import Iterator, Union, Sequence, Iterable
+from more_itertools import SequenceView
 
 test_list = ['a', 1, 2, 99, -8, 2.2, 'sfsdfdf', '6', '88', '5.6', '-67']
 
 
-def filter_positive_int_or_digit(container: Iterable[Any], to_integer=True) -> Iterator[Union[int, str]]:
+def filter_positive_int_or_digit(container: Iterable, to_integer=True) -> Iterator[Union[int, str]]:
     """
     Filters out all str or int gte = 1 from list of mixed iterable data.
     Returns generator with legit data coerced to int.
     """
-    _container = tuple(container)
+    _container = SequenceView(container)
     #  Filters out all positive integers >= 1.
     positive_integers = filter(
         lambda x: isinstance(x, int) and x >= 1,

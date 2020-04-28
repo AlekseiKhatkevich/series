@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 
 import users.managers as users_managers
-from .helpers import countries
+from .helpers import countries, validators as custom_validators
 
 
 class User(AbstractUser):
@@ -41,7 +41,8 @@ class User(AbstractUser):
         max_length=2,
         choices=countries.COUNTRY_ITERATOR,
         null=True,
-        verbose_name='user country of origin'
+        verbose_name='user country of origin',
+        validators=[custom_validators.ValidateOverTheRange(container=countries.CODE_ITERATOR)]
     )
 
     USERNAME_FIELD = 'email'
@@ -57,12 +58,29 @@ class User(AbstractUser):
         index_together = unique_together
         verbose_name = 'user'
         verbose_name_plural = 'users'
+        constraints = [
+            models.CheckConstraint(
+                name='country_code_within_list_of_countries_check',
+                check=models.Q(user_country__in=countries.CODE_ITERATOR),
+            )
+        ]
 
     def __str__(self):
         return f'{"SLAVE ACC." if self.master else "MASTER ACC." } ' \
                f'pk - {self.pk},' \
                f' full name - {self.get_full_name()},' \
                f' email - {self.email}'
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        """
+        Save method is overridden in order to manually invoke full_clean() method to
+        trigger model level validators. I dont know why this doesnt work by default. Need to think about...
+        """
+        #self.full_clean(validate_unique=True, exclude=(), )
+        super(User, self).save(
+            force_insert=False, force_update=False, using=None, update_fields=None
+        )
 
     # todo
     @property
