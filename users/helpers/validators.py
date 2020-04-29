@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
 
 from typing import Iterable, Any, Union, Sized
 
@@ -14,5 +15,6 @@ class ValidateOverTheRange:
         if value not in self._container:
             raise ValidationError(
                 f'{value} does not locate in the container container',
-                code='invalid_choice',
+                code='wrong_country_code',
             )
+

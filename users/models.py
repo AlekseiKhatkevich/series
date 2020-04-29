@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.base_user import BaseUserManager
+from django.core import exceptions
 
 import users.managers as users_managers
 from .helpers import countries, validators as custom_validators
@@ -53,8 +53,8 @@ class User(AbstractUser):
 
     class Meta:
         unique_together = (
-             ('first_name', 'last_name', ),
-         )
+            ('first_name', 'last_name',),
+        )
         index_together = unique_together
         verbose_name = 'user'
         verbose_name_plural = 'users'
@@ -66,21 +66,32 @@ class User(AbstractUser):
         ]
 
     def __str__(self):
-        return f'{"SLAVE ACC." if self.master else "MASTER ACC." } ' \
+        return f'{"SLAVE ACC." if self.master else "MASTER ACC."} ' \
                f'pk - {self.pk},' \
                f' full name - {self.get_full_name()},' \
                f' email - {self.email}'
 
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
+    def run_validators(self):
         """
-        Save method is overridden in order to manually invoke full_clean() method to
-        trigger model level validators. I dont know why this doesnt work by default. Need to think about...
+        Run chosen validators on chosen fields.
         """
-        #self.full_clean(validate_unique=True, exclude=(), )
-        super(User, self).save(
-            force_insert=False, force_update=False, using=None, update_fields=None
-        )
+        custom_validators.ValidateOverTheRange(container=countries.CODE_ITERATOR)(self.user_country)
+
+    def clean(self):
+        errors = {}
+        #  We make sure  that slave cant own slaves(slave acc. can't have it's own slave accounts).
+        if self.master and self.__class__.objects.filter(master=self).exists():
+            errors.update(
+                {'master': exceptions.ValidationError(
+                    "Slave account can't have its own slaves")
+                 })
+        if self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
+            errors.update(
+                {'master': exceptions.ValidationError(
+                    "This slaves's master can not be slave itself")
+                })
+        if errors:
+            raise exceptions.ValidationError(errors)
 
     # todo
     @property
@@ -90,6 +101,3 @@ class User(AbstractUser):
     @property
     def my_slaves(self):
         return self.__class__.objects.filter(master=self)
-
-
-

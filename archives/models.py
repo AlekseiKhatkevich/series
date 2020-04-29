@@ -203,10 +203,10 @@ class SeasonModel(models.Model):
         #  Check if last_watched_episode number is bigger then number of episodes in season.
         if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
             errors.update(
-                {'last_watched_episode':
-                     exceptions.ValidationError(f'Last watched episode number {self.last_watched_episode}'
-                                                f' is greater then number of episodes {self.number_of_episodes}'
-                                                f'in the whole season!!!', code='mutual_validation_out_of_range')}
+                {'last_watched_episode': exceptions.ValidationError(
+                    f'Last watched episode number {self.last_watched_episode}'
+                    f' is greater then number of episodes {self.number_of_episodes}'
+                    f'in the whole season!!!', code='mutual_validation_out_of_range')}
             )
         # if we have a key in JSON data in episodes field with number greater then number of episodes in season.
         # 1) Filter only positive digits from JSON keys()
@@ -219,11 +219,11 @@ class SeasonModel(models.Model):
             # 3) Needles to explain further...
             if max_key and (max_key[0] > self.number_of_episodes):
                 errors.update(
-                    {'episodes':
-                         exceptions.ValidationError(f'Episode number {max_key} in "episodes" '
-                                                    f' field is greater then number of episodes '
-                                                    f'{self.number_of_episodes}',
-                                                    code='mutual_validation_out_of_range')}
+                    {'episodes': exceptions.ValidationError(
+                        f'Episode number {max_key} in "episodes" '
+                        f' field is greater then number of episodes '
+                        f'{self.number_of_episodes}',
+                        code='mutual_validation_out_of_range')}
                 )
         if errors:
             raise exceptions.ValidationError(errors)

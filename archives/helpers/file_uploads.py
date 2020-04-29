@@ -1,7 +1,7 @@
 from .. import models
 
 
-def save_image_path(instance: object, filename: str) -> str:
+def save_image_path(instance: models.models.Model, filename: str) -> str:
     """
         Custom path for saving images depend on a series name or season number.
         """
