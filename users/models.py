@@ -61,8 +61,7 @@ class User(AbstractUser):
         constraints = [
             models.CheckConstraint(
                 name='country_code_within_list_of_countries_check',
-                check=models.Q(user_country__in=countries.CODE_ITERATOR),
-            )
+                check=models.Q(user_country__in=countries.CODE_ITERATOR),),
         ]
 
     def __str__(self):
@@ -83,13 +82,14 @@ class User(AbstractUser):
         if self.master and self.__class__.objects.filter(master=self).exists():
             errors.update(
                 {'master': exceptions.ValidationError(
-                    "Slave account can't have its own slaves")
-                 })
-        if self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
+                    "Slave account can't have its own slaves")}
+            )
+        # We make sure that slave's master is not a slave himself.
+        elif self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
             errors.update(
                 {'master': exceptions.ValidationError(
-                    "This slaves's master can not be slave itself")
-                })
+                    "This slaves's master can not be slave itself")}
+            )
         if errors:
             raise exceptions.ValidationError(errors)
 

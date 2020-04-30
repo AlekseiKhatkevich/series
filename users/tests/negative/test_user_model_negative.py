@@ -81,6 +81,46 @@ class CreateUserModelNegativeTest(APITestCase):
             get_user_model().objects.filter(email='test_2@mail.ru').exists()
         )
 
-    def slave_doesnt_have
+    def test_slave_cant_have_slaves_validation(self):
+        """
+        Test whether or not slave cant have it's own slaves and how clean() method
+        in model resists to attempt to validate and save data for this situation.
+        """
+        master = get_user_model().objects.get(email='superuser@inbox.ru')
+        slave = get_user_model().objects.get(email='user_1@inbox.ru')
+        slaves_slave = get_user_model().objects.get(email='user_2@inbox.ru')
+        expected_error_message = "Slave account can't have its own slaves"
+
+        with transaction.atomic():
+            slave.master = master
+            slaves_slave.master = slave
+            slaves_slave.save()
+            with self.assertRaisesRegex(ValidationError, expected_error_message) as cm:
+                slave.clean()
+                slave.save()
+
+        #self.assertIn(expected_error_message, cm.exception.messages)
+        slave.refresh_from_db()
+        self.assertIsNone(slave.master)
+
+    def test_slave_cant_have_a_master_who_is_a_slave_himself(self):
+        """
+        Testing that slave cant have a master who is a slave himself.
+        """
+        master = get_user_model().objects.get(email='superuser@inbox.ru')
+        slave = get_user_model().objects.get(email='user_1@inbox.ru')
+        slaves_slave = get_user_model().objects.get(email='user_2@inbox.ru')
+        expected_error_message = "This slaves's master can not be slave itself"
+
+        with transaction.atomic():
+            slave.master = master
+            master.master = slaves_slave
+            master.save()
+            with self.assertRaisesRegex(ValidationError, expected_error_message):
+                slave.clean()
+                slave.save()
+
+        slave.refresh_from_db()
+        self.assertIsNone(slave.master)
 
 

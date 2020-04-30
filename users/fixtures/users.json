@@ -1,0 +1,116 @@
+[
+{
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$180000$w2aIugiQejMI$Cmiobeg+mYHyDjGANEXkdCfpyQL/7nWmqWlB5kGvIwo=",
+        "last_login": "2020-04-21T11:29:24.995Z",
+        "is_superuser": true,
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-04-21T11:29:00.777Z",
+        "master": null,
+        "email": "hardcase@inbox.ru",
+        "first_name": "Aleksei",
+        "last_name": "Khatkevich",
+        "user_country": "RU",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$180000$C1GTj8JYLCqe$1Q/bhwKEyuw/BK6YtaJU7EMUxWsYrT6ofw6mmWXbsHw=",
+        "last_login": null,
+        "is_superuser": false,
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-04-21T11:29:44.055Z",
+        "master": null,
+        "email": "vasya@pentagon.gov",
+        "first_name": null,
+        "last_name": null,
+        "user_country": null,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$180000$1etCC9WmSBAz$Bv1TCfHGIYrnV6wUKvAB6NC2h+WbLDr3pku7D8BUUG4=",
+        "last_login": null,
+        "is_superuser": false,
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-04-21T11:53:57.989Z",
+        "master": 1,
+        "email": "vasya2@pentagon.gov",
+        "first_name": null,
+        "last_name": null,
+        "user_country": null,
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 14,
+    "fields": {
+        "password": "pbkdf2_sha256$180000$LQ4AP1rDdRzs$Kh8pVCYtluzR9EsICKEAbL0hD4rg9zF4ypSmgcx1zXg=",
+        "last_login": null,
+        "is_superuser": true,
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-04-24T17:12:25.857Z",
+        "master": null,
+        "email": "superuser@inbox.ru",
+        "first_name": "Super",
+        "last_name": "user",
+        "user_country": "RU",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 15,
+    "fields": {
+        "password": "pbkdf2_sha256$180000$VH4uH6PYI9fI$WLnuUcivNIexlyh0Hm+J8oF/mhbs6vE+5gmleLC0MVU=",
+        "last_login": null,
+        "is_superuser": false,
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-04-24T17:12:25.857Z",
+        "master": null,
+        "email": "user_1@inbox.ru",
+        "first_name": "user_1",
+        "last_name": "Smith",
+        "user_country": "RW",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "users.user",
+    "pk": 16,
+    "fields": {
+        "password": "pbkdf2_sha256$180000$yoOMIYQPa4Nn$jTBn0pRhSGvoREPE/Cu0Ax0JJnCb5AOTInDHjMHsgUk=",
+        "last_login": null,
+        "is_superuser": false,
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-04-24T17:12:25.857Z",
+        "master": null,
+        "email": "user_2@inbox.ru",
+        "first_name": "user_2",
+        "last_name": "Villiams",
+        "user_country": "JP",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

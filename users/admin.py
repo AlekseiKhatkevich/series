@@ -7,7 +7,7 @@ import users.forms as users_forms
 
 class CustomUserAdmin(UserAdmin):
     """
-    Admin class for USER model.
+    Admin class for User model.
     """
     add_form = users_forms.CustomUserCreationForm
     form = users_forms.CustomUserChangeForm
@@ -21,8 +21,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}
-        ),
+            'fields': ('email', 'password1', 'password2', 'is_staff', 'is_active')}),
     )
     search_fields = ('email',)
     ordering = ('email',)

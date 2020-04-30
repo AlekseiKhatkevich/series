@@ -1,7 +1,23 @@
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 
-from more_itertools import SequenceView
+from collections.abc import Generator
+
+
+def change_empty_values(kwargs: dict, instance: models.Field) -> None:
+    """
+    Helper function to change  EMPTY_VALUES of the FIELD class.
+    """
+    exclude = kwargs.pop(
+        'exclude_empty_values', ()
+    )
+    if not isinstance(exclude, (tuple, list, set, Generator)):
+        raise TypeError(f'{instance.__class__.__name__} "exclude_empty_values" attribute error.'
+                        f'{exclude} should belong to containers or generators')
+
+    instance.empty_values = [
+        value for value in instance.__class__.empty_values if value not in exclude
+    ]
 
 
 class CustomJSONField(postgres_fields.JSONField):
@@ -11,10 +27,8 @@ class CustomJSONField(postgres_fields.JSONField):
     default EMPTY_VALUES = (None, '', [], (), {})
     """
 
-    def __init__(self,  verbose_name=None, name=None, encoder=None, **kwargs):
-        self.empty_values =\
-                [value for value in self.__class__.empty_values if value not in
-                 SequenceView(kwargs.pop('exclude_empty_values', ()))]
+    def __init__(self, verbose_name=None, name=None, encoder=None, **kwargs):
+        change_empty_values(kwargs=kwargs, instance=self)
         super().__init__(verbose_name, name, encoder, **kwargs)
 
     def deconstruct(self):
@@ -32,18 +46,17 @@ class ExcludeEmptyValuesMixin:
     'This field cant be blank' and you dont like to use blank=True either
     """
 
-    def __init__(self,  verbose_name=None, name=None, primary_key=False, max_length=None, unique=False, blank=False,
-                 null=False, db_index=False, rel=None, default=models.fields.NOT_PROVIDED, editable=True, serialize=True,
+    def __init__(self, verbose_name=None, name=None, primary_key=False, max_length=None, unique=False, blank=False,
+                 null=False, db_index=False, rel=None, default=models.fields.NOT_PROVIDED, editable=True,
+                 serialize=True,
                  unique_for_date=None, unique_for_month=None, unique_for_year=None, choices=None, help_text='',
                  db_column=None, db_tablespace=None, auto_created=False, validators=(), error_messages=None, **kwargs):
 
-        self.empty_values = \
-            [value for value in self.__class__.empty_values if value not in
-             SequenceView(kwargs.pop('exclude_empty_values', ()))]
+        change_empty_values(kwargs=kwargs, instance=self)
 
         super().__init__(verbose_name, name, primary_key, max_length, unique, blank, null, db_index, rel, default,
                          editable, serialize, unique_for_date, unique_for_month, unique_for_year, choices, help_text,
-                         db_column, db_tablespace, auto_created, validators, error_messages,)
+                         db_column, db_tablespace, auto_created, validators, error_messages, )
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()

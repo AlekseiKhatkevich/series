@@ -2,8 +2,6 @@ from rest_framework.test import APITestCase
 
 from django.contrib.auth import get_user_model
 
-import unittest
-
 from ...helpers import create_test_users, countries
 
 
