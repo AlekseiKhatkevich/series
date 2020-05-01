@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 
 import datetime
 from types import MappingProxyType
+import urllib.parse
 
 from archives.helpers import custom_functions
 
@@ -69,3 +70,22 @@ def validate_timestamp(value: dict) -> None:
             f'List of wrong timestamps{wrong_timestamps}. Timestamp should have correct format',
             code='invalid',
         )
+
+
+class ValidateUrlDomain:
+    """
+    Validates that given 2nd level domain is a domain of a validated url. 
+    For example domain 'www.imdb.com' and domain
+    'https://www.imdb.com/title/tt12162902/?ref_=hm_hp_cap_pri_5'
+    are the same.
+    """
+    def __init__(self, domain: str):
+        self._domain = domain
+
+    def __call__(self, value: str):
+        domain_of_the_given_url = urllib.parse.urlparse(value).netloc
+        if domain_of_the_given_url != self._domain:
+            raise ValidationError(
+                f'Please provide url to {self._domain} exactly. Your provided url - {value}',
+                code='wrong_url'
+            )

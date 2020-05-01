@@ -70,7 +70,8 @@ class TvSeriesModel(models.Model):
     imdb_url = models.URLField(
         verbose_name='IMDB page for the series',
         unique=True,
-        db_index=False
+        db_index=False,
+        validators=[custom_validators.ValidateUrlDomain('www.imdb.com'), ]
     )
     is_finished = models.BooleanField(
         default=False,
@@ -78,7 +79,8 @@ class TvSeriesModel(models.Model):
     )
     rating = models.PositiveSmallIntegerField(
         null=True,
-        choices=((number,) * 2 for number in range(1, 11)),
+        blank=True,
+        choices=([(number,) * 2 for number in range(1, 11)] + [(None, 'No rating given'), ]),
         verbose_name='Rating of TV series from 1 to 10',
         validators=[validators.MinValueValidator(
             limit_value=1,
@@ -88,7 +90,6 @@ class TvSeriesModel(models.Model):
     class Meta:
         verbose_name = 'series'
         verbose_name_plural = 'series'
-        # default_permissions = []
         constraints = [
             models.CheckConstraint(
                 name='rating_from_1_to_10',
@@ -103,17 +104,6 @@ class TvSeriesModel(models.Model):
     @property
     def get_absolute_url(self):
         raise NotImplementedError
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        """
-        Save method is overridden in order to manually invoke full_clean() method to
-        trigger model level validators. I dont know why this doesnt work by default. Need to think about...
-        """
-        self.full_clean()
-        super(TvSeriesModel, self).save(
-            force_insert=False, force_update=False, using=None, update_fields=None
-        )
 
 
 class SeasonModel(models.Model):
@@ -195,8 +185,6 @@ class SeasonModel(models.Model):
         raise NotImplementedError
 
     def clean(self):
-        #  todo fix this shit!!!
-        custom_validators.skip_if_none_none_zero_positive_validator(self.last_watched_episode)
 
         errors = {}
 
@@ -274,7 +262,6 @@ class ImageModel(models.Model):
         on_delete=models.CASCADE
     )
     object_id = models.PositiveIntegerField(
-
     )
     content_object = GenericForeignKey(
         'content_type', 'object_id'

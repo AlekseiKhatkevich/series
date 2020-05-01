@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
 
+from typing import Sequence
+
 
 def create_random_password() -> str:
     """
@@ -47,9 +49,10 @@ users_data = {
     }
 
 
-def create_users() -> object:
+def create_users() -> Sequence:
     """
      Creates users in database.
+     returns container of user's instances.
     """
 
     users = get_user_model().objects.bulk_create(
