@@ -18,6 +18,12 @@ class TvSeriesQueryset(models.QuerySet):
         top_range = (result['rating__max'] - (percent * percent_value), result['rating__max'])
         return self.filter(rating__range=top_range)
 
+    def running_series(self):
+        """
+        Returns only not finished series.
+        """
+        return self.exclude(is_finished=True)
+
 
 class TvSeriesManager(models.Manager):
     """

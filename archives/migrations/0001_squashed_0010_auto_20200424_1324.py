@@ -9,7 +9,7 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    replaces = [('archives', '0001_initial'), ('archives', '0002_imagemodel'), ('archives', '0003_auto_20200422_1226'), ('archives', '0004_auto_20200422_1555'), ('archives', '0005_auto_20200422_2004'), ('archives', '0006_tvseriesmodel_rating'), ('archives', '0007_auto_20200423_1331'), ('archives', '0008_auto_20200423_2027'), ('archives', '0009_auto_20200423_2042'), ('archives', '0010_auto_20200424_1324')]
+    #replaces = [('archives', '0001_initial'), ('archives', '0002_imagemodel'), ('archives', '0003_auto_20200422_1226'), ('archives', '0004_auto_20200422_1555'), ('archives', '0005_auto_20200422_2004'), ('archives', '0006_tvseriesmodel_rating'), ('archives', '0007_auto_20200423_1331'), ('archives', '0008_auto_20200423_2027'), ('archives', '0009_auto_20200423_2042'), ('archives', '0010_auto_20200424_1324')]
 
     initial = True
 

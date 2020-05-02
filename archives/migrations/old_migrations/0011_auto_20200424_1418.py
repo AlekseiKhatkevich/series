@@ -7,7 +7,8 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('archives', '0010_auto_20200424_1324'),
+        #('archives', '0010_auto_20200424_1324'),
+        ('archives', '0001_squashed_0010_auto_20200424_1324'),
     ]
 
     operations = [

@@ -1,10 +1,16 @@
 from django.core.exceptions import ValidationError
+from django.utils.deconstruct import deconstructible
+
+import rest_framework.status as status_codes
 
 import datetime
 from types import MappingProxyType
 import urllib.parse
+import urllib.request
+import urllib.error
 
 from archives.helpers import custom_functions
+
 
 test_dict = {'a': 1587902034.039742, 1: 1587902034.039742, 2: 1587902034.039742,
              99: 1587902034.039742, -8: 1587902034.039742, 2.2: 1587902034.039742,
@@ -72,6 +78,7 @@ def validate_timestamp(value: dict) -> None:
         )
 
 
+@deconstructible
 class ValidateUrlDomain:
     """
     Validates that given 2nd level domain is a domain of a validated url. 
@@ -79,13 +86,48 @@ class ValidateUrlDomain:
     'https://www.imdb.com/title/tt12162902/?ref_=hm_hp_cap_pri_5'
     are the same.
     """
-    def __init__(self, domain: str):
+    def __init__(self, domain: str, *args, **kwargs):
         self._domain = domain
 
-    def __call__(self, value: str):
+    def __call__(self, value: str, *args, **kwargs) -> None:
         domain_of_the_given_url = urllib.parse.urlparse(value).netloc
         if domain_of_the_given_url != self._domain:
             raise ValidationError(
                 f'Please provide url to {self._domain} exactly. Your provided url - {value}',
                 code='wrong_url'
             )
+
+
+@deconstructible
+class ValidateIfUrlIsAlive:
+    """
+    Checks whether or not given url is alive by sending HEAD request to resource
+     and analyze status code of response.
+    """
+    def __init__(self, timeout: int):
+        self._timeout = timeout
+
+    def __call__(self, value: str,  *args, **kwargs) -> None:
+        request = urllib.request.Request(value, method='HEAD')
+
+        try:
+            response = urllib.request.urlopen(request, timeout=self._timeout)
+        except urllib.error.HTTPError as err:
+            raise ValidationError(
+                f'Url {value} does not exists  -- ({str(err)})',
+                code='404'
+            ) from err
+        except urllib.error.URLError as err:
+            raise ValidationError(
+                f'Url {value} has wrong format. Please double-check -- ({str(err)}',
+                code='url_format_error'
+            ) from err
+        else:
+            status = response.status
+            if status != status_codes.HTTP_200_OK:
+                raise ValidationError(
+                    f'Url {value} is not alive or incorrect',
+                    code='resource_head_non_200'
+                )
+
+

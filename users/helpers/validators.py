@@ -1,9 +1,10 @@
 from django.core.exceptions import ValidationError
-from django.contrib.auth import get_user_model
+from django.utils.deconstruct import deconstructible
 
 from typing import Iterable, Any, Union, Sized
 
 
+@deconstructible
 class ValidateOverTheRange:
     """
     Validates whether key withing the iterable.

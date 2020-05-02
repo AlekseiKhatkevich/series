@@ -71,8 +71,10 @@ class TvSeriesModel(models.Model):
         verbose_name='IMDB page for the series',
         unique=True,
         db_index=False,
-        validators=[custom_validators.ValidateUrlDomain('www.imdb.com'), ]
-    )
+        validators=[
+            custom_validators.ValidateUrlDomain('www.imdb.com'),
+            custom_validators.ValidateIfUrlIsAlive(3, ),
+        ])
     is_finished = models.BooleanField(
         default=False,
         verbose_name='Whether series finished or not'
@@ -94,7 +96,11 @@ class TvSeriesModel(models.Model):
             models.CheckConstraint(
                 name='rating_from_1_to_10',
                 check=models.Q(rating__range=(1, 11)) | models.Q(rating__isnull=True),
-            )
+            ),
+            models.CheckConstraint(
+                name='url_to_imdb_check',
+                check=models.Q(imdb_url__icontains='www.imdb.com')
+            ),
         ]
 
     def __str__(self):

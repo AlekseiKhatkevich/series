@@ -56,7 +56,7 @@ class TvSeriesModelPositiveTest(APITestCase):
             image.series.get()
         )
 
-    def test_interrelationship(self):
+    def test_interrelationship_association(self):
         """
         Check symmetrical recursive foreignkey functionality.
         """
@@ -79,7 +79,7 @@ class TvSeriesModelPositiveTest(APITestCase):
 
     def test_add_rating(self):
         """
-        Check possibility to add rating in correct rating data is provided.
+        Check possibility to add rating if correct rating data is provided.
         """
         self.series_1.refresh_from_db()
 
@@ -94,4 +94,15 @@ class TvSeriesModelPositiveTest(APITestCase):
         self.assertEqual(
             self.series_1.rating,
             5
+        )
+
+    def test_str_(self):
+        """
+        Check whether or not string representation of the model instance works fine.
+        """
+        expected_str = f'{self.series_1.pk} / {self.series_1.name}'
+        
+        self.assertEqual(
+            self.series_1.__str__(),
+            expected_str
         )
