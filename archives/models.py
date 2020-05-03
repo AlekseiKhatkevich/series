@@ -84,10 +84,14 @@ class TvSeriesModel(models.Model):
         blank=True,
         choices=([(number,) * 2 for number in range(1, 11)] + [(None, 'No rating given'), ]),
         verbose_name='Rating of TV series from 1 to 10',
-        validators=[validators.MinValueValidator(
-            limit_value=1,
-            message='Zero is not a valid integer for this field', ), ]
-    )
+        validators=[
+            validators.MinValueValidator(
+                limit_value=1,
+                message='Zero is not a valid integer for this field', ),
+            validators.MaxValueValidator(
+                limit_value=10,
+                message='Maximal value for this field is 10'
+            )])
 
     class Meta:
         verbose_name = 'series'
@@ -95,7 +99,7 @@ class TvSeriesModel(models.Model):
         constraints = [
             models.CheckConstraint(
                 name='rating_from_1_to_10',
-                check=models.Q(rating__range=(1, 11)) | models.Q(rating__isnull=True),
+                check=models.Q(rating__range=(1, 10)) | models.Q(rating__isnull=True),
             ),
             models.CheckConstraint(
                 name='url_to_imdb_check',
@@ -168,7 +172,7 @@ class SeasonModel(models.Model):
             models.CheckConstraint(
                 name='last_watched_episode_and_number_of_episodes_are_gte_one',
                 check=(models.Q(last_watched_episode__gte=1) | models.Q(last_watched_episode__isnull=True))
-                      & models.Q(number_of_episodes__gte=1)
+                & models.Q(number_of_episodes__gte=1)
             ),
             #  Number_of_episodes >= last_watched_episode
             models.CheckConstraint(
@@ -191,7 +195,6 @@ class SeasonModel(models.Model):
         raise NotImplementedError
 
     def clean(self):
-
         errors = {}
 
         #  Check if last_watched_episode number is bigger then number of episodes in season.
@@ -228,7 +231,7 @@ class SeasonModel(models.Model):
         Save method is overridden in order to manually invoke full_clean() method to
         trigger model level validators. I dont know why this doesnt work by default. Need to think about...
         """
-        self.full_clean(exclude=('last_watched_episode', ), validate_unique=True)
+        self.full_clean(exclude=('last_watched_episode',), validate_unique=True)
         super(SeasonModel, self).save(
             force_insert=False, force_update=False, using=None, update_fields=None
         )
@@ -246,11 +249,14 @@ class SeasonModel(models.Model):
         Whether or not last episode of the season has already been released?
         Returns None if impossible to establish this information from self.episodes.
         """
-        last_episode_release_date = self.episodes.get(str(self.number_of_episodes), None)
-        if last_episode_release_date is None:
+        try:
+            last_episode_release_date = self.episodes[str(self.number_of_episodes)]
+            # if 'episodes' field is None or there are no key == 'number_of_episodes'.
+        except (IndexError, TypeError):
             return None
-        now = timezone.now().timestamp()
-        return now > last_episode_release_date
+        else:
+            now = timezone.now().timestamp()
+            return now > last_episode_release_date
 
 
 class ImageModel(models.Model):
