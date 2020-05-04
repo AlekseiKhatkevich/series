@@ -10,22 +10,22 @@ from django.contrib.auth import get_user_model
 This migration creates test set of user in database if settings DEBUG set to True.
 """
 # Figuring out weather or not we are in test environment.
-# TESTING = settings.IM_IN_TEST_MODE
-#
-#
-# def forwards_func(apps, schema_editor):
-#     if settings.DEBUG and not TESTING:
-#         create_users()
-#     else:
-#         migrations.RunPython.noop(apps, schema_editor)
-#
-#
-# def reverse_func(apps, schema_editor):
-#     if settings.DEBUG and not TESTING:
-#         delete_users()
-#     else:
-#         migrations.RunPython.noop(apps, schema_editor)
-#
+TESTING = settings.IM_IN_TEST_MODE
+
+
+def forwards_func(apps, schema_editor):
+    if settings.DEBUG and not TESTING:
+        create_users()
+    else:
+        migrations.RunPython.noop(apps, schema_editor)
+
+
+def reverse_func(apps, schema_editor):
+    if settings.DEBUG and not TESTING:
+        delete_users()
+    else:
+        migrations.RunPython.noop(apps, schema_editor)
+
 
 class Migration(migrations.Migration):
 
@@ -35,6 +35,6 @@ class Migration(migrations.Migration):
     # Do not run this in tests.
 
     operations = [
-           # migrations.RunPython(forwards_func, reverse_func)
+            migrations.RunPython(forwards_func, reverse_func)
         ]
 

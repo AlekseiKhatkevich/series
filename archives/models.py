@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelatio
 from django.contrib.contenttypes.models import ContentType
 from django.core import validators, exceptions
 from django.utils import timezone
+from django.contrib.postgres import fields as psgr_fields
 
 from .helpers import validators as custom_validators, file_uploads, custom_functions, custom_fields
 from archives import managers
@@ -139,9 +140,9 @@ class SeasonModel(models.Model):
         validators=[non_zero_validator, ],
         default=1,
     )
-    last_watched_episode = custom_fields.CustomPositiveSmallIntegerField(  # CUSTOM FIELD!!!
+    last_watched_episode = models.PositiveSmallIntegerField(
+        blank=True,
         null=True,
-        exclude_empty_values=(None,),
         verbose_name='Last watched episode of a current season',
         validators=[custom_validators.skip_if_none_none_zero_positive_validator, ],
     )
@@ -149,10 +150,10 @@ class SeasonModel(models.Model):
         verbose_name='Number of episodes in the current season',
         validators=[non_zero_validator, ],
     )
-    episodes = custom_fields.CustomJSONField(  # CUSTOM FIELD!!!
+    episodes = psgr_fields.JSONField(
         null=True,
+        blank=True,
         verbose_name='Episode number and issue date',
-        exclude_empty_values=(None, {}),
         validators=[
             custom_validators.validate_dict_key_is_digit,
             custom_validators.validate_timestamp,
@@ -203,7 +204,7 @@ class SeasonModel(models.Model):
                 {'last_watched_episode': exceptions.ValidationError(
                     f'Last watched episode number {self.last_watched_episode}'
                     f' is greater then number of episodes {self.number_of_episodes}'
-                    f'in the whole season!!!', code='mutual_validation_out_of_range')}
+                    f' in the whole season!!!', code='mutual_validation_out_of_range')}
             )
         # if we have a key in JSON data in episodes field with number greater then number of episodes in season.
         # 1) Filter only positive digits from JSON keys()
@@ -217,24 +218,13 @@ class SeasonModel(models.Model):
             if max_key and (max_key[0] > self.number_of_episodes):
                 errors.update(
                     {'episodes': exceptions.ValidationError(
-                        f'Episode number {max_key} in "episodes" '
+                        f'Episode number {max_key[0]} in "episodes" '
                         f' field is greater then number of episodes '
                         f'{self.number_of_episodes}',
                         code='mutual_validation_out_of_range')}
                 )
         if errors:
             raise exceptions.ValidationError(errors)
-
-    def save(self, force_insert=False, force_update=False, using=None,
-             update_fields=None):
-        """
-        Save method is overridden in order to manually invoke full_clean() method to
-        trigger model level validators. I dont know why this doesnt work by default. Need to think about...
-        """
-        self.full_clean(exclude=('last_watched_episode',), validate_unique=True)
-        super(SeasonModel, self).save(
-            force_insert=False, force_update=False, using=None, update_fields=None
-        )
 
     @property
     def is_fully_watched(self) -> bool:
@@ -250,13 +240,17 @@ class SeasonModel(models.Model):
         Returns None if impossible to establish this information from self.episodes.
         """
         try:
-            last_episode_release_date = self.episodes[str(self.number_of_episodes)]
-            # if 'episodes' field is None or there are no key == 'number_of_episodes'.
-        except (IndexError, TypeError):
+            # episode number key might be in str or int format. We trying to get it as a str and then as a int.
+            try:
+                last_episode_release_date = self.episodes[str(self.number_of_episodes)]
+            except KeyError:
+                last_episode_release_date = self.episodes[self.number_of_episodes]
+        # if 'episodes' field is None or there are no key == 'number_of_episodes'.
+        except (KeyError, TypeError):
             return None
-        else:
-            now = timezone.now().timestamp()
-            return now > last_episode_release_date
+
+        now = timezone.now().timestamp()
+        return now > last_episode_release_date
 
 
 class ImageModel(models.Model):

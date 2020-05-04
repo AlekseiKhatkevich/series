@@ -55,7 +55,7 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
                 'series': single_series,
                 'season_number': season_number + 1,
                 'number_of_episodes': 5,
-                '_order': next(order)
+                '_order': next(order),
             }}
             seasons.update(new_season_data)
 

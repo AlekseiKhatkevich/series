@@ -8,6 +8,7 @@ from types import MappingProxyType
 import urllib.parse
 import urllib.request
 import urllib.error
+import json
 
 from archives.helpers import custom_functions
 
@@ -34,7 +35,7 @@ def skip_if_none_none_zero_positive_validator(value: int) -> None:
         pass
 
 
-def validate_dict_key_is_digit(value: dict) -> None:
+def validate_dict_key_is_digit(value: [dict, bytes]) -> None:
     """
     Validates whether or not all keys in dict are positive integers but saved as string.
     Use case only for JSON dicts as keys in them stored as strings always, even key is integer
@@ -43,7 +44,11 @@ def validate_dict_key_is_digit(value: dict) -> None:
     if not value:
         return None
 
-    value = MappingProxyType(value)
+    try:
+        value = json.loads(value)
+    except (ValueError, TypeError):
+        value = MappingProxyType(value)
+
     right_keys = custom_functions.filter_positive_int_or_digit(value.keys(), to_integer=False)
     wrong_keys = value.keys() - set(right_keys)
 
@@ -54,7 +59,7 @@ def validate_dict_key_is_digit(value: dict) -> None:
         )
 
 
-def validate_timestamp(value: dict) -> None:
+def validate_timestamp(value: [dict, bytes]) -> None:
     """
     Validates whether or not timestamp has correct format.
     Applicable to dict like structures or JSON.
@@ -63,7 +68,11 @@ def validate_timestamp(value: dict) -> None:
     if not value:
         return None
 
-    value = MappingProxyType(value)
+    try:
+        value = json.loads(value)
+    except (ValueError, TypeError):
+        value = MappingProxyType(value)
+
     wrong_timestamps = {}
     for episode, timestamp in value.items():
         try:

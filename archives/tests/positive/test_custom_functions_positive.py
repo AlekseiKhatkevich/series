@@ -1,9 +1,6 @@
 from rest_framework.test import APISimpleTestCase
 
 from ...helpers import custom_functions
-from ..data import initial_data
-
-from django.core import files
 
 
 class CustomFunctionsPositiveTest(APISimpleTestCase):
@@ -37,13 +34,3 @@ class CustomFunctionsPositiveTest(APISimpleTestCase):
             )
         )
 
-    def test_image_creation(self):
-        """
-        Test helper function that creates simple test image.
-        """
-        image = initial_data.generate_test_image()
-
-        self.assertIsInstance(
-            image,
-            files.base.ContentFile
-        )

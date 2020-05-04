@@ -165,3 +165,4 @@ DEBUG_TOOLBAR_PANELS = [
 
 TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
 
+IM_IN_TEST_MODE = False

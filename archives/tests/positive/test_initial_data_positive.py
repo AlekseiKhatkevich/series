@@ -5,6 +5,8 @@ from archives.tests.data import initial_data
 from users.helpers import create_test_users
 from archives import models
 
+from django.core import files
+
 
 class CreateInitialDataPositiveTest(APITestCase):
     """
@@ -36,4 +38,15 @@ class CreateInitialDataPositiveTest(APITestCase):
         self.assertSequenceEqual(
             seasons,
             models.SeasonModel.objects.all()
+        )
+
+    def test_image_creation(self):
+        """
+        Test helper function that creates simple test image.
+        """
+        image = initial_data.generate_test_image()
+
+        self.assertIsInstance(
+            image,
+            files.base.ContentFile
         )
