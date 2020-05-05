@@ -15,6 +15,7 @@ django-debug-toolbar = "*"
 pillow = "*"
 more-itertools = "*"
 tblib = "*"
+coverage = "*"
 
 [requires]
 python_version = "3.8"

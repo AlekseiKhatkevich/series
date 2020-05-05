@@ -6,11 +6,12 @@ from django.core import validators, exceptions
 from django.utils import timezone
 from django.contrib.postgres import fields as psgr_fields
 
-from .helpers import validators as custom_validators, file_uploads, custom_functions, custom_fields
+from archives.helpers import validators as custom_validators, file_uploads, custom_functions
 from archives import managers
 
 from types import MappingProxyType
 import heapq
+import os
 
 
 class GroupingModel(models.Model):
@@ -279,3 +280,10 @@ class ImageModel(models.Model):
     class Meta:
         verbose_name = 'Image'
         verbose_name_plural = 'Images'
+
+    @property
+    def image_file_name(self):
+        """
+        Returns name of the image file.
+        """
+        return os.path.basename(self.image.file.name)

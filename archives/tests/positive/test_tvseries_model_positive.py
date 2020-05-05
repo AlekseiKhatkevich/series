@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 
 from users.helpers import create_test_users
 import archives.models as archive_models
-from ..data import initial_data
+from archives.tests.data import initial_data
 
 
 class TvSeriesModelPositiveTest(APITestCase):

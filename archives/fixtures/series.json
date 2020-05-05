@@ -1,0 +1,68 @@
+[
+{
+    "model": "archives.tvseriesmodel",
+    "pk": 4,
+    "fields": {
+        "entry_author": 2,
+        "name": "test",
+        "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164",
+        "is_finished": true,
+        "rating": 2
+    }
+},
+{
+    "model": "archives.tvseriesmodel",
+    "pk": 5,
+    "fields": {
+        "entry_author": 1,
+        "name": "Akbar",
+        "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164944",
+        "is_finished": false,
+        "rating": 5
+    }
+},
+{
+    "model": "archives.tvseriesmodel",
+    "pk": 6,
+    "fields": {
+        "entry_author": 2,
+        "name": "Series1",
+        "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164933",
+        "is_finished": false,
+        "rating": 10
+    }
+},
+{
+    "model": "archives.tvseriesmodel",
+    "pk": 7,
+    "fields": {
+        "entry_author": 2,
+        "name": "Series2",
+        "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164911",
+        "is_finished": false,
+        "rating": 6
+    }
+},
+{
+    "model": "archives.tvseriesmodel",
+    "pk": 9,
+    "fields": {
+        "entry_author": 2,
+        "name": "Friends_super",
+        "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls0531816490",
+        "is_finished": false,
+        "rating": 7
+    }
+},
+{
+    "model": "archives.tvseriesmodel",
+    "pk": 14,
+    "fields": {
+        "entry_author": 1,
+        "name": "Fargo",
+        "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649",
+        "is_finished": false,
+        "rating": 4
+    }
+}
+]

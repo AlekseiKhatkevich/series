@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Min, Max, FloatField
+from django.db.models.functions import Floor, Ceil
 
 
 class TvSeriesQueryset(models.QuerySet):
@@ -15,7 +16,10 @@ class TvSeriesQueryset(models.QuerySet):
             Max('rating', output_field=FloatField()),
         )
         percent_value = (result['rating__max'] - result['rating__min']) / 100
-        top_range = (result['rating__max'] - (percent * percent_value), result['rating__max'])
+        top_range = (
+            Ceil(result['rating__max'] - (percent * percent_value)),
+            Floor(result['rating__max'])
+        )
         return self.filter(rating__range=top_range)
 
     def running_series(self):

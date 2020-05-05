@@ -1,16 +1,26 @@
-from .. import models
+from archives import models
+
+import os
 
 
-def save_image_path(instance: models.models.Model, filename: str) -> str:
+def save_image_path(instance: 'models.ImageModel', filename: str) -> str:
     """
         Custom path for saving images depend on a series name or season number.
         """
     if isinstance(instance.content_object, models.TvSeriesModel):
-        path = f'{instance.content_object.name}/{filename}'
+        _path = os.path.join(
+            instance.content_object.name,
+            filename
+        )
     elif isinstance(instance.content_object, models.SeasonModel):
-        path = f'{instance.content_object.series.name}/' \
-               f'{instance.content_object.season_number}/' \
-               f'{filename}'
+        _path = os.path.join(
+            instance.content_object.series.name,
+            str(instance.content_object.season_number),
+            filename
+        )
     else:
-        path = f'uploads/images/{filename}'
-    return path
+        _path = os.path.join(
+            'uploads/images/',
+            filename
+        )
+    return os.path.normpath(_path)
