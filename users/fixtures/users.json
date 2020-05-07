@@ -30,8 +30,8 @@
         "date_joined": "2020-04-21T11:29:44.055Z",
         "master": null,
         "email": "vasya@pentagon.gov",
-        "first_name": null,
-        "last_name": null,
+        "first_name": "Vasya",
+        "last_name": "Pupkin",
         "user_country": null,
         "groups": [],
         "user_permissions": []
@@ -49,8 +49,8 @@
         "date_joined": "2020-04-21T11:53:57.989Z",
         "master": 1,
         "email": "vasya2@pentagon.gov",
-        "first_name": null,
-        "last_name": null,
+        "first_name": "Vasya2",
+        "last_name": "Ivanov",
         "user_country": null,
         "groups": [],
         "user_permissions": []

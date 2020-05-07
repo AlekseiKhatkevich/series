@@ -5,9 +5,8 @@ from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 
-import unittest
 
-from ...helpers import create_test_users, countries
+from users.helpers import create_test_users
 
 
 class CreateUserModelNegativeTest(APITestCase):

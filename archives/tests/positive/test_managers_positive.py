@@ -46,5 +46,5 @@ class ManagersPositiveTest(APITestCase):
             difference.first().is_finished
         )
         self.assertFalse(
-            any(full_queryset.running_series().values_list('is_finished', flat=True))
+            any(running_series.values_list('is_finished', flat=True))
         )

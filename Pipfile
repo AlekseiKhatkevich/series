@@ -16,6 +16,10 @@ pillow = "*"
 more-itertools = "*"
 tblib = "*"
 coverage = "*"
+djoser = "*"
+djangorestframework-simplejwt = "*"
+cryptography = "*"
+django-cors-headers = "*"
 
 [requires]
 python_version = "3.8"

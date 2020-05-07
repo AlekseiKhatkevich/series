@@ -2,8 +2,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 
+from rest_framework.reverse import reverse
+
 import users.managers as users_managers
-from .helpers import countries, validators as custom_validators
+from users.helpers import countries, validators as custom_validators
+
+from rest_framework_simplejwt import tokens as jwt_tokens
 
 
 class User(AbstractUser):
@@ -26,14 +30,10 @@ class User(AbstractUser):
         unique=True
     )
     first_name = models.CharField(
-        null=True,
-        blank=False,
         max_length=30,
         verbose_name='first name'
     )
     last_name = models.CharField(
-        null=True,
-        blank=False,
         max_length=150,
         verbose_name='last name'
     )
@@ -47,7 +47,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['first_name', 'last_name', ]
 
     objects = users_managers.CustomUserManager()
 
@@ -70,34 +70,45 @@ class User(AbstractUser):
                f' full name - {self.get_full_name()},' \
                f' email - {self.email}'
 
-    def run_validators(self):
-        """
-        Run chosen validators on chosen fields.
-        """
-        custom_validators.ValidateOverTheRange(container=countries.CODE_ITERATOR)(self.user_country)
-
     def clean(self):
         errors = {}
         #  We make sure  that slave cant own slaves(slave acc. can't have it's own slave accounts).
         if self.master and self.__class__.objects.filter(master=self).exists():
             errors.update(
                 {'master': exceptions.ValidationError(
-                    "Slave account can't have its own slaves")}
+                    "Slave account can't have its own slaves",
+                    code='slave_cant_have_salves'), }
             )
         # We make sure that slave's master is not a slave himself.
         elif self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
             errors.update(
                 {'master': exceptions.ValidationError(
-                    "This slaves's master can not be slave itself")}
+                    "This slaves's master can not be slave itself",
+                    code='master_cant_be_slave')}
             )
         if errors:
             raise exceptions.ValidationError(errors)
 
-    # todo
     @property
     def get_absolute_url(self):
-        pass
+        return reverse('user-me')
 
     @property
     def my_slaves(self):
+        """
+        Returns queryset of slaves accounts if user have them.
+        """
         return self.__class__.objects.filter(master=self)
+
+    def get_tokens_for_user(self):
+        """
+        Returns JWT tokens pair for a current user.
+        """
+        refresh = jwt_tokens.RefreshToken.for_user(self)
+
+        return {
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        }
+
+
