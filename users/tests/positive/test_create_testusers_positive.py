@@ -2,7 +2,7 @@ from rest_framework.test import APITestCase
 
 from django.contrib.auth import get_user_model
 
-from ...helpers import create_test_users
+from users.helpers import create_test_users
 
 
 class CreateTestUsersPositiveTest(APITestCase):

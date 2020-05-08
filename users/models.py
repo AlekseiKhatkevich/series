@@ -41,6 +41,7 @@ class User(AbstractUser):
         max_length=2,
         choices=countries.COUNTRY_ITERATOR,
         null=True,
+        blank=True,
         verbose_name='user country of origin',
         validators=[custom_validators.ValidateOverTheRange(container=countries.CODE_ITERATOR)]
     )
@@ -91,7 +92,7 @@ class User(AbstractUser):
 
     @property
     def get_absolute_url(self):
-        return reverse('user-me')
+        return reverse(f'{self.__class__.__name__.lower()}-detail', args=(self.pk, ))
 
     @property
     def my_slaves(self):
@@ -99,6 +100,13 @@ class User(AbstractUser):
         Returns queryset of slaves accounts if user have them.
         """
         return self.__class__.objects.filter(master=self)
+
+    @property
+    def is_slave(self):
+        """
+        Defines whether or not user is slave( this account is slave account).
+        """
+        return bool(self.master)
 
     def get_tokens_for_user(self):
         """

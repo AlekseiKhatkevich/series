@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     # 3-rd party apps
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'djoser',
     'drf_yasg',
     'debug_toolbar',
@@ -175,21 +176,20 @@ REST_FRAMEWORK = {
 
 #  djangorestframework_simplejwt related settings.
 SIMPLE_JWT = {
-    # 'AUTH_HEADER_TYPES': ('JWT',), #  из за этого не работает аутентикация (from Djoser docs)
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
     'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),
     'ALGORITHM': 'HS512',
     'SIGNING_KEY': os.getenv('JWT_SIGNING_KEY'),
+    'AUTH_TOKEN_CLASSES': (
+        'rest_framework_simplejwt.tokens.AccessToken',
+    ),
 }
 
 #  Djoser related settings.
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': '#/activate/{uid}/{token}',
-    'SEND_ACTIVATION_EMAIL': False,
     'TOKEN_MODEL': None,
+    'HIDE_USERS': True,
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
     },

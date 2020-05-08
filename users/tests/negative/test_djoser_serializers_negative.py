@@ -2,9 +2,8 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
 
-from django.contrib.auth import get_user_model
-
 import users.serializers
+from series import error_codes
 
 
 class DjoserSerializersNegativeTest(APITestCase):
@@ -27,7 +26,7 @@ class DjoserSerializersNegativeTest(APITestCase):
         serializer = users.serializers.CustomDjoserUserCreateSerializer(data=self.test_user_data)
         expected_error_message = {
             "user_country": [
-                "Wrong country code. Country code should consist of 2 uppercase letters according ISO 3166"
+                error_codes.WRONG_COUNTRY_CODE
             ]
         }
 
@@ -50,7 +49,7 @@ class DjoserSerializersNegativeTest(APITestCase):
         self.test_user_data['user_country'] = 'XX'
         expected_error_message = {
             "user_country": [
-                "Wrong country code. Country code should consist of 2 uppercase letters according ISO 3166"
+                error_codes.WRONG_COUNTRY_CODE
             ]}
         response = self.client.post(
             reverse('user-list'),

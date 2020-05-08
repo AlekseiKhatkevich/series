@@ -1,5 +1,5 @@
 import itertools
-from typing import Iterator, Union, Sequence, Iterable
+from typing import Iterator, Union, Iterable
 
 test_list = ['a', 1, 2, 99, -8, 2.2, 'sfsdfdf', '6', '88', '5.6', '-67']
 

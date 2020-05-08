@@ -1,13 +1,14 @@
 from django.db import models
+from django.core import validators, exceptions
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.core import validators, exceptions
-from django.utils import timezone
 from django.contrib.postgres import fields as psgr_fields
 
 from archives.helpers import validators as custom_validators, file_uploads, custom_functions
 from archives import managers
+from series import error_codes
 
 from types import MappingProxyType
 import heapq
@@ -89,7 +90,7 @@ class TvSeriesModel(models.Model):
         validators=[
             validators.MinValueValidator(
                 limit_value=1,
-                message='Zero is not a valid integer for this field', ),
+                message=error_codes.ZERO_IS_NOT_VALID, ),
             validators.MaxValueValidator(
                 limit_value=10,
                 message='Maximal value for this field is 10'
@@ -127,7 +128,7 @@ class SeasonModel(models.Model):
 
     non_zero_validator = validators.MinValueValidator(
         limit_value=1,
-        message='Zero is not a valid integer for this field',
+        message=error_codes.ZERO_IS_NOT_VALID,
     )
 
     series = models.ForeignKey(

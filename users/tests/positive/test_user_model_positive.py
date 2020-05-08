@@ -1,8 +1,9 @@
 from rest_framework.test import APITestCase
+from rest_framework.reverse import reverse
 
 from django.contrib.auth import get_user_model
 
-from ...helpers import create_test_users, countries
+from users.helpers import create_test_users, countries
 
 
 class CreateUserModelPositiveTest(APITestCase):
@@ -62,4 +63,12 @@ class CreateUserModelPositiveTest(APITestCase):
             self.user.my_slaves, potential_slaves
         )
 
+    def test_get_absolute_url(self):
+        """
+        Check 'get_absolute_url' method correct work.
+        """
 
+        self.assertEqual(
+            self.user.get_absolute_url,
+            reverse(f'{self.user._meta.model_name}-detail', args=(self.user.pk, ))
+        )
