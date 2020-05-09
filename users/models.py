@@ -3,9 +3,11 @@ from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 
 from rest_framework.reverse import reverse
+from rest_framework import serializers
 
 import users.managers as users_managers
 from users.helpers import countries, validators as custom_validators
+from series import error_codes
 
 from rest_framework_simplejwt import tokens as jwt_tokens
 
@@ -19,6 +21,7 @@ class User(AbstractUser):
 
     master = models.ForeignKey(
         'self',
+        blank=True,
         null=True,
         db_index=False,
         verbose_name='Slave account if not null',
@@ -74,21 +77,29 @@ class User(AbstractUser):
     def clean(self):
         errors = {}
         #  We make sure  that slave cant own slaves(slave acc. can't have it's own slave accounts).
-        if self.master and self.__class__.objects.filter(master=self).exists():
+        #  We use 'filter(master__email=self.email)' lookup as model object doesnt have a pk yet
+        #  until it created in DB at least.
+        #if True:
+        if self.master and self.__class__.objects.filter(master__email=self.email).exists():
             errors.update(
-                {'master': exceptions.ValidationError(
-                    "Slave account can't have its own slaves",
+                {'master': serializers.ValidationError(
+                    error_codes.SLAVE_CANT_HAVE_SALVES,
                     code='slave_cant_have_salves'), }
             )
         # We make sure that slave's master is not a slave himself.
-        elif self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
+        if self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
             errors.update(
-                {'master': exceptions.ValidationError(
-                    "This slaves's master can not be slave itself",
+                {'master': serializers.ValidationError(
+                    error_codes.MASTER_CANT_BE_SLAVE,
                     code='master_cant_be_slave')}
             )
         if errors:
-            raise exceptions.ValidationError(errors)
+            raise serializers.ValidationError(errors)
+
+    def save(self, fc=True, *args, **kwargs):
+        if fc:
+            self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def get_absolute_url(self):

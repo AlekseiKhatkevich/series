@@ -1,17 +1,19 @@
-from rest_framework import serializers
-
-from django.core.validators import EmailValidator
-from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.validators import EmailValidator
+from django.core import exceptions
 
 from djoser import serializers as djoser_serializers
 
+from rest_framework import serializers
+
 from series import error_codes
+
 from users.helpers import serializer_mixins
 
 
 class CustomDjoserUserCreateSerializer(
-        serializer_mixins.ConditionalRequiredPerFieldMixin,
+        serializer_mixins.RequiredTogetherFieldsMixin,
         djoser_serializers.UserCreateSerializer):
     """
     Serializer for create_user action.
@@ -28,9 +30,12 @@ class CustomDjoserUserCreateSerializer(
         validators=(validate_password, ),
         error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED},
     )
-    # не работает валидация модели.
+
+    required_together_fields = ('master_password', 'master_email', )
+
     class Meta(djoser_serializers.UserCreateSerializer.Meta):
         # add possibility to specify 'country' field during user creation.
+        # add possibility to specify fields necessary to attach created account as a salve one.
         fields = djoser_serializers.UserCreateSerializer.Meta.fields + (
             'user_country', 'master_email', 'master_password',
         )
@@ -39,20 +44,6 @@ class CustomDjoserUserCreateSerializer(
                 'error_messages': {
                     'invalid_choice': error_codes.WRONG_COUNTRY_CODE,
                 }}}
-
-    def is_master_password_required(self):
-        """
-        Turns 'master_password' field to REQUIRED if one of master fields is present in raw incoming data.
-        """
-        master_email = self.initial_data.get('master_email', False)
-        return bool(master_email)
-
-    def is_master_email_required(self):
-        """
-        Turns 'master_email' field to REQUIRED if one of master fields is present in raw incoming data.
-        """
-        master_password = self.initial_data.get('master_password', False)
-        return bool(master_password)
 
     @staticmethod
     def validate_master_fields(master_email, master_password):
@@ -90,12 +81,21 @@ class CustomDjoserUserCreateSerializer(
         """
         data = super().to_representation(instance)
         try:
-            master_id = instance.master_id
+            if instance.is_slave:
+                data['master_id'] = instance.master_id
         except AttributeError:
-            return data
-        else:
-            data.update({'master_id': master_id})
-            return data
+            pass
+        return data
+
+    def perform_create(self, validated_data):
+        try:
+            return super().perform_create(validated_data)
+        except exceptions.ValidationError as err:
+            raise serializers.ValidationError(
+                f'Model level validation assertion -- {str(err)}'
+            ) from err
+
+
 
 
 

@@ -1,12 +1,13 @@
-from rest_framework.test import APITestCase
-
-from django.db import transaction
-from django.db.utils import IntegrityError
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.utils import IntegrityError
 
+from rest_framework.test import APITestCase
 
 from users.helpers import create_test_users
+
+from series import error_codes
 
 
 class CreateUserModelNegativeTest(APITestCase):
@@ -31,9 +32,15 @@ class CreateUserModelNegativeTest(APITestCase):
         get_user_model().objects.all().delete()
         super(CreateUserModelNegativeTest, cls).tearDownClass()
 
+    # @unittest.skipIf(custom_functions.check_code_inside(
+    #     func=get_user_model().save,
+    #     code=('full_clean()', 'clean()'), ),
+    #     reason='Wrong country will be validated on the model level '
+    # )
     def test_wrong_user_country_db_constraint(self):
         """
         Check whether or not DB constraint doesnt allow to save wrong country code in DB.
+        Test skipped if 'full_clean' or 'clean' method is used in save().
         """
         self.test_user_data['user_country'] = 'XX'
         expected_constraint_name = 'country_code_within_list_of_countries_check'
@@ -41,7 +48,8 @@ class CreateUserModelNegativeTest(APITestCase):
         #  https://stackoverflow.com/questions/21458387/transactionmanagementerror-you-cant-execute-queries-until-the-end-of-the-atom/61498699#61498699
         with transaction.atomic():
             with self.assertRaisesRegex(IntegrityError, expected_constraint_name):
-                get_user_model().objects.create_user(**self.test_user_data)
+                user = get_user_model().objects.create_user(db_save=False, **self.test_user_data)
+                user.save(fc=False)
 
         self.assertFalse(
             get_user_model().objects.filter(email=self.test_user_data['email']).exists()
@@ -63,6 +71,11 @@ class CreateUserModelNegativeTest(APITestCase):
             get_user_model().objects.filter(email=self.test_user_data['email']).exists()
         )
 
+    # @unittest.skipIf(custom_functions.check_code_inside(
+    #     func=get_user_model().save,
+    #     code=('full_clean()', 'clean()'), ),
+    #     reason='Uniqueness will be validated on the model level '
+    # )
     def test_first_name_and_last_name_unique_together(self):
         """
         Check whether or not is possible to create 2 users with same name and username.
@@ -74,7 +87,8 @@ class CreateUserModelNegativeTest(APITestCase):
         with transaction.atomic():
             with self.assertRaisesRegex(IntegrityError, expected_constraint_name):
                 self.test_user_data['email'] = 'test_2@mail.ru'
-                get_user_model().objects.create_user(**self.test_user_data)
+                user = get_user_model().objects.create_user(db_save=False, **self.test_user_data)
+                user.save(fc=False)
 
         self.assertFalse(
             get_user_model().objects.filter(email='test_2@mail.ru').exists()
@@ -88,7 +102,7 @@ class CreateUserModelNegativeTest(APITestCase):
         master = get_user_model().objects.get(email='superuser@inbox.ru')
         slave = get_user_model().objects.get(email='user_1@inbox.ru')
         slaves_slave = get_user_model().objects.get(email='user_2@inbox.ru')
-        expected_error_message = "Slave account can't have its own slaves"
+        expected_error_message = error_codes.SLAVE_CANT_HAVE_SALVES
 
         with transaction.atomic():
             slave.master = master
@@ -98,7 +112,6 @@ class CreateUserModelNegativeTest(APITestCase):
                 slave.clean()
                 slave.save()
 
-        #self.assertIn(expected_error_message, cm.exception.messages)
         slave.refresh_from_db()
         self.assertIsNone(slave.master)
 
@@ -109,7 +122,7 @@ class CreateUserModelNegativeTest(APITestCase):
         master = get_user_model().objects.get(email='superuser@inbox.ru')
         slave = get_user_model().objects.get(email='user_1@inbox.ru')
         slaves_slave = get_user_model().objects.get(email='user_2@inbox.ru')
-        expected_error_message = "This slaves's master can not be slave itself"
+        expected_error_message = error_codes.MASTER_CANT_BE_SLAVE
 
         with transaction.atomic():
             slave.master = master

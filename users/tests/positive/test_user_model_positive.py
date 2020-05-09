@@ -18,13 +18,16 @@ class CreateUserModelPositiveTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        create_test_users.create_users()
         cls.user = get_user_model().objects.create_user(**cls.test_user_data)
 
     @classmethod
     def tearDownClass(cls):
         get_user_model().objects.all().delete()
         super(CreateUserModelPositiveTest, cls).tearDownClass()
+
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
 
     def test_create_user(self):
         """
@@ -61,6 +64,20 @@ class CreateUserModelPositiveTest(APITestCase):
 
         self.assertCountEqual(
             self.user.my_slaves, potential_slaves
+        )
+
+    def test_is_slave_property(self):
+        """
+        Check whether or not 'is_slave' model property returns True when user is slave
+         and other way around.
+        """
+        self.user_2.master = self.user_1
+
+        self.assertTrue(
+            self.user_2.is_slave
+        )
+        self.assertFalse(
+            self.user_1.is_slave
         )
 
     def test_get_absolute_url(self):
