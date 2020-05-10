@@ -172,7 +172,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
-    #'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
 }
 
 #  djangorestframework_simplejwt related settings.

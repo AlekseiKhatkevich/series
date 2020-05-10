@@ -1,14 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
-from django.core import exceptions
-
 from djoser import serializers as djoser_serializers
-
 from rest_framework import serializers
 
 from series import error_codes
-
 from users.helpers import serializer_mixins
 
 
@@ -63,6 +59,7 @@ class CustomDjoserUserCreateSerializer(
                     {'master_password': f'Incorrect password for user with {master_email =}'},
                     code='invalid',
                 )
+
             return master
 
     def validate(self, attrs):
@@ -77,23 +74,14 @@ class CustomDjoserUserCreateSerializer(
 
     def to_representation(self, instance):
         """
-        Add 'master_id' key to returned data in case current account saved as slave account.
+        Add 'master_id' key to returned data.
         """
         data = super().to_representation(instance)
         try:
-            if instance.is_slave:
-                data['master_id'] = instance.master_id
+            data['master_id'] = instance.master_id
         except AttributeError:
             pass
         return data
-
-    def perform_create(self, validated_data):
-        try:
-            return super().perform_create(validated_data)
-        except exceptions.ValidationError as err:
-            raise serializers.ValidationError(
-                f'Model level validation assertion -- {str(err)}'
-            ) from err
 
 
 

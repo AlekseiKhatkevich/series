@@ -1,13 +1,11 @@
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
+from django.core import exceptions
 from django.db import transaction
 from django.db.utils import IntegrityError
-
 from rest_framework.test import APITestCase
 
-from users.helpers import create_test_users
-
 from series import error_codes
+from users.helpers import create_test_users
 
 
 class CreateUserModelNegativeTest(APITestCase):
@@ -62,7 +60,7 @@ class CreateUserModelNegativeTest(APITestCase):
         self.test_user_data['user_country'] = 'XX'
 
         with transaction.atomic():
-            with self.assertRaises(ValidationError, ):
+            with self.assertRaises(exceptions.ValidationError, ):
                 user = get_user_model().objects.create_user(db_save=False, **self.test_user_data)
                 user.full_clean()
                 user.save()
@@ -108,7 +106,7 @@ class CreateUserModelNegativeTest(APITestCase):
             slave.master = master
             slaves_slave.master = slave
             slaves_slave.save()
-            with self.assertRaisesRegex(ValidationError, expected_error_message) as cm:
+            with self.assertRaisesRegex(exceptions.ValidationError, expected_error_message) as cm:
                 slave.clean()
                 slave.save()
 
@@ -128,11 +126,13 @@ class CreateUserModelNegativeTest(APITestCase):
             slave.master = master
             master.master = slaves_slave
             master.save()
-            with self.assertRaisesRegex(ValidationError, expected_error_message):
+            with self.assertRaisesMessage(exceptions.ValidationError, expected_error_message):
                 slave.clean()
                 slave.save()
 
         slave.refresh_from_db()
         self.assertIsNone(slave.master)
+
+
 
 

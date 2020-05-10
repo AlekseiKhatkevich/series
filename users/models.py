@@ -1,15 +1,12 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
-
+from django.db import models
 from rest_framework.reverse import reverse
-from rest_framework import serializers
+from rest_framework_simplejwt import tokens as jwt_tokens
 
 import users.managers as users_managers
-from users.helpers import countries, validators as custom_validators
 from series import error_codes
-
-from rest_framework_simplejwt import tokens as jwt_tokens
+from users.helpers import countries, validators as custom_validators
 
 
 class User(AbstractUser):
@@ -79,22 +76,21 @@ class User(AbstractUser):
         #  We make sure  that slave cant own slaves(slave acc. can't have it's own slave accounts).
         #  We use 'filter(master__email=self.email)' lookup as model object doesnt have a pk yet
         #  until it created in DB at least.
-        #if True:
         if self.master and self.__class__.objects.filter(master__email=self.email).exists():
             errors.update(
-                {'master': serializers.ValidationError(
+                {'master': exceptions.ValidationError(
                     error_codes.SLAVE_CANT_HAVE_SALVES,
                     code='slave_cant_have_salves'), }
             )
         # We make sure that slave's master is not a slave himself.
         if self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
             errors.update(
-                {'master': serializers.ValidationError(
+                {'master': exceptions.ValidationError(
                     error_codes.MASTER_CANT_BE_SLAVE,
                     code='master_cant_be_slave')}
             )
         if errors:
-            raise serializers.ValidationError(errors)
+            raise exceptions.ValidationError(errors)
 
     def save(self, fc=True, *args, **kwargs):
         if fc:

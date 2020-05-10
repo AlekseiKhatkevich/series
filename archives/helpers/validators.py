@@ -1,17 +1,15 @@
+import datetime
+import json
+import urllib.error
+import urllib.parse
+import urllib.request
+from types import MappingProxyType
+
+import rest_framework.status as status_codes
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
 
-import rest_framework.status as status_codes
-
-import datetime
-from types import MappingProxyType
-import urllib.parse
-import urllib.request
-import urllib.error
-import json
-
 from archives.helpers import custom_functions
-
 
 test_dict = {'a': 1587902034.039742, 1: 1587902034.039742, 2: 1587902034.039742,
              99: 1587902034.039742, -8: 1587902034.039742, 2.2: 1587902034.039742,
@@ -77,7 +75,7 @@ def validate_timestamp(value: [dict, bytes]) -> None:
     for episode, timestamp in value.items():
         try:
             datetime.datetime.fromtimestamp(timestamp)
-        except (OverflowError, OSError, ValueError, TypeError) as err:
+        except (OverflowError, OSError, ValueError, TypeError):
             wrong_timestamps.update({episode: timestamp})
 
     if wrong_timestamps:
@@ -117,6 +115,7 @@ class ValidateIfUrlIsAlive:
         self._timeout = timeout
 
     def __call__(self, value: str,  *args, **kwargs) -> None:
+
         request = urllib.request.Request(value, method='HEAD')
 
         try:

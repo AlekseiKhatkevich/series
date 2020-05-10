@@ -43,6 +43,12 @@ class TvSeriesModel(models.Model):
     """
     Model represents TV series as a whole.
     """
+    _original_url = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._original_url = self.imdb_url
+
     objects = managers.TvSeriesManager.from_queryset(managers.TvSeriesQueryset)()
 
     #  Reverse manager for generic FK relation
@@ -112,6 +118,15 @@ class TvSeriesModel(models.Model):
 
     def __str__(self):
         return f'{self.pk} / {self.name}'
+
+    def save(self, fc=False, force_insert=False, force_update=False, using=None, update_fields=None):
+        # exclude 'url_to_imdb' field validation if field hasn't changed or model instance is just created.
+        if fc:
+            exclude = ('url_to_imdb', ) if \
+                (self.pk is not None and (self.imdb_url == self._original_url)) else ()
+            self.full_clean(exclude=exclude)
+        super().save(force_insert, force_update, using, update_fields)
+        self._original_url = self.imdb_url
 
     # todo
     @property
