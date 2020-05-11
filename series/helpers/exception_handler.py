@@ -1,14 +1,15 @@
-from django.core import exceptions
-from django.db.utils import DatabaseError
-from django.http import response
-from django.views import View
+from typing import Optional
 
+from django.core import exceptions
+from django.db.utils import IntegrityError
+from django.http.response import HttpResponseBase
+from django.views import View
 from rest_framework import status
 from rest_framework.response import Response as DRF_response
 from rest_framework.views import exception_handler
 
 
-def custom_exception_handler(exc: Exception, context: View) -> [response, None]:
+def custom_exception_handler(exc: Exception, context: View) -> Optional[HttpResponseBase]:
     """
     Custom exceptions handler.
     Use-case. in case if django Validation error is conjured up (for example by model level validation),
@@ -20,10 +21,12 @@ def custom_exception_handler(exc: Exception, context: View) -> [response, None]:
     }
     exc - handled exception object
     context - view object from which response has came.
+    Returns None in case exception wasn't handled in this handler or it's superclass or DRF Response
+    in case exception was handled.
     """
     response = exception_handler(exc, context)
 
-    if isinstance(exc, (exceptions.ValidationError, DatabaseError)):
+    if isinstance(exc, (exceptions.ValidationError, IntegrityError)):
         data = exc.message_dict
         return DRF_response(data=data, status=status.HTTP_400_BAD_REQUEST, )
 

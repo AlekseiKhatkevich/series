@@ -84,6 +84,27 @@ class CustomDjoserUserCreateSerializer(
         return data
 
 
+class CustomUserSerializer(djoser_serializers.UserSerializer):
+    """
+    Serializer for endpoint that shows list of users for Admin or user detail for current user
+    if it not an admin.
+    """
+    slave_accounts_ids = serializers.PrimaryKeyRelatedField(
+        source='my_slaves',
+        read_only=True,
+        many=True,
+        allow_null=True
+    )
+
+    class Meta(djoser_serializers.UserSerializer.Meta):
+        fields = djoser_serializers.UserSerializer.Meta.fields + (
+            'user_country', 'master', 'slave_accounts_ids',
+        )
+
+
+
+
+
 
 
 

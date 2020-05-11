@@ -106,3 +106,16 @@ class TvSeriesModelPositiveTest(APITestCase):
             self.series_1.__str__(),
             expected_str
         )
+
+    def test_changed_fields_property(self):
+        """
+        Check whether 'changed_fields' property returns names of the changed fields.
+        """
+        self.series_1.name = 'updated_name'
+        self.series_1.is_finished = True
+
+        self.assertCountEqual(
+            ('name', 'is_finished', 'id'),
+            self.series_1.changed_fields
+        )
+

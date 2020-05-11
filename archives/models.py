@@ -1,18 +1,20 @@
-from django.db import models
-from django.core import validators, exceptions
-from django.utils import timezone
+import heapq
+import os
+from types import MappingProxyType
+
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres import fields as psgr_fields
+from django.core import exceptions, validators
+from django.db import models
+from django.forms.models import model_to_dict
+from django.utils import timezone
+from django.utils.functional import cached_property
 
-from archives.helpers import validators as custom_validators, file_uploads, custom_functions
 from archives import managers
+from archives.helpers import custom_functions, file_uploads, validators as custom_validators
 from series import error_codes
-
-from types import MappingProxyType
-import heapq
-import os
 
 
 class GroupingModel(models.Model):
@@ -43,11 +45,10 @@ class TvSeriesModel(models.Model):
     """
     Model represents TV series as a whole.
     """
-    _original_url = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._original_url = self.imdb_url
+        self._original_model_state = model_to_dict(self, exclude='interrelationship')
 
     objects = managers.TvSeriesManager.from_queryset(managers.TvSeriesQueryset)()
 
@@ -122,16 +123,25 @@ class TvSeriesModel(models.Model):
     def save(self, fc=False, force_insert=False, force_update=False, using=None, update_fields=None):
         # exclude 'url_to_imdb' field validation if field hasn't changed or model instance is just created.
         if fc:
-            exclude = ('url_to_imdb', ) if \
-                (self.pk is not None and (self.imdb_url == self._original_url)) else ()
-            self.full_clean(exclude=exclude)
+            exclude = ('url_to_imdb', ) if self.pk is not None and ('url_to_imdb' in self.changed_fields) else ()
+            self.full_clean(exclude=exclude, validate_unique=True)
+
         super().save(force_insert, force_update, using, update_fields)
-        self._original_url = self.imdb_url
+        self._original_model_state = model_to_dict(self, exclude='interrelationship')
 
     # todo
-    @property
+    @cached_property
     def get_absolute_url(self):
         raise NotImplementedError
+
+    @property
+    def changed_fields(self):
+        """
+        Returns a set(dict keys view) of changed fields in model.
+        """
+        current_model_state = model_to_dict(self, exclude='interrelationship')
+        changed_fields = dict(current_model_state.items() - self._original_model_state.items()).keys()
+        return changed_fields
 
 
 class SeasonModel(models.Model):
@@ -208,7 +218,7 @@ class SeasonModel(models.Model):
         return f'season number - {self.season_number}, series name - {self.series.name}'
 
     # todo
-    @property
+    @cached_property
     def get_absolute_url(self):
         raise NotImplementedError
 

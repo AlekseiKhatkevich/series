@@ -5,16 +5,23 @@ from django.urls import path, re_path, include
 from django.conf import settings
 
 from rest_framework import permissions
-
+from rest_framework.routers import DefaultRouter
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+
+import users.views
+
+#  Move routing from Djoser app here in order to plug our custom view in case they needed.
+djoser_router = DefaultRouter()
+djoser_router.register("users", users.views.CustomDjoserUserViewSet)
 
 #  Project level URLs
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('archives/', include('archives.urls')),
     re_path(r'^auth/', include('djoser.urls.jwt')),
-    re_path(r'^auth/', include('djoser.urls')),
+    re_path(r'^auth/', include(djoser_router.urls)),  # change 'djoser.urls' in order to be able to use custom Views
+    #  re_path(r'^auth/', include('djoser.urls')),
     path('api-auth/', include('rest_framework.urls')),  # for basic auth in browsable apis
 ]
 

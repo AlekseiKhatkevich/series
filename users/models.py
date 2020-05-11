@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 from django.db import models
+from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt import tokens as jwt_tokens
 
@@ -97,16 +98,16 @@ class User(AbstractUser):
             self.full_clean()
         super().save(*args, **kwargs)
 
-    @property
+    @cached_property
     def get_absolute_url(self):
         return reverse(f'{self.__class__.__name__.lower()}-detail', args=(self.pk, ))
 
     @property
     def my_slaves(self):
         """
-        Returns queryset of slaves accounts if user have them.
+        Returns queryset of slaves accounts if user have them or None.
         """
-        return self.__class__.objects.filter(master=self)
+        return self.__class__.objects.filter(master=self) or None
 
     @property
     def is_slave(self):

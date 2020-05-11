@@ -8,9 +8,10 @@ import users.serializers
 from users.helpers import create_test_users
 
 
-class DjoserSerializersPositiveTest(APITestCase):
+class DjoserCreateUerPositiveTest(APITestCase):
     """
-    Test of custom Djoser's auth serializers and endpoints in general.
+    Test of custom Djoser's auth create user endpoint.
+    auth/users/ POST
     """
     @classmethod
     def setUpTestData(cls):
@@ -93,3 +94,46 @@ class DjoserSerializersPositiveTest(APITestCase):
                 email=test_user_data['email']
             ).exists()
         )
+
+
+class DjoserUsersListPositiveTest(APITestCase):
+    """
+    Test for Djoser endpoint that shows list of users for admin and self just for regular user.
+    auth/users/ GET
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.user_1, cls.user_2, cls.user_3 = create_test_users.create_users()
+
+    def test_extra_fields(self):
+        """
+        Check that 3 extra added fields - 'user_country', 'master', 'slave_accounts_ids'
+        are rendered properly.
+        """
+        self.user_2.master = self.user_3.master = self.user_1
+
+        self.user_2.save()
+        self.user_3.save()
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+            reverse('user-list'),
+            data=None,
+            format='json',
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        #  check that user_1 have user2 and user_3 specified as slaves in field 'slave_accounts_ids'.
+        self.assertEqual(
+            [self.user_2.pk, self.user_3.pk],
+            [slave_accounts_ids for user in response.data if
+             (slave_accounts_ids:=user['slave_accounts_ids']) is not None][0],
+        )
+
+        # страны
+        # вывод мастера
