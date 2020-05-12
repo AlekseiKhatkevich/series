@@ -1,11 +1,11 @@
-from rest_framework.test import APITestCase
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.reverse import reverse
-
-from django.contrib.auth import get_user_model
+from rest_framework.test import APITestCase
 
 import users.serializers
 from users.helpers import create_test_users
+from series.helpers import custom_functions
 
 
 class DjoserCreateUerPositiveTest(APITestCase):
@@ -104,7 +104,8 @@ class DjoserUsersListPositiveTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.user_1, cls.user_2, cls.user_3 = create_test_users.create_users()
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
 
     def test_extra_fields(self):
         """
@@ -128,6 +129,7 @@ class DjoserUsersListPositiveTest(APITestCase):
             response.status_code,
             status.HTTP_200_OK
         )
+
         #  check that user_1 have user2 and user_3 specified as slaves in field 'slave_accounts_ids'.
         self.assertEqual(
             [self.user_2.pk, self.user_3.pk],
@@ -135,5 +137,19 @@ class DjoserUsersListPositiveTest(APITestCase):
              (slave_accounts_ids:=user['slave_accounts_ids']) is not None][0],
         )
 
-        # страны
-        # вывод мастера
+        users_to_countries_in_response = \
+            custom_functions.key_field_to_field_dict(response, 'email', 'user_country')
+        users_to_countries_original = {user.email: user.user_country for user in self.users}
+        # Check that countries are shown correctly
+        self.assertDictEqual(
+            users_to_countries_in_response,
+            users_to_countries_original
+        )
+
+        users_to_master_in_response = custom_functions.key_field_to_field_dict(response, 'email', 'master')
+        users_to_master_original = {user.email: user.master_id for user in self.users}
+        # Check that master is correctly shown in response data.
+        self.assertDictEqual(
+            users_to_master_in_response,
+            users_to_master_original
+        )

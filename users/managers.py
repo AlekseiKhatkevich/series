@@ -1,6 +1,10 @@
-from django.contrib.auth.base_user import BaseUserManager
-
 from typing import Any
+
+from django.contrib.auth.base_user import BaseUserManager
+from django.db import models
+from django.db.models import Exists, OuterRef
+
+from series.helpers.typing import QuerySet
 
 
 class CustomUserManager(BaseUserManager):
@@ -36,3 +40,19 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
+
+
+class UserQueryset(models.QuerySet):
+    """
+    User model custom queryset.
+    """
+    def get_available_slaves(self) -> QuerySet:
+        """
+        Method returns queryset of all available slaves
+        (who doesnt have a master and who isn't a master himself).
+        """
+        #  https://docs.djangoproject.com/en/3.0/ref/models/expressions/#filtering-on-a-subquery-or-exists-expressions
+        has_slaves = Exists(self.filter(master_id=OuterRef('pk')))
+        queryset_of_available_slaves = self.filter(master__isnull=True).exclude(has_slaves)
+        return queryset_of_available_slaves
+

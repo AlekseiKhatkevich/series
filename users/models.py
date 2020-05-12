@@ -51,7 +51,7 @@ class User(AbstractUser):
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
     REQUIRED_FIELDS = ['first_name', 'last_name', ]
 
-    objects = users_managers.CustomUserManager()
+    objects = users_managers.CustomUserManager.from_queryset(users_managers.UserQueryset)()
 
     class Meta:
         unique_together = (

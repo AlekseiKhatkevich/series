@@ -1,6 +1,6 @@
 from django.db import models
-from django.db.models import Min, Max, FloatField
-from django.db.models.functions import Floor, Ceil
+from django.db.models import FloatField, Max, Min
+from django.db.models.functions import Ceil, Floor
 
 
 class TvSeriesQueryset(models.QuerySet):
