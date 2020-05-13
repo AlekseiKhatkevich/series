@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core import exceptions
-from django.db import transaction
+from django.db import transaction, models
 from django.db.utils import IntegrityError
 from rest_framework.test import APITestCase
 
@@ -23,7 +23,8 @@ class CreateUserModelNegativeTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        create_test_users.create_users()
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
 
     @classmethod
     def tearDownClass(cls):
@@ -53,6 +54,23 @@ class CreateUserModelNegativeTest(APITestCase):
             get_user_model().objects.filter(email=self.test_user_data['email']).exists()
         )
 
+    def test_master_points_on_itself(self):
+        """
+        Check DB constraint that prevents model entry from having pk = master_id (point to itself).
+        """
+        expected_constraint_code = 'point_on_itself_check'
+
+        with transaction.atomic():
+            with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
+                get_user_model().objects.filter(pk=self.user_1.pk).update(master=models.F('pk'))
+
+        self.user_1.refresh_from_db()
+
+        self.assertNotEqual(
+            self.user_1.master,
+            self.user_1.pk
+        )
+
     def test_wrong_user_country_validation(self):
         """
         Check whether or not field validator  doesnt allow to save wrong country code in DB.
@@ -60,7 +78,7 @@ class CreateUserModelNegativeTest(APITestCase):
         self.test_user_data['user_country'] = 'XX'
 
         with transaction.atomic():
-            with self.assertRaises(exceptions.ValidationError, ):
+            with self.assertRaises(exceptions.ValidationError):
                 user = get_user_model().objects.create_user(db_save=False, **self.test_user_data)
                 user.full_clean()
                 user.save()
@@ -100,13 +118,13 @@ class CreateUserModelNegativeTest(APITestCase):
         master = get_user_model().objects.get(email='superuser@inbox.ru')
         slave = get_user_model().objects.get(email='user_1@inbox.ru')
         slaves_slave = get_user_model().objects.get(email='user_2@inbox.ru')
-        expected_error_message = error_codes.SLAVE_CANT_HAVE_SALVES
+        expected_error_message = error_codes.SLAVE_CANT_HAVE_SALVES.message
 
         with transaction.atomic():
             slave.master = master
             slaves_slave.master = slave
             slaves_slave.save()
-            with self.assertRaisesRegex(exceptions.ValidationError, expected_error_message) as cm:
+            with self.assertRaisesRegex(exceptions.ValidationError, expected_error_message):
                 slave.clean()
                 slave.save()
 
@@ -120,7 +138,7 @@ class CreateUserModelNegativeTest(APITestCase):
         master = get_user_model().objects.get(email='superuser@inbox.ru')
         slave = get_user_model().objects.get(email='user_1@inbox.ru')
         slaves_slave = get_user_model().objects.get(email='user_2@inbox.ru')
-        expected_error_message = error_codes.MASTER_CANT_BE_SLAVE
+        expected_error_message = error_codes.MASTER_CANT_BE_SLAVE.message
 
         with transaction.atomic():
             slave.master = master
@@ -132,6 +150,27 @@ class CreateUserModelNegativeTest(APITestCase):
 
         slave.refresh_from_db()
         self.assertIsNone(slave.master)
+
+    def test_master_can_not_point_itself(self):
+        """
+        Check part of clean() method validation logic that in charge of defending data from
+        being corrupted by specifying master field equal self.
+        """
+        self.user_1.master = self.user_1
+        expected_error_message = error_codes.MASTER_OF_SELF.message
+
+        with transaction.atomic():
+            with self.assertRaisesMessage(exceptions.ValidationError, expected_error_message):
+                self.user_1.save()
+
+        self.user_1.refresh_from_db()
+
+        self.assertIsNone(
+            self.user_1.master
+        )
+
+
+
 
 
 

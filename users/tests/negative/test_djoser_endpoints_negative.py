@@ -40,7 +40,7 @@ class DjoserSerializersNegativeTest(APITestCase):
         serializer = users.serializers.CustomDjoserUserCreateSerializer(data=self.test_user_data)
         expected_error_message = {
             "user_country": [
-                error_codes.WRONG_COUNTRY_CODE
+                error_codes.WRONG_COUNTRY_CODE.message
             ]
         }
 
@@ -63,7 +63,7 @@ class DjoserSerializersNegativeTest(APITestCase):
         self.test_user_data['user_country'] = 'XX'
         expected_error_message = {
             "user_country": [
-                error_codes.WRONG_COUNTRY_CODE
+                error_codes.WRONG_COUNTRY_CODE.message
             ]}
         response = self.client.post(
             reverse('user-list'),
@@ -98,7 +98,7 @@ class DjoserSerializersNegativeTest(APITestCase):
         )
         self.assertEqual(
             response.data['master_password'][0],
-            error_codes.MASTER_FIELDS_REQUIRED
+            error_codes.MASTER_FIELDS_REQUIRED.message
         )
 
     def test_validate_master_fields_wrong_master_email(self):

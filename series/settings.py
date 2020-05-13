@@ -191,9 +191,17 @@ SIMPLE_JWT = {
 DJOSER = {
     'TOKEN_MODEL': None,
     'HIDE_USERS': True,
+    'SEND_ACTIVATION_EMAIL': False,
+    'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
         'user': 'users.serializers.CustomUserSerializer',
         'current_user': 'users.serializers.CustomUserSerializer',
+        'set_slaves': 'users.serializers.SetSlavesSerializer',
     },
+    'PERMISSIONS': {
+        'set_slaves': ['djoser.permissions.CurrentUserOrAdmin'],
+    }
 }
+#  Email related settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

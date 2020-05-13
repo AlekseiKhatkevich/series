@@ -34,7 +34,7 @@ class CustomExceptionHandlerPositiveTest(APITestCase):
         """
         master = self.user_1
         slave = self.user_2
-        expected_error_message = error_codes.MASTER_CANT_BE_SLAVE
+        expected_error_message = error_codes.MASTER_CANT_BE_SLAVE.message
 
         slave.master = master
         slave.set_password('secret_password')

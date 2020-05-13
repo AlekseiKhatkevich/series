@@ -1,10 +1,10 @@
 import itertools
-from typing import Iterator, Union, Iterable
+from typing import Iterable, Iterator, Union
 
 test_list = ['a', 1, 2, 99, -8, 2.2, 'sfsdfdf', '6', '88', '5.6', '-67']
 
 
-def filter_positive_int_or_digit(container: Iterable, to_integer=True) -> Iterator[Union[int, str]]:
+def filter_positive_int_or_digit(container: Iterable, to_integer: bool = True) -> Iterator[Union[int, str]]:
     """
     Filters out all str or int gte = 1 from list of mixed iterable data.
     Returns generator with legit data coerced to int.

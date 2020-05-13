@@ -1,6 +1,7 @@
 import heapq
 import os
 from types import MappingProxyType
+from typing import KeysView
 
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -135,7 +136,7 @@ class TvSeriesModel(models.Model):
         raise NotImplementedError
 
     @property
-    def changed_fields(self):
+    def changed_fields(self) -> KeysView:
         """
         Returns a set(dict keys view) of changed fields in model.
         """

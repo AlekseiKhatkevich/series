@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 from django.db import models
@@ -64,6 +66,10 @@ class User(AbstractUser):
             models.CheckConstraint(
                 name='country_code_within_list_of_countries_check',
                 check=models.Q(user_country__in=countries.CODE_ITERATOR),),
+            models.CheckConstraint(
+                name='point_on_itself_check',
+                check=~models.Q(master=models.F('pk'))
+            )
         ]
 
     def __str__(self):
@@ -80,16 +86,22 @@ class User(AbstractUser):
         if self.master and self.__class__.objects.filter(master__email=self.email).exists():
             errors.update(
                 {'master': exceptions.ValidationError(
-                    error_codes.SLAVE_CANT_HAVE_SALVES,
-                    code='slave_cant_have_salves'), }
+                    *error_codes.SLAVE_CANT_HAVE_SALVES,)}
             )
         # We make sure that slave's master is not a slave himself.
         if self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
             errors.update(
                 {'master': exceptions.ValidationError(
-                    error_codes.MASTER_CANT_BE_SLAVE,
-                    code='master_cant_be_slave')}
+                    *error_codes.MASTER_CANT_BE_SLAVE,)}
             )
+        # Prevent master fc point to itself(master cant be his own master, same for slave).
+        if self.master is self:
+            errors.update(
+                {'master': exceptions.ValidationError(
+                    *error_codes.MASTER_OF_SELF,
+                    )}
+            )
+
         if errors:
             raise exceptions.ValidationError(errors)
 
@@ -99,24 +111,24 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     @cached_property
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse(f'{self.__class__.__name__.lower()}-detail', args=(self.pk, ))
 
     @property
-    def my_slaves(self):
+    def my_slaves(self) -> Optional[models.QuerySet]:
         """
         Returns queryset of slaves accounts if user have them or None.
         """
         return self.__class__.objects.filter(master=self) or None
 
     @property
-    def is_slave(self):
+    def is_slave(self) -> bool:
         """
         Defines whether or not user is slave( this account is slave account).
         """
         return bool(self.master)
 
-    def get_tokens_for_user(self):
+    def get_tokens_for_user(self) -> dict:
         """
         Returns JWT tokens pair for a current user.
         """

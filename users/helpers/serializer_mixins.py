@@ -47,8 +47,8 @@ class RequiredTogetherFieldsMixin:
         #  In case wrong field names are in required_together_fields.
         if not self.fields.keys() >= set(self.required_together_fields):
             raise serializers.ValidationError(
-                {'required_together_fields': error_codes.REQUIRED_TOGETHER_WRONG_FIELDS_NAMES},
-                code='wrong_required_together_fields'
+                {'required_together_fields': error_codes.REQUIRED_TOGETHER_WRONG_FIELDS_NAMES.message},
+                code=error_codes.REQUIRED_TOGETHER_WRONG_FIELDS_NAMES.code
             )
         #  Check whether or not at least one field from 'required_together_fields' is filled with data.
         try:

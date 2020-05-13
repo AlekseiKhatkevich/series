@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.db.models import Exists, OuterRef
 
-from series.helpers.typing import QuerySet
+from series.helpers.typing import User_instance
 
 
 class CustomUserManager(BaseUserManager):
@@ -13,7 +13,7 @@ class CustomUserManager(BaseUserManager):
     for authentication instead of username.
     """
 
-    def create_user(self, email: str, password: str, db_save: bool = True, **extra_fields: Any):
+    def create_user(self, email: str, password: str, db_save: bool = True, **extra_fields: Any) -> User_instance:
         """
         Create and save a User with the given email and password.
         """
@@ -26,7 +26,7 @@ class CustomUserManager(BaseUserManager):
             user.save()
         return user
 
-    def create_superuser(self, email: str, password: str, **extra_fields: Any):
+    def create_superuser(self, email: str, password: str, **extra_fields: Any) -> User_instance:
         """
         Create and save a SuperUser with the given email and password.
         """
@@ -46,7 +46,7 @@ class UserQueryset(models.QuerySet):
     """
     User model custom queryset.
     """
-    def get_available_slaves(self) -> QuerySet:
+    def get_available_slaves(self) -> models.QuerySet:
         """
         Method returns queryset of all available slaves
         (who doesnt have a master and who isn't a master himself).

@@ -15,7 +15,7 @@ class ValidateOverTheRange:
     def __call__(self, value: Any) -> None:
         if value not in self._container:
             raise ValidationError(
-                f'{value} does not locate in the container container',
-                code='wrong_country_code',
+                f'{value} does not locate in the container',
+                code='not_contains',
             )
 

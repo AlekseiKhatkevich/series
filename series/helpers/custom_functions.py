@@ -1,10 +1,10 @@
 import inspect
-from typing import Callable, Iterable
+from typing import Callable, Iterable, Dict, Container
 
 from rest_framework.response import Response
 
 
-def check_code_inside(func: Callable, code: Iterable) -> bool:
+def check_code_inside(func: Callable, code: [Container, Iterable]) -> bool:
     """
     Check whether or not coed snippets(methods, names, etc) inside a callable.
     Use-case: Check if method is overridden.

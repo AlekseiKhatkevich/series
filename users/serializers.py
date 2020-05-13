@@ -1,10 +1,14 @@
+from typing import Optional
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
+from django.core.exceptions import NON_FIELD_ERRORS
 from djoser import serializers as djoser_serializers
 from rest_framework import serializers
 
 from series import error_codes
+from series.helpers.typing import User_instance
 from users.helpers import serializer_mixins
 
 
@@ -16,15 +20,15 @@ class CustomDjoserUserCreateSerializer(
     """
     master_email = serializers.EmailField(
         required=False,
-        validators=(EmailValidator, ),
-        error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED},
         write_only=True,
+        validators=(EmailValidator, ),
+        error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED.message},
     )
     master_password = serializers.CharField(
-        write_only=True,
         required=False,
+        write_only=True,
         validators=(validate_password, ),
-        error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED},
+        error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED.message},
     )
 
     required_together_fields = ('master_password', 'master_email', )
@@ -38,11 +42,11 @@ class CustomDjoserUserCreateSerializer(
         extra_kwargs = {
             'user_country': {
                 'error_messages': {
-                    'invalid_choice': error_codes.WRONG_COUNTRY_CODE,
+                    'invalid_choice': error_codes.WRONG_COUNTRY_CODE.message,
                 }}}
 
     @staticmethod
-    def validate_master_fields(master_email, master_password):
+    def validate_master_fields(master_email: str, master_password: str) -> Optional[User_instance]:
         """
         Validation process for fields 'master_email' and 'master_password'.
         """
@@ -50,8 +54,8 @@ class CustomDjoserUserCreateSerializer(
             master = get_user_model().objects.get(email=master_email)
         except get_user_model().DoesNotExist as err:
             raise serializers.ValidationError(
-                {'master_email': error_codes.USER_DOESNT_EXISTS},
-                code="doesn't_exists",
+                {'master_email': error_codes.USER_DOESNT_EXISTS.message},
+                code=error_codes.USER_DOESNT_EXISTS.code,
             ) from err
         else:
             if not master.check_password(master_password):
@@ -99,8 +103,42 @@ class CustomUserSerializer(djoser_serializers.UserSerializer):
 
     class Meta(djoser_serializers.UserSerializer.Meta):
         fields = djoser_serializers.UserSerializer.Meta.fields + (
-            'user_country', 'master', 'slave_accounts_ids',
+            'user_country', 'master', 'slave_accounts_ids', 'slaves'
         )
+
+
+class SetSlavesSerializer(serializers.Serializer):
+    """
+    Serializer for setting one account as a slave of master account.
+    action - 'set_slaves'.
+    """
+
+    slave_email = serializers.EmailField(
+        write_only=True,
+        validators=(EmailValidator,),
+        error_messages={'required': error_codes.SLAVE_FIELDS_REQUIRED.message},
+    )
+    slave_password = serializers.CharField(
+        write_only=True,
+        validators=(validate_password,),
+        error_messages={'required': error_codes.SLAVE_FIELDS_REQUIRED.message},
+    )
+
+    def validate(self, attrs):
+        slave_email = attrs['master_email']
+        slave_password = attrs['master_password']
+
+        self.slave = CustomDjoserUserCreateSerializer.validate_master_fields(slave_email, slave_password)
+        # Check whether potential slave is available for this role.
+        if not get_user_model().objects.get_available_slaves().filter(pk=self.slave.pk).exists():
+            raise serializers.ValidationError(
+                {NON_FIELD_ERRORS: error_codes.SLAVE_UNAVAILABLE.message},
+                code=error_codes.SLAVE_UNAVAILABLE.code,
+            )
+
+        return super().validate(attrs)
+
+
 
 
 

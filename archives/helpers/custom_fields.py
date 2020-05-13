@@ -1,7 +1,7 @@
+from collections.abc import Iterable
+
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
-
-from collections.abc import Generator
 
 
 def change_empty_values(kwargs: dict, instance: models.Field) -> None:
@@ -11,7 +11,7 @@ def change_empty_values(kwargs: dict, instance: models.Field) -> None:
     exclude = kwargs.pop(
         'exclude_empty_values', ()
     )
-    if not isinstance(exclude, (tuple, list, set, Generator)):
+    if not isinstance(exclude, (tuple, list, set, Iterable)):
         raise TypeError(f'{instance.__class__.__name__} "exclude_empty_values" attribute error.'
                         f'{exclude} should belong to containers or generators')
 

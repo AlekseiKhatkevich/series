@@ -24,7 +24,7 @@ class SerializersMixinNegativeTest(APISimpleTestCase):
         """
         Check if exception is conjured up if we place wrong field name in 'required_together_fields'
         """
-        expected_error_message = error_codes.REQUIRED_TOGETHER_WRONG_FIELDS_NAMES
+        expected_error_message = error_codes.REQUIRED_TOGETHER_WRONG_FIELDS_NAMES.message
 
         with self.assertRaisesMessage(serializers.ValidationError, expected_error_message):
             self.TestSerializer()
