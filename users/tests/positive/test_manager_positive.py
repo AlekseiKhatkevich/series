@@ -31,3 +31,22 @@ class UserManagerAndQuerysetPositiveTest(APITestCase):
                 ordered=False,
                 transform=lambda x: x
             )
+
+    def test_check_user_and_password_method(self):
+        """
+        Check whether or not method 'check_user_and_password' returns user instance provided that correct
+        input data has been received.
+        """
+        self.user_1.set_password('secret')
+        self.user_1.save()
+
+        user = get_user_model().objects.check_user_and_password(
+            email=self.user_1.email,
+            password='secret'
+        )
+
+        self.assertEqual(
+            self.user_1,
+            user
+        )
+

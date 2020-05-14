@@ -1,14 +1,10 @@
-from typing import Optional
-
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
-from django.core.exceptions import NON_FIELD_ERRORS
 from djoser import serializers as djoser_serializers
 from rest_framework import serializers
 
 from series import error_codes
-from series.helpers.typing import User_instance
 from users.helpers import serializer_mixins
 
 
@@ -45,34 +41,13 @@ class CustomDjoserUserCreateSerializer(
                     'invalid_choice': error_codes.WRONG_COUNTRY_CODE.message,
                 }}}
 
-    @staticmethod
-    def validate_master_fields(master_email: str, master_password: str) -> Optional[User_instance]:
-        """
-        Validation process for fields 'master_email' and 'master_password'.
-        """
-        try:
-            master = get_user_model().objects.get(email=master_email)
-        except get_user_model().DoesNotExist as err:
-            raise serializers.ValidationError(
-                {'master_email': error_codes.USER_DOESNT_EXISTS.message},
-                code=error_codes.USER_DOESNT_EXISTS.code,
-            ) from err
-        else:
-            if not master.check_password(master_password):
-                raise serializers.ValidationError(
-                    {'master_password': f'Incorrect password for user with {master_email =}'},
-                    code='invalid',
-                )
-
-            return master
-
     def validate(self, attrs):
         master_email = attrs.pop('master_email', False)
         master_password = attrs.pop('master_password', False)
         attrs = super().validate(attrs)
 
         if master_email and master_password:
-            master = self.validate_master_fields(master_email, master_password)
+            master = self.Meta.model.objects.check_user_and_password(master_email, master_password)
             attrs['master'] = master
         return attrs
 
@@ -123,20 +98,42 @@ class SetSlavesSerializer(serializers.Serializer):
         validators=(validate_password,),
         error_messages={'required': error_codes.SLAVE_FIELDS_REQUIRED.message},
     )
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
     def validate(self, attrs):
-        slave_email = attrs['master_email']
-        slave_password = attrs['master_password']
+        slave_email = attrs['slave_email']
+        slave_password = attrs['slave_password']
+        user = attrs['user']
 
-        self.slave = CustomDjoserUserCreateSerializer.validate_master_fields(slave_email, slave_password)
+        # Validates potential slave's email and password.
+        self.slave = get_user_model().objects.check_user_and_password(slave_email, slave_password)
         # Check whether potential slave is available for this role.
-        if not get_user_model().objects.get_available_slaves().filter(pk=self.slave.pk).exists():
+        if not self.slave.is_available_slave:
             raise serializers.ValidationError(
-                {NON_FIELD_ERRORS: error_codes.SLAVE_UNAVAILABLE.message},
+                {'slave_email': error_codes.SLAVE_UNAVAILABLE.message},
                 code=error_codes.SLAVE_UNAVAILABLE.code,
             )
-
+        # Slave account cant be equal to master account.
+        if self.slave == user:
+            raise serializers.ValidationError(
+                {'slave_email': error_codes.MASTER_OF_SELF.message},
+                code=error_codes.MASTER_OF_SELF.code
+            )
         return super().validate(attrs)
+
+    def create(self, validated_data):
+        self.slave.master = validated_data['user']
+        self.slave.save()
+        return self.slave
+
+
+
+
+
+
+
 
 
 

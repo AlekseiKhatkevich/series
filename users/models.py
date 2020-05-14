@@ -9,6 +9,7 @@ from rest_framework_simplejwt import tokens as jwt_tokens
 
 import users.managers as users_managers
 from series import error_codes
+from series.helpers.typing import url
 from users.helpers import countries, validators as custom_validators
 
 
@@ -95,11 +96,10 @@ class User(AbstractUser):
                     *error_codes.MASTER_CANT_BE_SLAVE,)}
             )
         # Prevent master fc point to itself(master cant be his own master, same for slave).
-        if self.master is self:
+        if self.master == self:
             errors.update(
                 {'master': exceptions.ValidationError(
-                    *error_codes.MASTER_OF_SELF,
-                    )}
+                    *error_codes.MASTER_OF_SELF, )}
             )
 
         if errors:
@@ -111,7 +111,7 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     @cached_property
-    def get_absolute_url(self) -> str:
+    def get_absolute_url(self) -> url:
         return reverse(f'{self.__class__.__name__.lower()}-detail', args=(self.pk, ))
 
     @property
@@ -138,5 +138,12 @@ class User(AbstractUser):
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         }
+
+    @property
+    def is_available_slave(self) -> bool:
+        """
+        Returns True if user is available for a slave role.
+        """
+        return self.__class__.objects.get_available_slaves().filter(pk=self.pk).exists()
 
 

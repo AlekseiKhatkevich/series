@@ -82,10 +82,27 @@ class CreateUserModelPositiveTest(APITestCase):
 
     def test_get_absolute_url(self):
         """
-        Check 'get_absolute_url' method correct work.
+        Check 'get_absolute_url' property correct work.
         """
 
         self.assertEqual(
             self.user.get_absolute_url,
             reverse(f'{self.user._meta.model_name}-detail', args=(self.user.pk, ))
         )
+
+    def test_is_available_slave(self):
+        """
+        Check 'is_available_slave' property correct work.
+        """
+        self.user_1.master = self.user_3
+        self.user_1.save()
+
+        self.assertTrue(
+            self.user_2.is_available_slave
+        )
+
+        for user in (self.user_1, self.user_3):
+            with self.subTest(user=user):
+                self.assertFalse(
+                    user.is_available_slave
+                )

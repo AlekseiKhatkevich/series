@@ -4,6 +4,8 @@ from django.db import models
 
 
 User_instance = NewType('User_instance', models.Model)
+url = NewType('url', str)
+
 
 _Z = TypeVar("_Z")
 

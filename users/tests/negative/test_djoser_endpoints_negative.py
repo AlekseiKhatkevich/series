@@ -117,8 +117,8 @@ class DjoserSerializersNegativeTest(APITestCase):
             status.HTTP_400_BAD_REQUEST
         )
         self.assertEqual(
-            response.data['master_email'][0],
-            error_codes.USER_DOESNT_EXISTS
+            response.data['user_email'][0],
+            error_codes.USER_DOESNT_EXISTS.message
         )
 
     def test_validate_master_fields_wrong_master_password(self):
@@ -127,7 +127,7 @@ class DjoserSerializersNegativeTest(APITestCase):
         """
         self.master_fields['master_password'] = 'wrong_password'
         master_email = self.master_fields['master_email']
-        expected_error_message = f'Incorrect password for user with {master_email =}'
+        expected_error_message = f'Incorrect password for user with email - {master_email}'
 
         response = self.client.post(
             reverse('user-list'),
@@ -139,6 +139,6 @@ class DjoserSerializersNegativeTest(APITestCase):
             status.HTTP_400_BAD_REQUEST
         )
         self.assertEqual(
-            response.data['master_password'][0],
+            response.data['user_password'][0],
             expected_error_message
         )

@@ -26,8 +26,11 @@ def custom_exception_handler(exc: Exception, context: View) -> Optional[HttpResp
     """
     response = exception_handler(exc, context)
 
-    if isinstance(exc, (exceptions.ValidationError, IntegrityError)):
+    if isinstance(exc, (exceptions.ValidationError,)):
         data = exc.message_dict
         return DRF_response(data=data, status=status.HTTP_400_BAD_REQUEST, )
+    # elif isinstance(exc,  IntegrityError,):
+    #     data = str(exc)
+    #     return DRF_response(data=data, status=status.HTTP_400_BAD_REQUEST, )
 
     return response

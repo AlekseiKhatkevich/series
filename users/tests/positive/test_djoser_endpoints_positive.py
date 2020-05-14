@@ -4,8 +4,8 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 import users.serializers
-from users.helpers import create_test_users
 from series.helpers import custom_functions
+from users.helpers import context_managers, create_test_users
 
 
 class DjoserCreateUerPositiveTest(APITestCase):
@@ -153,3 +153,52 @@ class DjoserUsersListPositiveTest(APITestCase):
             users_to_master_in_response,
             users_to_master_original
         )
+
+
+class SetSlavesSerializerPositiveTest(APITestCase):
+    """
+    Test on Djoser custom endpoint that attaches slave to master.
+    /auth/users/set_slaves/ POST
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+    def test_set_slave_SEND_ACTIVATION_EMAIL_False(self):
+        """
+        Check whether endpoint provided with correct data is able to correctly attach slave account
+        to user account.
+        'SEND_ACTIVATION_EMAIL' = False, that is we dont send activation email but rather attach slave
+        directly.
+        """
+        self.user_3.set_password('mysecretpassword228882')
+        self.user_3.save()
+
+        data = dict(
+            slave_email=self.user_3.email,
+            slave_password='mysecretpassword228882',
+        )
+
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.DjoserSettingOverride(name='SEND_ACTIVATION_EMAIL', value=False):
+            response = self.client.post(
+                reverse('user-set-slaves'),
+                data=data,
+                format='json',
+            )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_202_ACCEPTED
+        )
+
+        self.user_3.refresh_from_db()
+
+        self.assertEqual(
+            self.user_3.master,
+            self.user_1
+        )
+

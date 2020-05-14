@@ -161,10 +161,13 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.profiling.ProfilingPanel',
 ]
 
+#  custom test runner
 TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
 
+#  Turns to True when in test mode. Source code are in custom test runner.
 IM_IN_TEST_MODE = False
 
+#  DRF related options.
 REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -173,6 +176,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
     'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
+    'COMPACT_JSON': False,
 }
 
 #  djangorestframework_simplejwt related settings.
@@ -193,6 +197,7 @@ DJOSER = {
     'HIDE_USERS': True,
     'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
+    'SLAVE_ACTIVATION_URL': 'example_frontend_url/{slave_uid}/{master_uid}/{token}',
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
         'user': 'users.serializers.CustomUserSerializer',
@@ -203,5 +208,5 @@ DJOSER = {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin'],
     }
 }
-#  Email related settings
+#  Email related settings.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

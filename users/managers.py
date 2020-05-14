@@ -1,10 +1,12 @@
-from typing import Any
+from typing import Any, Optional
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.db.models import Exists, OuterRef
+from django.core import exceptions
 
 from series.helpers.typing import User_instance
+from series import error_codes
 
 
 class CustomUserManager(BaseUserManager):
@@ -40,6 +42,33 @@ class CustomUserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
+
+    def check_user_and_password(
+            self, email: str, password: str, include_non_active: bool = True
+    ) -> Optional[User_instance]:
+        """
+        Validation whether user is exists and if so , whether his(hers) password is correct.
+        :include_non_active - If True, search as well among users with 'is_active' is set to False.
+        (i.e among all users).
+        :returns User instance or None.
+        """
+        kwargs = {'email': email} if include_non_active else {'email': email, 'is_active': True}
+
+        try:
+            user = self.model.objects.get(**kwargs)
+        except self.model.DoesNotExist as err:
+            raise exceptions.ValidationError(
+                {'user_email': error_codes.USER_DOESNT_EXISTS.message},
+                code=error_codes.USER_DOESNT_EXISTS.code,
+            ) from err
+        else:
+            if not user.check_password(password):
+                raise exceptions.ValidationError(
+                    {'user_password': f'Incorrect password for user with email - {email}'},
+                    code='invalid_password',
+                )
+
+            return user
 
 
 class UserQueryset(models.QuerySet):
