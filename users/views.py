@@ -1,5 +1,6 @@
 import djoser.views
 from djoser.conf import settings as djoser_settings
+from djoser.compat import get_user_email
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -18,19 +19,19 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     @action(['post'], detail=False)
     def set_slaves(self, request, *args, **kwargs):
         """
-        Action for attaching slave to a master account.
+        Action for attaching slave account to a master account.
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        # Send activation email to slave.
         if djoser_settings.SEND_ACTIVATION_EMAIL:
-            pass
-        else:
+            slave = serializer.slave
+            context = {'slave': slave, 'master': request.user}
+            to = [get_user_email(slave)]
+            djoser_settings.EMAIL.slave_activation(self.request, context).send(to)
+        else:  # Just attach slave to master directly without confirmation from slave's part.
             serializer.save()
 
-        context = {"user": serializer.slave}
-        # to = [get_user_email(user)]
-        # if settings.SEND_ACTIVATION_EMAIL:
-        #     settings.EMAIL.activation(self.request, context).send(to)
         return Response(status=status.HTTP_202_ACCEPTED)
 
     def get_permissions(self):
@@ -42,9 +43,3 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         if self.action == 'set_slaves':
             return djoser_settings.SERIALIZERS.set_slaves
         return super().get_serializer_class()
-
-
-
-
-
-

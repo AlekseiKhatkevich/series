@@ -1,4 +1,9 @@
-from django.contrib.auth import get_user_model
+import re
+
+from django.conf import settings
+from django.contrib.auth import get_user_model, tokens
+from django.core import mail
+from djoser import utils
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -155,7 +160,7 @@ class DjoserUsersListPositiveTest(APITestCase):
         )
 
 
-class SetSlavesSerializerPositiveTest(APITestCase):
+class SetSlavesPositiveTest(APITestCase):
     """
     Test on Djoser custom endpoint that attaches slave to master.
     /auth/users/set_slaves/ POST
@@ -183,7 +188,7 @@ class SetSlavesSerializerPositiveTest(APITestCase):
 
         self.client.force_authenticate(user=self.user_1)
 
-        with context_managers.DjoserSettingOverride(name='SEND_ACTIVATION_EMAIL', value=False):
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=False):
             response = self.client.post(
                 reverse('user-set-slaves'),
                 data=data,
@@ -202,3 +207,68 @@ class SetSlavesSerializerPositiveTest(APITestCase):
             self.user_1
         )
 
+    def test_set_slave_SEND_ACTIVATION_EMAIL_True(self):
+        """
+        Check that if 'SEND_ACTIVATION_EMAIL' option in settings is set to True, slave will not be attached to
+        master immediately after api call, but rather confirmation letter would be sent to slave.
+        """
+        potential_slave = self.user_3
+        potential_master = self.user_1
+        password = 'my_secret_password228882'
+        potential_slave.set_password(password)
+        potential_slave.save()
+
+        data = dict(
+            slave_email=potential_slave.email,
+            slave_password=password,
+        )
+        self.client.force_authenticate(user=potential_master)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-set-slaves'),
+                data=data,
+                format='json',
+            )
+        potential_slave.refresh_from_db()
+        #  url from email sent.
+        url = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group('url')
+        master_uid, slave_uid, token = url.split('/')[-3:]
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_202_ACCEPTED
+        )
+        # Check that slave was not attached to master.
+        self.assertIsNone(
+            potential_slave.master
+        )
+        # Check that email has been sent.
+        self.assertEqual(
+            len(mail.outbox),
+            1,
+        )
+        # Check subject in order to make sure that correct email is sent.
+        self.assertEqual(
+            mail.outbox[0].subject,
+            f'Slave account attachment confirmation on {settings.SITE_NAME}',
+        )
+        #  Check that email recipient is the potential slave.
+        self.assertEqual(
+            mail.outbox[0].to[0],
+            potential_slave.email,
+        )
+        # Make sure that master UID extracted from email url is coincide to master ID after decoding.
+        self.assertEqual(
+            int(utils.decode_uid(master_uid)),
+            potential_master.pk
+        )
+        # Make sure that slave UID extracted from email url is coincide to slave ID after decoding.
+        self.assertEqual(
+            int(utils.decode_uid(slave_uid)),
+            potential_slave.pk
+        )
+        # Make sure that slave token extracted from email is valid.
+        self.assertTrue(
+            tokens.default_token_generator.check_token(user=potential_slave, token=token)
+        )

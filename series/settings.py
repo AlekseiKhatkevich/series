@@ -8,6 +8,11 @@ from dotenv import load_dotenv
 # .env related settings
 load_dotenv()
 
+#  Turns to True when in test mode. Source code are in custom test runner.
+IM_IN_TEST_MODE = False
+
+SITE_NAME = 'Series notebook'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -164,9 +169,6 @@ DEBUG_TOOLBAR_PANELS = [
 #  custom test runner
 TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
 
-#  Turns to True when in test mode. Source code are in custom test runner.
-IM_IN_TEST_MODE = False
-
 #  DRF related options.
 REST_FRAMEWORK = {
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -197,7 +199,10 @@ DJOSER = {
     'HIDE_USERS': True,
     'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
-    'SLAVE_ACTIVATION_URL': 'example_frontend_url/{slave_uid}/{master_uid}/{token}',
+    'SLAVE_ACTIVATION_URL': 'example_frontend_url/{master_uid}/{slave_uid}/{token}',
+    'EMAIL': {
+        'slave_activation': 'users.email.email_classes.SlaveActivationEmail',
+    },
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
         'user': 'users.serializers.CustomUserSerializer',
@@ -206,7 +211,9 @@ DJOSER = {
     },
     'PERMISSIONS': {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin'],
-    }
+        },
 }
 #  Email related settings.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
+    EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
