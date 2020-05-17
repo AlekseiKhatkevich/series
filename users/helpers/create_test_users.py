@@ -3,6 +3,8 @@ from django.contrib.auth.hashers import make_password
 
 from typing import Sequence
 
+from series.helpers.typing import User_instance
+
 
 def create_random_password() -> str:
     """
@@ -49,7 +51,7 @@ users_data = {
     }
 
 
-def create_users() -> Sequence:
+def create_users() -> Sequence[User_instance]:
     """
      Creates users in database.
      returns container of user's instances.

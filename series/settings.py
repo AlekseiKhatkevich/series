@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
 
     # project apps
     'archives.apps.ArchivesConfig',
@@ -179,6 +180,8 @@ REST_FRAMEWORK = {
     ],
     'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
 }
 
 #  djangorestframework_simplejwt related settings.
@@ -214,6 +217,7 @@ DJOSER = {
         },
 }
 #  Email related settings.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
     EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -3,6 +3,7 @@ from typing import Optional
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt import tokens as jwt_tokens
@@ -66,7 +67,7 @@ class User(AbstractUser):
         constraints = [
             models.CheckConstraint(
                 name='country_code_within_list_of_countries_check',
-                check=models.Q(user_country__in=countries.CODE_ITERATOR),),
+                check=models.Q(user_country__in=countries.CODE_ITERATOR), ),
             models.CheckConstraint(
                 name='point_on_itself_check',
                 check=~models.Q(master=models.F('pk'))
@@ -87,13 +88,13 @@ class User(AbstractUser):
         if self.master and self.__class__.objects.filter(master__email=self.email).exists():
             errors.update(
                 {'master': exceptions.ValidationError(
-                    *error_codes.SLAVE_CANT_HAVE_SALVES,)}
+                    *error_codes.SLAVE_CANT_HAVE_SALVES, )}
             )
         # We make sure that slave's master is not a slave himself.
         if self.master and self.__class__.objects.filter(pk=self.master_id).first().master is not None:
             errors.update(
                 {'master': exceptions.ValidationError(
-                    *error_codes.MASTER_CANT_BE_SLAVE,)}
+                    *error_codes.MASTER_CANT_BE_SLAVE, )}
             )
         # Prevent master fc point to itself(master cant be his own master, same for slave).
         if self.master == self:
@@ -112,7 +113,7 @@ class User(AbstractUser):
 
     @cached_property
     def get_absolute_url(self) -> url:
-        return reverse(f'{self.__class__.__name__.lower()}-detail', args=(self.pk, ))
+        return reverse(f'{self.__class__.__name__.lower()}-detail', args=(self.pk,))
 
     @property
     def my_slaves(self) -> Optional[models.QuerySet]:
@@ -146,4 +147,57 @@ class User(AbstractUser):
         """
         return self.__class__.objects.get_available_slaves().filter(pk=self.pk).exists()
 
+
+class UserIP(models.Model):
+    """
+    Stores user's IP address and datetime when ip was sampled.
+    """
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='user_ip',
+    )
+    ip = models.GenericIPAddressField(
+        verbose_name='User ip address'
+    )
+    sample_time = models.DateTimeField(
+        auto_now=True,
+        verbose_name='User ip sample time'
+    )
+
+    class Meta:
+        verbose_name = 'User ip address.'
+        verbose_name_plural = 'User ip addresses.'
+        index_together = (
+            ('user', 'ip', )
+        )
+
+    def __str__(self):
+        return f'# {self.pk} -- Ip address of user {self.user_id} / {self.user.email}.'
+
+    def ip_deque(self, ip_num: int = 3) -> None:
+        """
+        Method keeps only 3 last distinct ip address entries.
+        """
+        cls = type(self)
+        # list of user's ips.
+        user_ips = cls.objects.filter(user=self.user, ip=self.ip)
+        # we update sample_time if pair of (user, ip) is already exists.
+        is_updated = user_ips.update(
+            sample_time=(self.sample_time or timezone.now())
+        )
+        # If pair of (user, ip) doesn't exists, we need to save model entry.
+        if not is_updated:
+            super().save(force_insert=False, force_update=False, using=None, update_fields=None)
+        # keep only 'ip_num' amount of fresh ip entries. Delete all others.
+        ips_to_be_deleted = models.Subquery(
+                cls.objects.filter(user=self.user).
+                order_by('-sample_time')[ip_num:].values_list('pk', flat=True)
+                            )
+        cls.objects.filter(pk__in=ips_to_be_deleted).delete()
+
+    def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
+        if fc:
+            self.full_clean()
+        self.ip_deque(ip_num=3)
 

@@ -70,7 +70,6 @@ class CustomUserSerializer(djoser_serializers.UserSerializer):
     """
     slave_accounts_ids = serializers.PrimaryKeyRelatedField(
         source='my_slaves',
-        #queryset=get_user_model().objects.get_available_slaves(),
         read_only=True,
         many=True,
         allow_null=True
@@ -78,7 +77,7 @@ class CustomUserSerializer(djoser_serializers.UserSerializer):
 
     class Meta(djoser_serializers.UserSerializer.Meta):
         fields = djoser_serializers.UserSerializer.Meta.fields + (
-            'user_country', 'master', 'slave_accounts_ids', 'slaves'
+            'user_country', 'master', 'slave_accounts_ids',
         )
 
 

@@ -1,10 +1,10 @@
 from typing import Generic, Iterator, NewType, TypeVar
-
 from django.db import models
 
 
 User_instance = NewType('User_instance', models.Model)
 url = NewType('url', str)
+ip_instance = NewType('ip_instance', models.Model)
 
 
 _Z = TypeVar("_Z")

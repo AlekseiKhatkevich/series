@@ -26,7 +26,13 @@ def response_to_dict(response: Response, key_field: str) -> dict:
     """
     return_dict = {}
 
-    for obj in response.data:
+    # In order to be able to work with paginated or non-paginated responses.
+    try:
+        data = response.data['results']
+    except TypeError:
+        data = response.data
+
+    for obj in data:
         try:
             inner_dict = {obj[key_field]: obj}
             return_dict.update(inner_dict)

@@ -138,7 +138,7 @@ class DjoserUsersListPositiveTest(APITestCase):
         #  check that user_1 have user2 and user_3 specified as slaves in field 'slave_accounts_ids'.
         self.assertEqual(
             [self.user_2.pk, self.user_3.pk],
-            [slave_accounts_ids for user in response.data if
+            [slave_accounts_ids for user in response.data['results'] if
              (slave_accounts_ids:=user['slave_accounts_ids']) is not None][0],
         )
 
@@ -171,6 +171,10 @@ class SetSlavesPositiveTest(APITestCase):
         cls.users = create_test_users.create_users()
         cls.user_1, cls.user_2, cls.user_3 = cls.users
 
+        cls.password = 'my_secret_password'
+        cls.user_3.set_password(cls.password)
+        cls.user_3.save()
+
     def test_set_slave_SEND_ACTIVATION_EMAIL_False(self):
         """
         Check whether endpoint provided with correct data is able to correctly attach slave account
@@ -178,12 +182,9 @@ class SetSlavesPositiveTest(APITestCase):
         'SEND_ACTIVATION_EMAIL' = False, that is we dont send activation email but rather attach slave
         directly.
         """
-        self.user_3.set_password('mysecretpassword228882')
-        self.user_3.save()
-
         data = dict(
             slave_email=self.user_3.email,
-            slave_password='mysecretpassword228882',
+            slave_password=self.password,
         )
 
         self.client.force_authenticate(user=self.user_1)
@@ -214,13 +215,10 @@ class SetSlavesPositiveTest(APITestCase):
         """
         potential_slave = self.user_3
         potential_master = self.user_1
-        password = 'my_secret_password228882'
-        potential_slave.set_password(password)
-        potential_slave.save()
 
         data = dict(
             slave_email=potential_slave.email,
-            slave_password=password,
+            slave_password=self.password,
         )
         self.client.force_authenticate(user=potential_master)
 
@@ -258,6 +256,7 @@ class SetSlavesPositiveTest(APITestCase):
             mail.outbox[0].to[0],
             potential_slave.email,
         )
+
         # Make sure that master UID extracted from email url is coincide to master ID after decoding.
         self.assertEqual(
             int(utils.decode_uid(master_uid)),
