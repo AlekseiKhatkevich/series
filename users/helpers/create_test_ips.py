@@ -39,7 +39,7 @@ def create_ip_entries(users: Sequence[User_instance]) -> Sequence[ip_instance]:
             user=user,
             ip=generate_random_ip4(),
             sample_time=offset_time(timezone.now(), 86400, 3600),
-        ) for i in range(3) for user in users
+        ) for _ in range(3) for user in users
     ]
 
     with context_managers.OverrideModelAttributes(

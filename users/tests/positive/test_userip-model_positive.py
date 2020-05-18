@@ -3,8 +3,8 @@ import operator
 
 from rest_framework.test import APITestCase
 
-from users.helpers import create_test_ips, create_test_users
 import users.models as user_models
+from users.helpers import create_test_ips, create_test_users
 
 
 class UserIPPositiveTest(APITestCase):
@@ -38,7 +38,7 @@ class UserIPPositiveTest(APITestCase):
 
     def test_new_ip_in_db_already(self):
         """
-        Check case when user has already this ip in DB. Only 'sample_time field should be overridden
+        Check case when user has already this ip in DB. Only 'sample_time' field should be overridden
         with new datetime in this instance. No new entries are made.
         """
         test_user = self.user_1
@@ -53,15 +53,39 @@ class UserIPPositiveTest(APITestCase):
         # in DB beforehand.
         self.assertEqual(
             test_user.user_ip.all().count(),
-            3,
+            len(self.grouped_dict[test_user.pk]),
         )
         # Make sure that entries with same ip aren't duplicated.
         self.assertEqual(
             test_user.user_ip.filter(ip=sample_ip, user=test_user).count(),
             1
         )
-        # Make sure that 'sample_time' has been updated
+        # Make sure that 'sample_time' has been updated.
         self.assertGreater(
             test_user.user_ip.filter(ip=sample_ip, user=test_user).first().sample_time,
             original_sample_time
         )
+
+    def test_new_ip_not_in_db_already_discard_old_ip(self):
+        """
+        Check that if we trying to write new ip that isn't present in users ips yet,
+        this new ip would be writen fully and as number of ip entries can't overstep 3,
+        subsequently ip entry with oldest 'sample_time' should be deleted and overall amount
+        of entries should remain intact(=3).
+        """
+        oldest_ip = self.user_2.user_ip.earliest()
+        new_ip = user_models.UserIP.objects.create(
+            user=self.user_2,
+            ip='228.228.228.228',
+        )
+        #  Check that we still have 3 entries only for the given user.
+        self.assertEqual(
+            self.user_2.user_ip.all().count(),
+            len(self.grouped_dict[self.user_2.pk]),
+        )
+        self.assertTrue(
+            user_models.UserIP.objects.filter(user=new_ip.user, ip=new_ip.ip,).exists()
+        )
+        # Check that oldest entry were substituted by freshly created one.
+        with self.assertRaises(user_models.UserIP.DoesNotExist):
+            oldest_ip.refresh_from_db()

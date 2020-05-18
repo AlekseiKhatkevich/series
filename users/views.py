@@ -1,10 +1,20 @@
-import djoser.views
-from djoser.conf import settings as djoser_settings
-from djoser.compat import get_user_email
+from typing import Optional
 
+import djoser.views
+import jwt
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.http.request import HttpRequest
+from djoser.compat import get_user_email
+from djoser.conf import settings as djoser_settings
+from rest_framework import status, throttling
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework_simplejwt import views as simplejwt_views, settings as simplejwt_settings
+
+import users.models
+from series.helpers.typing import jwt_token
 
 
 class CustomDjoserUserViewSet(djoser.views.UserViewSet):
@@ -43,3 +53,47 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         if self.action == 'set_slaves':
             return djoser_settings.SERIALIZERS.set_slaves
         return super().get_serializer_class()
+
+
+class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
+    """
+    Subclass of simple-JWT token refresh view in order to add functionality for
+    writing user's ip address before new access token is rendered.
+    """
+    @staticmethod
+    def write_user_ip(request: HttpRequest, token: jwt_token) -> Optional[users.models.UserIP]:
+        """
+        Method extracts user_id from JWT token, gets user ip address from request
+        and writes 'UserIP' models entry in DB successfully saving user's ip in DB.
+        Returns None if something went wong.
+        """
+        if token is not None:
+            key = settings.SIMPLE_JWT.get(
+                'SIGNING_KEY',
+                settings.SECRET_KEY
+            )
+            algorithm = settings.SIMPLE_JWT.get(
+                'ALGORITHM',
+                simplejwt_settings.DEFAULTS['ALGORITHM']
+            )
+            decoded = jwt.decode(
+                jwt=token,
+                key=key,
+                algorithms=[algorithm, ]
+            )
+            user_id = decoded['user_id']
+            user_ip_address = throttling.BaseThrottle().get_ident(request)
+
+            try:
+                return users.models.UserIP.objects.create(
+                    user_id=user_id,
+                    ip=user_ip_address,
+                )
+            except (ValidationError, get_user_model().DoesNotExist, ):
+                return None
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        token = response.data.get('access', None)
+        self.write_user_ip(request, token)
+        return response

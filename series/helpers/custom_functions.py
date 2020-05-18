@@ -26,7 +26,7 @@ def response_to_dict(response: Response, key_field: str) -> dict:
     """
     return_dict = {}
 
-    # In order to be able to work with paginated or non-paginated responses.
+    # In order to be able to work with paginated and non-paginated responses.
     try:
         data = response.data['results']
     except TypeError:

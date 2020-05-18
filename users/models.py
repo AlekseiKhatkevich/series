@@ -168,6 +168,7 @@ class UserIP(models.Model):
     class Meta:
         verbose_name = 'User ip address.'
         verbose_name_plural = 'User ip addresses.'
+        get_latest_by = ('sample_time',)
         index_together = (
             ('user', 'ip', )
         )

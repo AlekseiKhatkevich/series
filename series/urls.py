@@ -18,9 +18,14 @@ djoser_router.register('users', users.views.CustomDjoserUserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('archives/', include('archives.urls')),
+
+    #  Url to custom JWT token refresh endpoint. Overrides one url in 'djoser.urls.jwt'.
+    re_path(r"^auth/jwt/refresh/?", users.views.CustomJWTTokenRefreshView.as_view(), name="jwt-refresh"),
     re_path(r'^auth/', include('djoser.urls.jwt')),
-    re_path(r'^auth/', include(djoser_router.urls)),  # change 'djoser.urls' in order to be able to use custom Views
+    # Change 'djoser.urls' in order to be able to use custom Views
+    re_path(r'^auth/', include(djoser_router.urls)),
     #  re_path(r'^auth/', include('djoser.urls')),
+
     path('api-auth/', include('rest_framework.urls')),  # for basic auth in browsable apis
 ]
 
@@ -40,9 +45,21 @@ schema_view = get_schema_view(
 
 #  drf_yasg related URl's
 urlpatterns += [
-    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    re_path(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    re_path(r'^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    re_path(
+        r'^swagger(?P<format>\.json|\.yaml)$',
+        schema_view.without_ui(cache_timeout=0),
+        name='schema-json'
+    ),
+    re_path(
+        r'^swagger/$',
+        schema_view.with_ui('swagger', cache_timeout=0),
+        name='schema-swagger-ui'
+    ),
+    re_path(
+        r'^redoc/$',
+        schema_view.with_ui('redoc', cache_timeout=0),
+        name='schema-redoc'
+    ),
 ]
 
 #  Debug toolbar URL's

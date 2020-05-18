@@ -6,6 +6,7 @@ from rest_framework import serializers
 
 from series import error_codes
 from users.helpers import serializer_mixins
+from rest_framework_simplejwt import serializers as simpejwt_serializers
 
 
 class CustomDjoserUserCreateSerializer(
@@ -126,14 +127,6 @@ class SetSlavesSerializer(serializers.Serializer):
         self.slave.master = validated_data['user']
         self.slave.save()
         return self.slave
-
-
-
-
-
-
-
-
 
 
 
