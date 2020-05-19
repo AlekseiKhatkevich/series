@@ -181,16 +181,16 @@ class UserIP(models.Model):
         Method keeps only 3 last distinct ip address entries.
         """
         cls = type(self)
-        # list of user's ips.
+        # List of user's ips.
         user_ips = cls.objects.filter(user=self.user, ip=self.ip)
-        # we update sample_time if pair of (user, ip) is already exists.
+        # We update 'sample_time' if pair of (user, ip) is already exists.
         is_updated = user_ips.update(
             sample_time=(self.sample_time or timezone.now())
         )
         # If pair of (user, ip) doesn't exists, we need to save model entry.
         if not is_updated:
             super().save(force_insert=False, force_update=False, using=None, update_fields=None)
-        # keep only 'ip_num' amount of fresh ip entries. Delete all others.
+        # Keep only 'ip_num' amount of fresh ip entries. Delete all others.
         ips_to_be_deleted = models.Subquery(
                 cls.objects.filter(user=self.user).
                 order_by('-sample_time')[ip_num:].values_list('pk', flat=True)

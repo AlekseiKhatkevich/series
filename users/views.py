@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.http.request import HttpRequest
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
-from rest_framework import status, throttling
+from rest_framework import status, throttling, exceptions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt import views as simplejwt_views, settings as simplejwt_settings
@@ -53,6 +53,11 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         if self.action == 'set_slaves':
             return djoser_settings.SERIALIZERS.set_slaves
         return super().get_serializer_class()
+
+    def permission_denied(self, request, message=None):
+        if self.action == 'resend_activation':
+            raise exceptions.PermissionDenied(detail=message)
+        super().permission_denied(request, message=message)
 
 
 class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):

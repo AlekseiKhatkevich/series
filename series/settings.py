@@ -172,9 +172,9 @@ TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
 
 #  DRF related options.
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -214,6 +214,7 @@ DJOSER = {
     },
     'PERMISSIONS': {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin'],
+        'password_reset': ['users.permissions.UserIPPermission'],
         },
 }
 #  Email related settings.

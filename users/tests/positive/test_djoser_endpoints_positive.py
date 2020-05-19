@@ -7,10 +7,11 @@ from djoser import utils
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 import users.serializers
 from series.helpers import custom_functions
-from users.helpers import context_managers, create_test_users
+from users.helpers import context_managers, create_test_users, create_test_ips
 
 
 class DjoserCreateUerPositiveTest(APITestCase):
@@ -18,16 +19,16 @@ class DjoserCreateUerPositiveTest(APITestCase):
     Test of custom Djoser's auth create user endpoint.
     auth/users/ POST
     """
-    @classmethod
-    def setUpTestData(cls):
-        cls.user_1, cls.user_2, cls.user_3 = create_test_users.create_users()
 
     def setUp(self) -> None:
-        self.test_user_data = dict(email='test@mail.ru',
-                                   first_name='Jacky',
-                                   last_name='Chan',
-                                   user_country='CN',
-                                   password='test_password', )
+        self.test_user_data = dict(
+            email='test@mail.ru',
+            first_name='Jacky',
+            last_name='Chan',
+            user_country='CN',
+            password='test_password',
+        )
+        self.user_1, self.user_2, self.user_3 = create_test_users.create_users()
 
     def test_CustomDjoserUserCreateSerializer(self):
         """
@@ -139,7 +140,7 @@ class DjoserUsersListPositiveTest(APITestCase):
         self.assertEqual(
             [self.user_2.pk, self.user_3.pk],
             [slave_accounts_ids for user in response.data['results'] if
-             (slave_accounts_ids:=user['slave_accounts_ids']) is not None][0],
+             (slave_accounts_ids := user['slave_accounts_ids']) is not None][0],
         )
 
         users_to_countries_in_response = \
@@ -271,3 +272,130 @@ class SetSlavesPositiveTest(APITestCase):
         self.assertTrue(
             tokens.default_token_generator.check_token(user=potential_slave, token=token)
         )
+
+
+class RefreshTokenEndpointPositiveTest(APITestCase):
+    """
+    Test that when user demands new access token, his ip is determined and written in DB.
+    Also check that whole endpoint works correctly after customization.
+    auth/jwt/refresh/ POST
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+    def test_writing_ip_in_DB(self):
+        """
+        Check that user's ip is saved in DB.
+        """
+        refresh_token = self.user_2.get_tokens_for_user()['refresh']
+        data = {'refresh': refresh_token}
+        fake_ip = '228.228.228.228'
+
+        response = self.client.post(
+            reverse('jwt-refresh'),
+            data=data,
+            format='json',
+            HTTP_X_FORWARDED_FOR=fake_ip,
+            REMOTE_ADDR=fake_ip,
+        )
+        jwt_auth = JWTAuthentication()
+        access_token = jwt_auth.get_validated_token(response.data["access"])
+        user_from_token = jwt_auth.get_user(access_token)
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(
+            self.user_2.user_ip.first().ip,
+            fake_ip
+        )
+        self.assertEqual(
+            self.user_2,
+            user_from_token
+        )
+
+
+class UserResendActivationEmailPositiveTest(APITestCase):
+    """
+    Positive test for User resent activation email API custom permission class.
+    auth/users/resend_activation/ POST
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+    def setUp(self) -> None:
+        create_test_ips.create_ip_entries(self.users)
+
+    def test_UserIPPermission_ip_in_db(self):
+        """
+        Check that if request comes from a machine which ip address we have in DB associated with the user,
+        whose email is provided, then requests passes trough.
+        """
+        self.user_2.is_active = False
+        self.user_2.save()
+        ip = self.user_2.user_ip.all().order_by('?').first().ip
+        data = {'email': self.user_2.email}
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-resend-activation'),
+                data=data,
+                format='json',
+                HTTP_X_FORWARDED_FOR=ip,
+                REMOTE_ADDR=ip,
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+
+    def test_UserIPPermission_user_has_no_ip_entry(self):
+        """
+        Check if user with email from request.data doesnt have any associated saved ip addresses in DB,
+        then he would be able to get access to API.
+        """
+        self.user_3.is_active = False
+        self.user_3.save()
+        self.user_3.user_ip.all().delete()
+        data = {'email': self.user_3.email}
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-resend-activation'),
+                data=data,
+                format='json',
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+
+    def test_UserIPPermission_user_is_admin(self):
+        """
+        Check if user is admin, then it has access to ip entirely.
+        """
+        self.user_3.is_active = False
+        self.user_3.save()
+        data = {'email': self.user_3.email}
+
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-resend-activation'),
+                data=data,
+                format='json',
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+
+

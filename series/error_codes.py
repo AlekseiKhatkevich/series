@@ -11,6 +11,10 @@ USER_DOESNT_EXISTS = exc_msg(
     'User with this email does not exists.',
     'user_doesnt_exists',
 )
+EMAIL_REQUIRED = exc_msg(
+    'Field "email" is required. Please fill it.',
+    'email_required',
+)
 ZERO_IS_NOT_VALID = exc_msg(
     'Zero is not a valid integer for this field.',
     'zero_is_not_valid',
@@ -41,7 +45,11 @@ SLAVE_UNAVAILABLE = exc_msg(
 )
 MASTER_OF_SELF = exc_msg(
     'Master field can not point to the same user whom it belongs to.',
-    'master_of_self'
+    'master_of_self',
+)
+SUSPICIOUS_REQUEST = exc_msg(
+    'Suspicious request from unknown ip.',
+    'suspicious_request',
 )
 
 

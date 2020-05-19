@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 
 import users.serializers
-from users.helpers import create_test_users, context_managers
+from users.helpers import create_test_users, context_managers, create_test_ips
 
 from series import error_codes
 
@@ -219,4 +219,69 @@ class SetSlavesNegativeTest(APITestCase):
         self.assertEqual(
             response.data['slave_email'][0],
             expected_error_message
+        )
+
+
+class UserResendActivationEmailNegativeTest(APITestCase):
+    """
+    Negative test for User resent activation email API custom permission class.
+    we check how well permission class secure api from wrong requests.
+    auth/users/resend_activation/ POST
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+    def setUp(self) -> None:
+        create_test_ips.create_ip_entries(self.users)
+
+    def test_no_email_field(self):
+        """
+        Check that if no 'email' field in request data, 400 error code with proper error message
+        would be returned.
+        """
+        data = {'efail': 'fail'}
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-resend-activation'),
+                data=data,
+                format='json',
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN,
+        )
+        self.assertEqual(
+            response.data['detail'],
+            error_codes.EMAIL_REQUIRED.message
+        )
+
+    def test_ip_not_in_db(self):
+        """
+        Check that if request came from a machine from ip which we dont have in DB and user
+        associated with email provided has ip entries in DB, then request would be rejected.
+        """
+        self.user_2.is_active = False
+        self.user_2.save()
+        self.user_2.user_ip.all().update(ip='228.228.228.228')
+        data = {'email': self.user_2.email}
+        fake_ip = '222.222.222.222'
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-resend-activation'),
+                data=data,
+                format='json',
+                HTTP_X_FORWARDED_FOR=fake_ip,
+                REMOTE_ADDR=fake_ip,
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN
+        )
+        self.assertEqual(
+            response.data['detail'],
+            error_codes.SUSPICIOUS_REQUEST.message
         )
