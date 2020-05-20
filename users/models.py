@@ -50,11 +50,16 @@ class User(AbstractUser):
         verbose_name='user country of origin',
         validators=[custom_validators.ValidateOverTheRange(container=countries.CODE_ITERATOR)]
     )
+    deleted = models.BooleanField(
+        default=False,
+        verbose_name='Is user account "deleted".'
+    )
 
     USERNAME_FIELD = 'email'
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
     REQUIRED_FIELDS = ['first_name', 'last_name', ]
 
+    default = models.Manager()
     objects = users_managers.CustomUserManager.from_queryset(users_managers.UserQueryset)()
 
     class Meta:
@@ -106,10 +111,18 @@ class User(AbstractUser):
         if errors:
             raise exceptions.ValidationError(errors)
 
-    def save(self, fc=True, *args, **kwargs):
+    def save(self, fc=True, fake_del=True, *args, **kwargs):
         if fc:
             self.full_clean()
         super().save(*args, **kwargs)
+
+    def delete(self, fake_del=True, using=None, keep_parents=False):
+        if fake_del:
+            self.deleted = True
+            self.save(update_fields=('deleted',))
+            return f'Account {self.email} is deactivated'
+        else:
+            return super().delete(using, keep_parents)
 
     @cached_property
     def get_absolute_url(self) -> url:

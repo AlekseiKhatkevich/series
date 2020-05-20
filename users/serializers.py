@@ -64,7 +64,10 @@ class CustomDjoserUserCreateSerializer(
         return data
 
 
-class CustomUserSerializer(djoser_serializers.UserSerializer):
+class CustomUserSerializer(
+    serializer_mixins.ReadOnlyRaisesException,
+    djoser_serializers.UserSerializer
+):
     """
     Serializer for endpoint that shows list of users for Admin or user detail for current user
     if it not an admin.
@@ -80,6 +83,7 @@ class CustomUserSerializer(djoser_serializers.UserSerializer):
         fields = djoser_serializers.UserSerializer.Meta.fields + (
             'user_country', 'master', 'slave_accounts_ids',
         )
+        read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master',)
 
 
 class SetSlavesSerializer(serializers.Serializer):

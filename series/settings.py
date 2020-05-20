@@ -181,7 +181,17 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 20
+    'PAGE_SIZE': 20,
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '60/minute',
+        'user': '1000/minute',
+        'resend_activation': '1/minute'
+    }
 }
 
 #  djangorestframework_simplejwt related settings.

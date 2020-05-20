@@ -137,7 +137,7 @@ class DjoserUsersListPositiveTest(APITestCase):
         )
 
         #  check that user_1 have user2 and user_3 specified as slaves in field 'slave_accounts_ids'.
-        self.assertEqual(
+        self.assertCountEqual(
             [self.user_2.pk, self.user_3.pk],
             [slave_accounts_ids for user in response.data['results'] if
              (slave_accounts_ids := user['slave_accounts_ids']) is not None][0],

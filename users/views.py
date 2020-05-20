@@ -8,10 +8,10 @@ from django.core.exceptions import ValidationError
 from django.http.request import HttpRequest
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
-from rest_framework import status, throttling, exceptions
+from rest_framework import exceptions, status, throttling
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework_simplejwt import views as simplejwt_views, settings as simplejwt_settings
+from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 
 import users.models
 from series.helpers.typing import jwt_token
@@ -59,12 +59,18 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
             raise exceptions.PermissionDenied(detail=message)
         super().permission_denied(request, message=message)
 
+    def get_throttles(self):
+        if self.action == 'resend_activation':
+            setattr(self, 'throttle_scope', self.action)
+        return super().get_throttles()
+
 
 class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
     """
     Subclass of simple-JWT token refresh view in order to add functionality for
     writing user's ip address before new access token is rendered.
     """
+
     @staticmethod
     def write_user_ip(request: HttpRequest, token: jwt_token) -> Optional[users.models.UserIP]:
         """
@@ -94,7 +100,7 @@ class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
                     user_id=user_id,
                     ip=user_ip_address,
                 )
-            except (ValidationError, get_user_model().DoesNotExist, ):
+            except (ValidationError, get_user_model().DoesNotExist,):
                 return None
 
     def post(self, request, *args, **kwargs):

@@ -51,5 +51,9 @@ SUSPICIOUS_REQUEST = exc_msg(
     'Suspicious request from unknown ip.',
     'suspicious_request',
 )
+READ_ONLY = exc_msg(
+    'This field is read only.',
+    'read_only',
+)
 
 
