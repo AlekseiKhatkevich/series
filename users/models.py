@@ -2,7 +2,7 @@ from typing import Optional
 
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
@@ -60,7 +60,9 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['first_name', 'last_name', ]
 
     default = models.Manager()
-    objects = users_managers.CustomUserManager.from_queryset(users_managers.UserQueryset)()
+    custom_manager = users_managers.CustomUserManager.from_queryset(users_managers.UserQueryset)
+    objects = custom_manager(alive_only=True)
+    all_objects = custom_manager(alive_only=False)
 
     class Meta:
         unique_together = (
@@ -69,6 +71,7 @@ class User(AbstractUser):
         index_together = unique_together
         verbose_name = 'user'
         verbose_name_plural = 'users'
+        default_manager_name = 'default'
         constraints = [
             models.CheckConstraint(
                 name='country_code_within_list_of_countries_check',
@@ -116,13 +119,22 @@ class User(AbstractUser):
             self.full_clean()
         super().save(*args, **kwargs)
 
+    @transaction.atomic
     def delete(self, fake_del=True, using=None, keep_parents=False):
         if fake_del:
-            self.deleted = True
+            self.liberate()  # Deallocate all slaves.
+            self.deleted = True  # Soft delete self.
             self.save(update_fields=('deleted',))
             return f'Account {self.email} is deactivated'
         else:
             return super().delete(using, keep_parents)
+
+    def undelete(self) -> None:
+        """
+        Undeletes user entry previously being fake-deleted.
+        """
+        self.deleted = False
+        return self.save(update_fields=('deleted',))
 
     @cached_property
     def get_absolute_url(self) -> url:
@@ -138,9 +150,16 @@ class User(AbstractUser):
     @property
     def is_slave(self) -> bool:
         """
-        Defines whether or not user is slave( this account is slave account).
+        Defines whether or not user is slave(this account is slave account).
         """
         return bool(self.master)
+
+    def liberate(self) -> Optional[int]:
+        """
+        Deallocate slaves accounts from a master one.
+        """
+        if (slaves := self.my_slaves) is not None:
+            return slaves.update(master=None)
 
     def get_tokens_for_user(self) -> dict:
         """
@@ -183,7 +202,7 @@ class UserIP(models.Model):
         verbose_name_plural = 'User ip addresses.'
         get_latest_by = ('sample_time',)
         index_together = (
-            ('user', 'ip', )
+            ('user', 'ip',)
         )
 
     def __str__(self):
@@ -205,13 +224,12 @@ class UserIP(models.Model):
             super().save(force_insert=False, force_update=False, using=None, update_fields=None)
         # Keep only 'ip_num' amount of fresh ip entries. Delete all others.
         ips_to_be_deleted = models.Subquery(
-                cls.objects.filter(user=self.user).
+            cls.objects.filter(user=self.user).
                 order_by('-sample_time')[ip_num:].values_list('pk', flat=True)
-                            )
+        )
         cls.objects.filter(pk__in=ips_to_be_deleted).delete()
 
     def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
         if fc:
             self.full_clean()
         self.ip_deque(ip_num=3)
-

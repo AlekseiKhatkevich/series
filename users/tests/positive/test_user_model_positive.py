@@ -1,9 +1,10 @@
-from rest_framework.test import APITestCase
-from rest_framework.reverse import reverse
-
 from django.contrib.auth import get_user_model
+from django.core import exceptions
+from django.db import IntegrityError
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
 
-from users.helpers import create_test_users, countries
+from users.helpers import countries, create_test_users
 
 
 class CreateUserModelPositiveTest(APITestCase):
@@ -106,3 +107,30 @@ class CreateUserModelPositiveTest(APITestCase):
                 self.assertFalse(
                     user.is_available_slave
                 )
+
+    def test_save_full_clean(self):
+        """
+        Check that if 'FC' argument is in the 'save' method, then model's  'full_clean' method would
+        be conjured up.
+        """
+        #  Validation takes place on model level.
+        with self.assertRaises(exceptions.ValidationError):
+            self.user_1.master = self.user_1
+            self.user_1.save(fc=True)
+        #  Validation takes place on DB level.
+        with self.assertRaises(IntegrityError):
+            self.user_1.master = self.user_1
+            self.user_1.save(fc=False)
+
+    def test_delete(self):
+        """
+        Check that if 'fake_del=True' is present in method arguments, then model instance would be
+        soft deleted. If False - hard deleted. If master is soft-deleted -his slaves must be liberated.
+        """
+        self.user_2.master = self.user_1
+        self.user_2.save()
+
+        self.user_1.delete(fake_del=True)
+        
+
+

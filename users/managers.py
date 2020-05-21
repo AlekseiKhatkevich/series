@@ -15,6 +15,16 @@ class CustomUserManager(BaseUserManager):
     for authentication instead of username.
     """
 
+    def __init__(self, *args, **kwargs):
+        self.alive_only = kwargs.pop('alive_only', True)
+        super().__init__(*args, **kwargs)
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        if self.alive_only:
+            return qs.exclude(deleted=True)
+        return qs
+
     def create_user(self, email: str, password: str, db_save: bool = True, **extra_fields: Any) -> User_instance:
         """
         Create and save a User with the given email and password.
@@ -75,6 +85,18 @@ class UserQueryset(models.QuerySet):
     """
     User model custom queryset.
     """
+    def delete(self, fake_del=True):
+        if fake_del:
+            return self.update(deleted=True)
+        else:
+            return super().delete()
+
+    def undelete(self) -> int:
+        """
+        Undeletes previously fake-deleted user entries.
+        """
+        return self.update(deleted=False)
+
     def get_available_slaves(self) -> models.QuerySet:
         """
         Method returns queryset of all available slaves
@@ -84,4 +106,8 @@ class UserQueryset(models.QuerySet):
         has_slaves = Exists(self.filter(master_id=OuterRef('pk')))
         queryset_of_available_slaves = self.filter(master__isnull=True).exclude(has_slaves)
         return queryset_of_available_slaves
+
+    delete.queryset_only = True
+    undelete.queryset_only = True
+
 
