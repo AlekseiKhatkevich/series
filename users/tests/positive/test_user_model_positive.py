@@ -3,6 +3,7 @@ from django.core import exceptions
 from django.db import IntegrityError
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
+import operator
 
 from users.helpers import countries, create_test_users
 
@@ -124,13 +125,65 @@ class CreateUserModelPositiveTest(APITestCase):
 
     def test_delete(self):
         """
-        Check that if 'fake_del=True' is present in method arguments, then model instance would be
+        Check that if 'soft_del=True' is present in method arguments, then model instance would be
         soft deleted. If False - hard deleted. If master is soft-deleted -his slaves must be liberated.
         """
         self.user_2.master = self.user_1
         self.user_2.save()
+        self.user_1.delete(soft_del=True)
+        self.user_2.refresh_from_db()
 
-        self.user_1.delete(fake_del=True)
-        
+        self.assertTrue(
+            self.user_1.deleted
+        )
+        self.assertIsNone(
+            self.user_2.master
+        )
 
+        self.user_3.delete(soft_del=False)
+
+        self.assertFalse(
+            get_user_model()._default_manager.filter(pk=self.user_3.pk).exists()
+        )
+
+    def test_undelete(self):
+        """
+        Check that 'undelete' method restore user's soft-deleted entry state to deleted=False.
+        """
+        self.user_1.delete()
+        self.user_1.undelete()
+        self.user_1.refresh_from_db()
+
+        self.assertFalse(
+            self.user_1.deleted
+        )
+
+    def test_liberate(self):
+        """
+        Check that all users slaves are deallocate.
+        """
+        self.user_3.master = self.user_2.master = self.user_1
+        map(operator.methodcaller('save'), self.users)
+        self.user_1.liberate()
+
+        for user in (self.user_3, self.user_2):
+            with self.subTest(user=user):
+                user.refresh_from_db()
+                self.assertIsNone(
+                    user.master
+                )
+
+    def test_managers(self):
+        """
+        Check that 'objects.all()' returns all instances without soft-deleted ones , and
+        'all_objects.all() -all instances in DB table.
+        """
+        self.user_1.delete(soft_del=True)
+
+        self.assertFalse(
+            get_user_model().objects.filter(pk=self.user_1.pk).exists()
+        )
+        self.assertTrue(
+            get_user_model().all_objects.filter(pk=self.user_1.pk).exists()
+        )
 

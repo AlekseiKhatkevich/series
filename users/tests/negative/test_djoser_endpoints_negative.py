@@ -2,15 +2,18 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 from rest_framework.reverse import reverse
 
+from django.contrib.auth import get_user_model
+
 import users.serializers
 from users.helpers import create_test_users, context_managers, create_test_ips
 
 from series import error_codes
 
 
-class DjoserSerializersNegativeTest(APITestCase):
+class DjoserUserCreateNegativeTest(APITestCase):
     """
-    Test of custom Djoser's auth serializers.
+    Test of custom Djoser's user create endpoint.
+    /auth/users/ POST
     """
 
     @classmethod
@@ -141,6 +144,29 @@ class DjoserSerializersNegativeTest(APITestCase):
         self.assertEqual(
             response.data['user_password'][0],
             expected_error_message
+        )
+
+    def test_attempt_create_user_with_email_equal_soft_deleted_user(self):
+        """
+        Check that endpoint would not allow to create user account with email that coincide
+        with email of soft-deleted user account. And we would receive non-standard custom error
+        message in this scenario.
+        """
+        test_user = get_user_model().objects.create_user(**self.test_user_data)
+        test_user.delete()
+
+        response = self.client.post(
+            reverse('user-list'),
+            data={**self.test_user_data},
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(
+            response.data['email'][0],
+            error_codes.USER_SOFT_DELETED
         )
 
 

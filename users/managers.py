@@ -80,13 +80,19 @@ class CustomUserManager(BaseUserManager):
 
             return user
 
+    def is_soft_deleted(self, email: str) -> bool:
+        """
+        Checks whether or not user with given unique data is soft-deleted.
+        """
+        return self.model.all_objects.filter(email=email, deleted=True).exists()
+
 
 class UserQueryset(models.QuerySet):
     """
     User model custom queryset.
     """
-    def delete(self, fake_del=True):
-        if fake_del:
+    def delete(self, soft_del=True):
+        if soft_del:
             return self.update(deleted=True)
         else:
             return super().delete()

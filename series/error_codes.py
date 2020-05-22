@@ -55,5 +55,13 @@ READ_ONLY = exc_msg(
     'This field is read only.',
     'read_only',
 )
+USER_SOFT_DELETED = exc_msg(
+    'User with this email is soft-deleted. Consider to undelete his account rather then create new one.',
+    'user_soft_deleted',
+)
+SOFT_DELETED_DENIED = exc_msg(
+    'Access to soft-deleted users is denied',
+    'soft_deleted_denied',
+)
 
 

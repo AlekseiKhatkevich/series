@@ -2,11 +2,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
 from djoser import serializers as djoser_serializers
-from rest_framework import serializers
+from rest_framework import serializers, validators
 
 from series import error_codes
-from users.helpers import serializer_mixins
-from rest_framework_simplejwt import serializers as simpejwt_serializers
+from users.helpers import serializer_mixins, validators as custom_validators
 
 
 class CustomDjoserUserCreateSerializer(
@@ -37,6 +36,10 @@ class CustomDjoserUserCreateSerializer(
             'user_country', 'master_email', 'master_password',
         )
         extra_kwargs = {
+            'email': {'validators': [
+                custom_validators.UserUniqueValidator(
+                    queryset=get_user_model()._default_manager.all()
+                )]},
             'user_country': {
                 'error_messages': {
                     'invalid_choice': error_codes.WRONG_COUNTRY_CODE.message,
@@ -132,8 +135,13 @@ class SetSlavesSerializer(serializers.Serializer):
         self.slave.save()
         return self.slave
 
+    class UndeleteUserAccountSerializer(serializers.ModelSerializer):
+        """
 
+        """
 
+        class Meta:
+            model = get_user_model()
 
 
 

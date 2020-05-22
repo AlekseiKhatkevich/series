@@ -1,6 +1,8 @@
+import unittest
+
 from django.contrib.auth import get_user_model
 from django.core import exceptions
-from django.db import transaction, models
+from django.db import models, transaction
 from django.db.utils import IntegrityError
 from rest_framework.test import APITestCase
 
@@ -92,6 +94,7 @@ class CreateUserModelNegativeTest(APITestCase):
     #     code=('full_clean()', 'clean()'), ),
     #     reason='Uniqueness will be validated on the model level '
     # )
+    @unittest.skip(reason='Unique together was removed.')
     def test_first_name_and_last_name_unique_together(self):
         """
         Check whether or not is possible to create 2 users with same name and username.

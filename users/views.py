@@ -21,7 +21,6 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     """
     Custom viewset based on Djoser viewset.
     """
-
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.prefetch_related('slaves')
@@ -44,14 +43,26 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
+    @action(['post'], detail=False)
+    def undelete_account(self, request, *args, **kwargs):
+        """
+        Action for undelete soft-deleted user account.
+        """
+        self.get_object = ???
+        pass
+
     def get_permissions(self):
         if self.action == 'set_slaves':
             self.permission_classes = djoser_settings.PERMISSIONS.set_slaves
+        elif self.action == 'undelete_account':
+            return djoser_settings.PERMISSIONS.undelete_account
         return super().get_permissions()
 
     def get_serializer_class(self):
         if self.action == 'set_slaves':
             return djoser_settings.SERIALIZERS.set_slaves
+        elif self.action == 'undelete_account':
+            return djoser_settings.SERIALIZERS.undelete_account
         return super().get_serializer_class()
 
     def permission_denied(self, request, message=None):
@@ -60,8 +71,9 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         super().permission_denied(request, message=message)
 
     def get_throttles(self):
-        if self.action == 'resend_activation':
-            setattr(self, 'throttle_scope', self.action)
+        for act in self.get_extra_actions():
+            if act.__name__ in settings.REST_FRAMEWORK.get('DEFAULT_THROTTLE_RATES', ()):
+                setattr(self, 'throttle_scope', act.__name__)
         return super().get_throttles()
 
 

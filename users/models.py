@@ -59,19 +59,17 @@ class User(AbstractUser):
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
     REQUIRED_FIELDS = ['first_name', 'last_name', ]
 
-    default = models.Manager()
     custom_manager = users_managers.CustomUserManager.from_queryset(users_managers.UserQueryset)
-    objects = custom_manager(alive_only=True)
     all_objects = custom_manager(alive_only=False)
+    objects = custom_manager(alive_only=True)
 
     class Meta:
-        unique_together = (
+        index_together = (
             ('first_name', 'last_name',),
         )
-        index_together = unique_together
         verbose_name = 'user'
         verbose_name_plural = 'users'
-        default_manager_name = 'default'
+        default_manager_name = 'all_objects'
         constraints = [
             models.CheckConstraint(
                 name='country_code_within_list_of_countries_check',
@@ -120,8 +118,8 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     @transaction.atomic
-    def delete(self, fake_del=True, using=None, keep_parents=False):
-        if fake_del:
+    def delete(self, soft_del=True, using=None, keep_parents=False):
+        if soft_del:
             self.liberate()  # Deallocate all slaves.
             self.deleted = True  # Soft delete self.
             self.save(update_fields=('deleted',))

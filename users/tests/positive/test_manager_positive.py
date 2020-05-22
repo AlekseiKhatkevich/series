@@ -50,3 +50,40 @@ class UserManagerAndQuerysetPositiveTest(APITestCase):
             user
         )
 
+    def test_queryset_delete_method(self):
+        """
+        Check that queryset 'delete' method if called with argument 'soft_del=True' soft-deletes
+        models instances in queryset rather then delete them in real. ANd other way around.
+        """
+        get_user_model().objects.all().delete(soft_del=True)
+        self.assertFalse(
+            get_user_model().all_objects.filter(deleted=False).exists()
+        )
+
+        get_user_model()._default_manager.all().update(deleted=False)
+        get_user_model().objects.all().delete(soft_del=False)
+
+        self.assertFalse(
+            get_user_model()._default_manager.all().exists()
+        )
+
+    def test_undelete(self):
+        """
+        Check that soft-deleted user instances get undeleted after calling method 'undelete' on them.
+        """
+        get_user_model().objects.all().delete(soft_del=True)
+        get_user_model().all_objects.all().undelete()
+        self.assertCountEqual(
+            self.users,
+            get_user_model().objects.all()
+        )
+
+    def test_is_soft_deleted(self):
+        """
+        Checks whether or not user with given email is soft-deleted.
+        """
+        self.user_1.delete()
+
+        self.assertTrue(
+            get_user_model().objects.is_soft_deleted(self.user_1.email)
+        )

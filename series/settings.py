@@ -177,6 +177,7 @@ REST_FRAMEWORK = {
     # ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+        'series.permissions.SoftDeletedUsersDenied',
     ],
     'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,
@@ -190,7 +191,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/minute',
         'user': '1000/minute',
-        'resend_activation': '1/minute'
+        'resend_activation': '1/minute',
+        'undelete_account': '1/minute',
     }
 }
 
@@ -221,10 +223,12 @@ DJOSER = {
         'user': 'users.serializers.CustomUserSerializer',
         'current_user': 'users.serializers.CustomUserSerializer',
         'set_slaves': 'users.serializers.SetSlavesSerializer',
+        'undelete_account': 'users.serializers.UndeleteUserAccountSerializer',
     },
     'PERMISSIONS': {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin'],
         'password_reset': ['users.permissions.UserIPPermission'],
+        'undelete_account': ['rest_framework.permissions.AllowAny'],
         },
 }
 #  Email related settings.
