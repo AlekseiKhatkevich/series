@@ -43,8 +43,27 @@ class UserManagerAndQuerysetPositiveTest(APITestCase):
         user = get_user_model().objects.check_user_and_password(
             email=self.user_1.email,
             password='secret'
+
+        )
+        self.assertEqual(
+            self.user_1,
+            user
         )
 
+    def test_check_user_and_password_method_with_soft_deleted_user(self):
+        """
+        Check that if flag 'include_soft_deleted' set to True in method 'check_user_and_password',
+        then soft-deleted user would not be found and error would be arisen.
+        """
+        self.user_1.set_password('secret')
+        self.user_1.save()
+        self.user_1.delete(soft_del=True)
+
+        user = get_user_model().objects.check_user_and_password(
+            email=self.user_1.email,
+            password='secret',
+            include_soft_deleted=True,
+        )
         self.assertEqual(
             self.user_1,
             user

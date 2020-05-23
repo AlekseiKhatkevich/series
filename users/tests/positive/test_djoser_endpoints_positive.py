@@ -274,6 +274,46 @@ class SetSlavesPositiveTest(APITestCase):
         )
 
 
+class UserUndeletePositiveTest(APITestCase):
+    """
+    Test for endpoint for user account undelete.
+    /auth/users/undelete_account/ POST
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+        cls.password = 'my_secret_password'
+        cls.user_3.set_password(cls.password)
+        cls.user_3.save()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class RefreshTokenEndpointPositiveTest(APITestCase):
     """
     Test that when user demands new access token, his ip is determined and written in DB.

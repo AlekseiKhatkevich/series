@@ -54,18 +54,23 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
     def check_user_and_password(
-            self, email: str, password: str, include_non_active: bool = True
+            self, email: str,
+            password: str,
+            include_non_active: bool = True,
+            include_soft_deleted: bool = False,
     ) -> Optional[User_instance]:
         """
         Validation whether user is exists and if so , whether his(hers) password is correct.
         :include_non_active - If True, search as well among users with 'is_active' is set to False.
+        :include_soft_deleted -if True -soft-deleted user will be included in search scope.
         (i.e among all users).
         :returns User instance or None.
         """
         kwargs = {'email': email} if include_non_active else {'email': email, 'is_active': True}
+        manager = self.model.objects if not include_soft_deleted else self.model._default_manager
 
         try:
-            user = self.model.objects.get(**kwargs)
+            user = manager.get(**kwargs)
         except self.model.DoesNotExist as err:
             raise exceptions.ValidationError(
                 {'user_email': error_codes.USER_DOESNT_EXISTS.message},

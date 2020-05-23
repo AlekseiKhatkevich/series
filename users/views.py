@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.http.request import HttpRequest
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
-from rest_framework import exceptions, status, throttling
+from rest_framework import exceptions, status, throttling, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
@@ -25,7 +25,7 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         qs = super().get_queryset()
         return qs.prefetch_related('slaves')
 
-    @action(['post'], detail=False)
+    @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.set_slaves)
     def set_slaves(self, request, *args, **kwargs):
         """
         Action for attaching slave account to a master account.
@@ -43,20 +43,22 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
 
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(['post'], detail=False)
+    @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.undelete_account)
     def undelete_account(self, request, *args, **kwargs):
         """
         Action for undelete soft-deleted user account.
         """
-        self.get_object = ???
-        pass
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if djoser_settings.SEND_ACTIVATION_EMAIL:
+            soft_deleted_user = serializer.soft_deleted_user
+            context = {'soft_deleted_user': soft_deleted_user}
+            to = [get_user_email(soft_deleted_user)]
+            djoser_settings.EMAIL.undelete_account(self.request, context).send(to)
+        else:
+            serializer.save()
 
-    def get_permissions(self):
-        if self.action == 'set_slaves':
-            self.permission_classes = djoser_settings.PERMISSIONS.set_slaves
-        elif self.action == 'undelete_account':
-            return djoser_settings.PERMISSIONS.undelete_account
-        return super().get_permissions()
+        return Response(status=status.HTTP_202_ACCEPTED)
 
     def get_serializer_class(self):
         if self.action == 'set_slaves':
@@ -66,14 +68,13 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         return super().get_serializer_class()
 
     def permission_denied(self, request, message=None):
-        if self.action == 'resend_activation':
+        if self.action in ('resend_activation', 'undelete_account'):
             raise exceptions.PermissionDenied(detail=message)
         super().permission_denied(request, message=message)
 
     def get_throttles(self):
-        for act in self.get_extra_actions():
-            if act.__name__ in settings.REST_FRAMEWORK.get('DEFAULT_THROTTLE_RATES', ()):
-                setattr(self, 'throttle_scope', act.__name__)
+        if self.action in settings.REST_FRAMEWORK.get('DEFAULT_THROTTLE_RATES', ()):
+            setattr(self, 'throttle_scope', self.action)
         return super().get_throttles()
 
 

@@ -1,13 +1,13 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from rest_framework.reverse import reverse
-
 from django.contrib.auth import get_user_model
+from django.core.cache import caches
+from django.conf import settings
+from rest_framework import status, throttling
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
 
 import users.serializers
-from users.helpers import create_test_users, context_managers, create_test_ips
-
 from series import error_codes
+from users.helpers import context_managers, create_test_ips, create_test_users
 
 
 class DjoserUserCreateNegativeTest(APITestCase):
@@ -255,13 +255,13 @@ class UserResendActivationEmailNegativeTest(APITestCase):
     auth/users/resend_activation/ POST
     """
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.users = create_test_users.create_users()
-        cls.user_1, cls.user_2, cls.user_3 = cls.users
-
     def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
         create_test_ips.create_ip_entries(self.users)
+
+    def tearDown(self) -> None:
+        caches['throttling'].clear()
 
     def test_no_email_field(self):
         """
@@ -311,3 +311,34 @@ class UserResendActivationEmailNegativeTest(APITestCase):
             response.data['detail'],
             error_codes.SUSPICIOUS_REQUEST.message
         )
+
+    def test_throttling(self):
+        """
+        Check that throttling works correctly.
+        """
+        self.user_2.is_active = False
+        self.user_2.save()
+        ip = self.user_2.user_ip.all().order_by('?').first().ip
+        data = {'email': self.user_2.email}
+        rate = settings.REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']['resend_activation']
+        overflow_rate = throttling.ScopedRateThrottle().parse_rate(rate)[0] + 1
+
+        for _ in range(overflow_rate):
+            with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+                response = self.client.post(
+                    reverse('user-resend-activation'),
+                    data=data,
+                    format='json',
+                    HTTP_X_FORWARDED_FOR=ip,
+                    REMOTE_ADDR=ip,
+                )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_429_TOO_MANY_REQUESTS
+        )
+
+        cache_key = throttling.ScopedRateThrottle.cache_format % {
+            'scope': 'resend_activation',
+            'ident': ip
+        }
+        caches['throttling'].delete(cache_key)

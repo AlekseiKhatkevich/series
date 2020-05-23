@@ -28,3 +28,20 @@ class SlaveActivationEmail(BaseEmailMessage):
         context['url'] = djoser_settings.SLAVE_ACTIVATION_URL.format(**context)
 
         return context
+
+
+class UserUndeleteEmail(BaseEmailMessage):
+    """
+    Sends emails to user who want to restore their soft-deleted accounts.
+    """
+    template_name = 'undelete_account.html'
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        soft_deleted_user = context['soft_deleted_user']
+
+        context['uid'] = utils.encode_uid(soft_deleted_user.pk)
+        context['token'] = default_token_generator.make_token(soft_deleted_user)
+        context['url'] = djoser_settings.USER_UNDELETE_URL.format(**context)
+
+        return context

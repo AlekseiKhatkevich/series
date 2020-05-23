@@ -9,25 +9,25 @@ from users.helpers import serializer_mixins, validators as custom_validators
 
 
 class CustomDjoserUserCreateSerializer(
-        serializer_mixins.RequiredTogetherFieldsMixin,
-        djoser_serializers.UserCreateSerializer):
+    serializer_mixins.RequiredTogetherFieldsMixin,
+    djoser_serializers.UserCreateSerializer):
     """
     Serializer for create_user action.
     """
     master_email = serializers.EmailField(
         required=False,
         write_only=True,
-        validators=(EmailValidator, ),
+        validators=(EmailValidator,),
         error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED.message},
     )
     master_password = serializers.CharField(
         required=False,
         write_only=True,
-        validators=(validate_password, ),
+        validators=(validate_password,),
         error_messages={'required': error_codes.MASTER_FIELDS_REQUIRED.message},
     )
 
-    required_together_fields = ('master_password', 'master_email', )
+    required_together_fields = ('master_password', 'master_email',)
 
     class Meta(djoser_serializers.UserCreateSerializer.Meta):
         # add possibility to specify 'country' field during user creation.
@@ -135,17 +135,34 @@ class SetSlavesSerializer(serializers.Serializer):
         self.slave.save()
         return self.slave
 
-    class UndeleteUserAccountSerializer(serializers.ModelSerializer):
-        """
 
-        """
+class UndeleteUserAccountSerializer(serializers.ModelSerializer):
+    """
+    Serializer for undelete user account action.
+    """
+    class Meta:
+        model = get_user_model()
+        fields = ('email', 'password',)
+        write_only_fields = fields
+        extra_kwargs = {
+            'email': {'validators': (EmailValidator, )},
+            'password': {'validators': (validate_password,)}
+        }
 
-        class Meta:
-            model = get_user_model()
+    def validate(self, attrs):
+        email, password = attrs['email'], attrs['password']
+        self.soft_deleted_user = get_user_model().objects.check_user_and_password(
+            email, password, include_soft_deleted=True,
+        )
+        if not self.soft_deleted_user.deleted:
+            raise serializers.ValidationError(
+                {'email': error_codes.NOT_SOFT_DELETED.message},
+                code=error_codes.NOT_SOFT_DELETED.code,
+            )
+        return super().validate(attrs)
 
-
-
-
-
-
+    def create(self, validated_data):
+        self.soft_deleted_user.deleted = False
+        self.soft_deleted_user.save(update_fields=('deleted',))
+        return self.soft_deleted_user
 

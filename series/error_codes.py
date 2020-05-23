@@ -63,5 +63,9 @@ SOFT_DELETED_DENIED = exc_msg(
     'Access to soft-deleted users is denied',
     'soft_deleted_denied',
 )
+NOT_SOFT_DELETED = exc_msg(
+    'This user is not deleted. You can not undelete him.',
+    'not_soft_deleted',
+)
 
 

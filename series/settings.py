@@ -186,13 +186,13 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
-        'rest_framework.throttling.ScopedRateThrottle',
+        'series.helpers.throttling.CustomScopeThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/minute',
         'user': '1000/minute',
         'resend_activation': '1/minute',
-        'undelete_account': '1/minute',
+        'undelete_account': '100/minute',
     }
 }
 
@@ -212,11 +212,13 @@ SIMPLE_JWT = {
 DJOSER = {
     'TOKEN_MODEL': None,
     'HIDE_USERS': True,
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
+    'USER_UNDELETE_URL': 'example_frontend_url/{uid}/{token}',
     'SLAVE_ACTIVATION_URL': 'example_frontend_url/{master_uid}/{slave_uid}/{token}',
     'EMAIL': {
         'slave_activation': 'users.email.email_classes.SlaveActivationEmail',
+        'undelete_account': 'users.email.email_classes.UserUndeleteEmail',
     },
     'SERIALIZERS': {
         'user_create': 'users.serializers.CustomDjoserUserCreateSerializer',
@@ -226,9 +228,9 @@ DJOSER = {
         'undelete_account': 'users.serializers.UndeleteUserAccountSerializer',
     },
     'PERMISSIONS': {
-        'set_slaves': ['djoser.permissions.CurrentUserOrAdmin'],
-        'password_reset': ['users.permissions.UserIPPermission'],
-        'undelete_account': ['rest_framework.permissions.AllowAny'],
+        'set_slaves': ['djoser.permissions.CurrentUserOrAdmin', ],
+        'password_reset': ['users.permissions.UserIPPermission', ],
+        'undelete_account': ['rest_framework.permissions.AllowAny', ],
         },
 }
 #  Email related settings.
@@ -236,3 +238,13 @@ if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
     EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+#  Caches related settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'throttling': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+}
