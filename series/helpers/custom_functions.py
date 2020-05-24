@@ -1,5 +1,5 @@
 import inspect
-from typing import Callable, Iterable, Dict, Container
+from typing import Callable, Container, Iterable
 
 from rest_framework.response import Response
 
@@ -56,4 +56,6 @@ def key_field_to_field_dict(response: Response, key_field: str, other_field: str
         raise KeyError(f'There is no field with name{other_field} in response.data objects') from err
 
     return return_dict
+
+
 

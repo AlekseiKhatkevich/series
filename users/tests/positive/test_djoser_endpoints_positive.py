@@ -3,6 +3,7 @@ import re
 from django.conf import settings
 from django.contrib.auth import get_user_model, tokens
 from django.core import mail
+from django.core.cache import caches
 from djoser import utils
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -11,7 +12,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 import users.serializers
 from series.helpers import custom_functions
-from users.helpers import context_managers, create_test_users, create_test_ips
+from users.helpers import context_managers, create_test_ips, create_test_users
 
 
 class DjoserCreateUerPositiveTest(APITestCase):
@@ -176,6 +177,9 @@ class SetSlavesPositiveTest(APITestCase):
         cls.user_3.set_password(cls.password)
         cls.user_3.save()
 
+    def tearDown(self) -> None:
+        mail.outbox = []
+
     def test_set_slave_SEND_ACTIVATION_EMAIL_False(self):
         """
         Check whether endpoint provided with correct data is able to correctly attach slave account
@@ -199,7 +203,7 @@ class SetSlavesPositiveTest(APITestCase):
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_202_ACCEPTED
+            status.HTTP_201_CREATED
         )
 
         self.user_3.refresh_from_db()
@@ -280,38 +284,91 @@ class UserUndeletePositiveTest(APITestCase):
     /auth/users/undelete_account/ POST
     """
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.users = create_test_users.create_users()
-        cls.user_1, cls.user_2, cls.user_3 = cls.users
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
 
-        cls.password = 'my_secret_password'
-        cls.user_3.set_password(cls.password)
-        cls.user_3.save()
+        self.password = 'my_secret_password'
+        self.user_3.set_password(self.password)
+        self.user_3.save()
 
+    def tearDown(self) -> None:
+        mail.outbox = []
+        caches['throttling'].clear()
 
+    def test_undelete_without_confirmation_email(self):
+        """
+        Check that if 'SEND_ACTIVATION_EMAIL' flag in settings is set to False, than soft-deleted
+        user with correct email and password can undelete his account instantly.
+        """
+        self.user_3.delete()
+        data = dict(
+            email=self.user_3.email,
+            password=self.password,
+        )
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=False):
+            response = self.client.post(
+                reverse('user-undelete-account'),
+                data=data,
+                format='json',
+            )
+        self.user_3.refresh_from_db()
 
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+        )
+        self.assertFalse(
+            self.user_3.deleted
+        )
 
+    def test_undelete_with_confirmation_email(self):
+        """
+        Check that if 'SEND_ACTIVATION_EMAIL' flag in settings is set to True, than soft-deleted
+        user with correct email and password should receive email with confirmation link and meanwhile
+        his account should remain soft-deleted.
+        """
+        self.user_3.delete()
+        data = dict(
+            email=self.user_3.email,
+            password=self.password,
+        )
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            response = self.client.post(
+                reverse('user-undelete-account'),
+                data=data,
+                format='json',
+            )
+        self.user_3.refresh_from_db()
+        url = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group('url')
+        uid, token = url.split('/')[-2:]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_202_ACCEPTED
+        )
+        self.assertTrue(
+            self.user_3.deleted
+        )
+        self.assertEqual(
+            len(mail.outbox),
+            1,
+        )
+        self.assertEqual(
+            mail.outbox[0].subject,
+            f'Account undelete confirmation on {settings.SITE_NAME}',
+        )
+        self.assertEqual(
+            mail.outbox[0].to[0],
+            self.user_3.email,
+        )
+        self.assertEqual(
+            int(utils.decode_uid(uid)),
+            self.user_3.pk,
+        )
+        self.assertTrue(
+            tokens.default_token_generator.check_token(user=self.user_3, token=token)
+        )
 
 
 class RefreshTokenEndpointPositiveTest(APITestCase):
@@ -437,5 +494,3 @@ class UserResendActivationEmailPositiveTest(APITestCase):
             response.status_code,
             status.HTTP_204_NO_CONTENT
         )
-
-

@@ -38,10 +38,10 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
             context = {'slave': slave, 'master': request.user}
             to = [get_user_email(slave)]
             djoser_settings.EMAIL.slave_activation(self.request, context).send(to)
+            return Response(status=status.HTTP_202_ACCEPTED)
         else:  # Just attach slave to master directly without confirmation from slave's part.
             serializer.save()
-
-        return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_201_CREATED)
 
     @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.undelete_account)
     def undelete_account(self, request, *args, **kwargs):
@@ -55,10 +55,10 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
             context = {'soft_deleted_user': soft_deleted_user}
             to = [get_user_email(soft_deleted_user)]
             djoser_settings.EMAIL.undelete_account(self.request, context).send(to)
+            return Response(status=status.HTTP_202_ACCEPTED)
         else:
             serializer.save()
-
-        return Response(status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_201_CREATED)
 
     def get_serializer_class(self):
         if self.action == 'set_slaves':

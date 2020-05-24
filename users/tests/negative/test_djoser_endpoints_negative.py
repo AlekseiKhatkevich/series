@@ -1,12 +1,13 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import caches
-from django.conf import settings
 from rest_framework import status, throttling
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 import users.serializers
 from series import error_codes
+from series.helpers.test_helpers import TestHelpers
 from users.helpers import context_managers, create_test_ips, create_test_users
 
 
@@ -342,3 +343,66 @@ class UserResendActivationEmailNegativeTest(APITestCase):
             'ident': ip
         }
         caches['throttling'].delete(cache_key)
+
+
+class UserUndeleteNegativeTest(APITestCase):
+    """
+    Test for endpoint for user account undelete.
+    /auth/users/undelete_account/ POST
+    """
+
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+        self.password = 'my_secret_password'
+        self.user_3.set_password(self.password)
+        self.user_3.save()
+
+    def tearDown(self) -> None:
+        caches['throttling'].clear()
+
+    def test_user_is_not_deleted(self):
+        """
+        Check that if user is not-soft deleted, exception would be arisen.
+        """
+        data = dict(
+            email=self.user_3.email,
+            password=self.password
+        )
+        expected_error_message = error_codes.NOT_SOFT_DELETED.message
+
+        response = self.client.post(
+            reverse('user-undelete-account'),
+            data=data,
+            format='json',
+        )
+        TestHelpers().check_status_and_error(
+            response,
+            field='email',
+            error_message=expected_error_message,
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_throttling(self):
+        """
+        Check that throttling is applied.
+        """
+        self.user_3.delete()
+        data = dict(
+            email=self.user_3.email,
+            password=self.password
+        )
+        rate = settings.REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']['undelete_account']
+        overflow_rate = throttling.ScopedRateThrottle().parse_rate(rate)[0] + 1
+
+        for _ in range(overflow_rate):
+            response = self.client.post(
+                reverse('user-undelete-account'),
+                data=data,
+                format='json',
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_429_TOO_MANY_REQUESTS
+        )

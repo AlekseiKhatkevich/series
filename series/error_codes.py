@@ -56,7 +56,7 @@ READ_ONLY = exc_msg(
     'read_only',
 )
 USER_SOFT_DELETED = exc_msg(
-    'User with this email is soft-deleted. Consider to undelete his account rather then create new one.',
+    f'User with this email is soft-deleted. Consider to undelete his account rather then create new one.',
     'user_soft_deleted',
 )
 SOFT_DELETED_DENIED = exc_msg(
@@ -66,6 +66,10 @@ SOFT_DELETED_DENIED = exc_msg(
 NOT_SOFT_DELETED = exc_msg(
     'This user is not deleted. You can not undelete him.',
     'not_soft_deleted',
+)
+USER_IS_DELETED = exc_msg(
+    'User is deleted.',
+    'user_is_deleted',
 )
 
 

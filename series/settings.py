@@ -172,9 +172,9 @@ TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
 
 #  DRF related options.
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'series.authentication.SoftDeletedJWTAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
         'series.permissions.SoftDeletedUsersDenied',
@@ -192,7 +192,7 @@ REST_FRAMEWORK = {
         'anon': '60/minute',
         'user': '1000/minute',
         'resend_activation': '1/minute',
-        'undelete_account': '100/minute',
+        'undelete_account': '1/minute',
     }
 }
 
@@ -212,7 +212,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'TOKEN_MODEL': None,
     'HIDE_USERS': True,
-    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
     'USER_UNDELETE_URL': 'example_frontend_url/{uid}/{token}',
     'SLAVE_ACTIVATION_URL': 'example_frontend_url/{master_uid}/{slave_uid}/{token}',
