@@ -494,3 +494,47 @@ class UserResendActivationEmailPositiveTest(APITestCase):
             response.status_code,
             status.HTTP_204_NO_CONTENT
         )
+
+
+class JWTTokenObtainPositiveTest(APITestCase):
+    """
+    Test on JWT token obtain endpoint.
+    /auth/jwt/create/ POST
+    """
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+        self.password = 'my_secret_password'
+        self.user_3.set_password(self.password)
+        self.user_3.save()
+
+    def tearDown(self) -> None:
+        caches['throttling'].clear()
+
+    def test_user_gets_token_pair(self):
+        """
+        Check that user with correct data is able to get new JWT token pair.
+        """
+        data = dict(
+            email=self.user_3.email,
+            password=self.password
+        )
+
+        response = self.client.post(
+            reverse('jwt-create'),
+            data=data,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        for key in ('refresh', 'access',):
+            with self.subTest(key=key):
+                self.assertIn(
+                    key,
+                    response.data
+                )
+
+

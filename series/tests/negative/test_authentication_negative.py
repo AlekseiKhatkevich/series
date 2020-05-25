@@ -1,7 +1,11 @@
+from unittest import skipIf
+
 from rest_framework import status
 from rest_framework.reverse import reverse
+from rest_framework.settings import api_settings
 from rest_framework.test import APITestCase
 
+import series.authentication
 from series import error_codes
 from series.helpers.test_helpers import TestHelpers
 from users.helpers import create_test_users
@@ -16,6 +20,8 @@ class AuthenticationNegativeTest(APITestCase):
         self.users = create_test_users.create_users()
         self.user_1, *rest = self.users
 
+    @skipIf(series.authentication.SoftDeletedJWTAuthentication not in
+            api_settings.DEFAULT_AUTHENTICATION_CLASSES, 'JWT auth is off')
     def test_deleted_user_is_not_allowed(self):
         """
         Check that soft-deleted user's request will be rejected.

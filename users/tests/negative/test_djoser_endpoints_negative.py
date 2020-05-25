@@ -406,3 +406,77 @@ class UserUndeleteNegativeTest(APITestCase):
             response.status_code,
             status.HTTP_429_TOO_MANY_REQUESTS
         )
+
+
+class JWTTokenObtainNegativeTest(APITestCase):
+    """
+    Test on JWT token obtain endpoint.
+    /auth/jwt/create/ POST
+    """
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+        self.password = 'my_secret_password'
+        self.user_3.set_password(self.password)
+        self.user_3.save()
+
+    def tearDown(self) -> None:
+        caches['throttling'].clear()
+
+    def test_soft_deleted_user_tries_to_obtain_new_toke_pair(self):
+        """
+        Check that soft-deleted user can't obtain new JWT token pair.
+        """
+        self.user_3.delete()
+        data = dict(
+            email=self.user_3.email,
+            password=self.password
+        )
+        expected_error_message = error_codes.SOFT_DELETED_DENIED.message
+
+        response = self.client.post(
+            reverse('jwt-create'),
+            data=data,
+            format='json',
+        )
+        TestHelpers().check_status_and_error(
+            response,
+            field='email',
+            error_message=expected_error_message,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+
+class RefreshTokenEndpointNegativeTest(APITestCase):
+    """
+    Test on JWT token refresh API endpoint.
+    auth/jwt/refresh/ POST
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+    def test_soft_deleted_user_not_gonna_have_access(self):
+        """
+        Check that soft-deleted user is not allowed to refresh his token.
+        """
+        refresh_token = self.user_2.get_tokens_for_user()['refresh']
+        data = {'refresh': refresh_token}
+        expected_error_message = error_codes.SOFT_DELETED_DENIED.message
+        self.user_2.delete()
+
+        response = self.client.post(
+            reverse('jwt-refresh'),
+            data=data,
+            format='json',
+        )
+        TestHelpers().check_status_and_error(
+            response,
+            field='email',
+            error_message=expected_error_message,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+

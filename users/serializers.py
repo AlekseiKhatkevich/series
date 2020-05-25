@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
 from djoser import serializers as djoser_serializers
-from rest_framework import serializers, validators
+from rest_framework import serializers
 
 from series import error_codes
 from users.helpers import serializer_mixins, validators as custom_validators
@@ -165,4 +165,24 @@ class UndeleteUserAccountSerializer(serializers.ModelSerializer):
         self.soft_deleted_user.deleted = False
         self.soft_deleted_user.save(update_fields=('deleted',))
         return self.soft_deleted_user
+
+
+class CommitUndeleteUserAccountSerializer(djoser_serializers.UidAndTokenSerializer):
+    """
+      Serializer to undelete user when 'SEND_ACTIVATION_EMAIL' flag is set to True. In this case user
+      receives an email with confirmation link, clicks it, frontend parses this link, extracts
+      uid and token from it and sends to backend via POST request.
+    """
+
+    def validate(self, attrs):
+        # Superclass 'validate' monkey-patch in order to change 'objects' to '_default_manager' as
+        # 'objects' obviously doesnt see soft-deleted users.
+        User = get_user_model()
+        User.objects = User._default_manager
+        attrs = super().validate(attrs)
+        if not self.user.deleted:
+            raise serializers.ValidationError(
+                *error_codes.NOT_SOFT_DELETED
+            )
+        return attrs
 

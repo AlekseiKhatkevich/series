@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Type
 
 import djoser.views
 import jwt
@@ -8,13 +8,16 @@ from django.core.exceptions import ValidationError
 from django.http.request import HttpRequest
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
-from rest_framework import exceptions, status, throttling, permissions
+from rest_framework import exceptions, status, throttling
+from rest_framework.settings import api_settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 
 import users.models
 from series.helpers.typing import jwt_token
+from series import error_codes
+from users.helpers import views_mixins
 
 
 class CustomDjoserUserViewSet(djoser.views.UserViewSet):
@@ -60,20 +63,35 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
 
+    @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.confirm_undelete_account)
+    def confirm_undelete_account(self, request, *args, **kwargs):
+        """
+        Action to confirm account restoration by email link.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.user
+        user.deleted = False
+        user.save()
+        if settings.SEND_CONFIRMATION_EMAIL:
+            context = {"user": user}
+            to = [get_user_email(user)]
+            settings.EMAIL.confirmation(self.request, context).send(to)
+        #/MQ/5gs-fb5ae501d135d7ddb568"
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     def get_serializer_class(self):
-        if self.action == 'set_slaves':
-            return djoser_settings.SERIALIZERS.set_slaves
-        elif self.action == 'undelete_account':
-            return djoser_settings.SERIALIZERS.undelete_account
+        if self.action in ('set_slaves', 'undelete_account', 'confirm_undelete_account'):
+            return getattr(djoser_settings.SERIALIZERS, self.action)
         return super().get_serializer_class()
 
     def permission_denied(self, request, message=None):
-        if self.action in ('resend_activation', 'undelete_account'):
+        if self.action in ('resend_activation', ):
             raise exceptions.PermissionDenied(detail=message)
         super().permission_denied(request, message=message)
 
     def get_throttles(self):
-        if self.action in settings.REST_FRAMEWORK.get('DEFAULT_THROTTLE_RATES', ()):
+        if self.action in getattr(api_settings, 'DEFAULT_THROTTLE_RATES', ()):
             setattr(self, 'throttle_scope', self.action)
         return super().get_throttles()
 
@@ -84,8 +102,7 @@ class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
     writing user's ip address before new access token is rendered.
     """
 
-    @staticmethod
-    def write_user_ip(request: HttpRequest, token: jwt_token) -> Optional[users.models.UserIP]:
+    def write_user_ip(self, request: HttpRequest, token: jwt_token) -> Optional[users.models.UserIP]:
         """
         Method extracts user_id from JWT token, gets user ip address from request
         and writes 'UserIP' models entry in DB successfully saving user's ip in DB.
@@ -108,6 +125,8 @@ class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
             user_id = decoded['user_id']
             user_ip_address = throttling.BaseThrottle().get_ident(request)
 
+            self.filter_soft_deleted_users(user_id=user_id)
+
             try:
                 return users.models.UserIP.objects.create(
                     user_id=user_id,
@@ -121,3 +140,22 @@ class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
         token = response.data.get('access', None)
         self.write_user_ip(request, token)
         return response
+
+    @staticmethod
+    def filter_soft_deleted_users(user_id: Type[int]) -> None:
+        """
+        Raises validation error if user with given pk is soft-deleted.
+        """
+        if get_user_model().objects.is_soft_deleted(pk=user_id):
+            raise ValidationError(
+                {'email': error_codes.SOFT_DELETED_DENIED.message},
+                code=error_codes.SOFT_DELETED_DENIED.code,
+            )
+
+
+class CustomTokenObtainPairView(views_mixins.TokenViewBaseMixin, simplejwt_views.TokenObtainPairView):
+    """
+    Difference to standard 'TokenObtainPairView' is that in case user is soft-deleted, view would
+    raise exception.
+    """
+    pass

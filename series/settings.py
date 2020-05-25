@@ -172,9 +172,9 @@ TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
 
 #  DRF related options.
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'series.authentication.SoftDeletedJWTAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'series.authentication.SoftDeletedJWTAuthentication',
+    # ),
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
         'series.permissions.SoftDeletedUsersDenied',
@@ -193,6 +193,8 @@ REST_FRAMEWORK = {
         'user': '1000/minute',
         'resend_activation': '1/minute',
         'undelete_account': '1/minute',
+        'confirm_undelete_account': '100/minute',
+        'activation': '5/minute',
     }
 }
 
@@ -212,7 +214,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'TOKEN_MODEL': None,
     'HIDE_USERS': True,
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
     'USER_UNDELETE_URL': 'example_frontend_url/{uid}/{token}',
     'SLAVE_ACTIVATION_URL': 'example_frontend_url/{master_uid}/{slave_uid}/{token}',
@@ -226,11 +228,13 @@ DJOSER = {
         'current_user': 'users.serializers.CustomUserSerializer',
         'set_slaves': 'users.serializers.SetSlavesSerializer',
         'undelete_account': 'users.serializers.UndeleteUserAccountSerializer',
+        'confirm_undelete_account': 'users.serializers.CommitUndeleteUserAccountSerializer',
     },
     'PERMISSIONS': {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin', ],
         'password_reset': ['users.permissions.UserIPPermission', ],
         'undelete_account': ['rest_framework.permissions.AllowAny', ],
+        'confirm_undelete_account': ['rest_framework.permissions.AllowAny', ],
         },
 }
 #  Email related settings.

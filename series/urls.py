@@ -21,6 +21,8 @@ urlpatterns = [
 
     #  Url to custom JWT token refresh endpoint. Overrides one url in 'djoser.urls.jwt'.
     re_path(r'^auth/jwt/refresh/?', users.views.CustomJWTTokenRefreshView.as_view(), name='jwt-refresh'),
+    #  Url to JWT obtain endpoint. Overrides one url in 'djoser.urls.jwt'.
+    re_path(r"^auth/jwt/create/?", users.views.CustomTokenObtainPairView.as_view(), name='jwt-create'),
     re_path(r'^auth/', include('djoser.urls.jwt')),
     # Change 'djoser.urls' in order to be able to use custom Views
     re_path(r'^auth/', include(djoser_router.urls)),

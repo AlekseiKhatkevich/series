@@ -104,5 +104,5 @@ class UserManagerAndQuerysetPositiveTest(APITestCase):
         self.user_1.delete()
 
         self.assertTrue(
-            get_user_model().objects.is_soft_deleted(self.user_1.email)
+            get_user_model().objects.is_soft_deleted(email=self.user_1.email)
         )

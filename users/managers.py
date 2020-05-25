@@ -85,11 +85,12 @@ class CustomUserManager(BaseUserManager):
 
             return user
 
-    def is_soft_deleted(self, email: str) -> bool:
+    def is_soft_deleted(self, **kwargs: Any) -> bool:
         """
         Checks whether or not user with given unique data is soft-deleted.
         """
-        return self.model.all_objects.filter(email=email, deleted=True).exists()
+        assert kwargs, 'Provide at least one lookup field (pk, email, etc)'
+        return self.model._default_manager.filter(**kwargs, deleted=True).exists()
 
 
 class UserQueryset(models.QuerySet):
