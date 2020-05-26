@@ -193,7 +193,7 @@ REST_FRAMEWORK = {
         'user': '1000/minute',
         'resend_activation': '1/minute',
         'undelete_account': '1/minute',
-        'confirm_undelete_account': '100/minute',
+        'confirm_undelete_account': '10/minute',
         'activation': '5/minute',
     }
 }
@@ -214,7 +214,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'TOKEN_MODEL': None,
     'HIDE_USERS': True,
-    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_ACTIVATION_EMAIL': False,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
     'USER_UNDELETE_URL': 'example_frontend_url/{uid}/{token}',
     'SLAVE_ACTIVATION_URL': 'example_frontend_url/{master_uid}/{slave_uid}/{token}',

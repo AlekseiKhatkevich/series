@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import caches
+from djoser import utils
 from rest_framework import status, throttling
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -480,3 +481,39 @@ class RefreshTokenEndpointNegativeTest(APITestCase):
             status_code=status.HTTP_400_BAD_REQUEST
         )
 
+
+class ConfirmUserUndeleteNegativeTest(APITestCase):
+    """
+    Negative test on endpoint which confirms uid and token from frontend in order to 'undelete'
+    previously soft-deleted user account.
+    /auth/users/confirm_undelete_account/ POST
+    """
+
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+    def tearDown(self) -> None:
+        caches['throttling'].clear()
+
+    def test_user_undeletes_not_deleted_user(self):
+        """
+        Check that if uid of non-deleted user is received, then exception is arisen.
+        """
+        token = 'fake_token'
+        uid = utils.encode_uid(self.user_1.pk)
+        expected_error_message = error_codes.NOT_SOFT_DELETED.message
+        data = dict(
+            token=token, uid=uid,
+        )
+        response = self.client.post(
+            reverse('user-confirm-undelete-account'),
+            data=data,
+            format='json',
+        )
+        TestHelpers().check_status_and_error(
+            response,
+            field='uid',
+            error_message=expected_error_message,
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )

@@ -538,3 +538,44 @@ class JWTTokenObtainPositiveTest(APITestCase):
                 )
 
 
+class ConfirmUserUndeletePositiveTest(APITestCase):
+    """
+    Positive test on endpoint which confirms uid and token from frontend in order to 'undelete'
+    previously soft-deleted user account.
+    /auth/users/confirm_undelete_account/ POST
+    """
+
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+    def tearDown(self) -> None:
+        caches['throttling'].clear()
+
+    def test_user_undeletes_account(self):
+        """
+        Check that soft-deleted user is able to undelete his account provided that we have received
+        correct uid and token from frontend after user having clicked on confirmation email link.
+        """
+        self.user_1.delete()
+        token = tokens.PasswordResetTokenGenerator().make_token(self.user_1)
+        uid = utils.encode_uid(self.user_1.pk)
+        data = dict(
+            token=token, uid=uid,
+        )
+        response = self.client.post(
+            reverse('user-confirm-undelete-account'),
+            data=data,
+            format='json',
+        )
+
+        self.user_1.refresh_from_db()
+
+        self.assertTrue(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT,
+        )
+        self.assertFalse(
+            self.user_1.deleted
+        )
+

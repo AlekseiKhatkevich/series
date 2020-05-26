@@ -67,17 +67,20 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     def confirm_undelete_account(self, request, *args, **kwargs):
         """
         Action to confirm account restoration by email link.
+        /MQ/5gs-fb5ae501d135d7ddb568/ example of uid and token string
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.user
         user.deleted = False
         user.save()
-        if settings.SEND_CONFIRMATION_EMAIL:
+
+        if djoser_settings.SEND_CONFIRMATION_EMAIL:
             context = {"user": user}
             to = [get_user_email(user)]
-            settings.EMAIL.confirmation(self.request, context).send(to)
-        #/MQ/5gs-fb5ae501d135d7ddb568"
+            djoser_settings.EMAIL.confirmation(self.request, context).send(to)
+            return Response(status=status.HTTP_202_ACCEPTED)
+
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
