@@ -3,7 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
 from djoser import serializers as djoser_serializers
 from rest_framework import exceptions as drf_exceptions, serializers
-
+from djoser.conf import settings as djoser_settings
 from series import error_codes
 from users.helpers import serializer_mixins, validators as custom_validators
 
@@ -89,7 +89,10 @@ class CustomUserSerializer(
         read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master',)
 
 
-class SetSlavesSerializer(serializers.Serializer):
+class SetSlavesSerializer(
+    serializer_mixins.UserSlaveMutualValidationMixin,
+    serializers.Serializer
+):
     """
     Serializer for setting one account as a slave of master account.
     action - 'set_slaves'.
@@ -116,18 +119,7 @@ class SetSlavesSerializer(serializers.Serializer):
 
         # Validates potential slave's email and password.
         self.slave = get_user_model().objects.check_user_and_password(slave_email, slave_password)
-        # Check whether potential slave is available for this role.
-        if not self.slave.is_available_slave:
-            raise serializers.ValidationError(
-                {'slave_email': error_codes.SLAVE_UNAVAILABLE.message},
-                code=error_codes.SLAVE_UNAVAILABLE.code,
-            )
-        # Slave account cant be equal to master account.
-        if self.slave == user:
-            raise serializers.ValidationError(
-                {'slave_email': error_codes.MASTER_OF_SELF.message},
-                code=error_codes.MASTER_OF_SELF.code
-            )
+        self.master_slave_mutual_data_validation(slave=self.slave, master=user)
         return super().validate(attrs)
 
     def create(self, validated_data):
@@ -140,12 +132,13 @@ class UndeleteUserAccountSerializer(serializers.ModelSerializer):
     """
     Serializer for undelete user account action.
     """
+
     class Meta:
         model = get_user_model()
         fields = ('email', 'password',)
         write_only_fields = fields
         extra_kwargs = {
-            'email': {'validators': (EmailValidator, )},
+            'email': {'validators': (EmailValidator,)},
             'password': {'validators': (validate_password,)}
         }
 
@@ -191,4 +184,43 @@ class CommitUndeleteUserAccountSerializer(
         self.confirm_token(user=self.user, token=token)
 
         return attrs
+
+
+class CommitSetSlavesSerializer(
+    serializer_mixins.UserSlaveMutualValidationMixin,
+    serializer_mixins.UidAndTokenValidationMixin,
+    serializers.Serializer,
+):
+    """
+    Serializer receives slave and master uid, token , validates it and attaches slave to master.
+    Needed to confirm slave attachment when user clicks confirmation link in email.
+    confirmation url example -MQ/Mg/5gt-5ac6b80063a4457b88a7
+    """
+
+    master_uid = serializers.CharField()
+    slave_uid = serializers.CharField()
+    token = serializers.CharField()
+
+    def validate_master_uid(self, value):
+        self.master = self.confirm_uid(uid=value)
+        return value
+
+    def validate_slave_uid(self, value):
+        self.slave = self.confirm_uid(uid=value)
+        return value
+
+    def validate_token(self, value):
+        self.confirm_token(user=self.slave, token=value)
+        return value
+
+    def validate(self, attrs):
+        self.master_slave_mutual_data_validation(master=self.master, slave=self.slave)
+        return super().validate(attrs)
+
+    def create(self, validated_data):
+        self.slave.master = self.master
+        self.slave.save()
+        return self.slave
+
+
 

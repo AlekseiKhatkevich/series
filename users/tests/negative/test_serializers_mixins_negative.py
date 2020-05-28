@@ -50,7 +50,7 @@ class UidAndTokenValidationMixinNegativeTest(APITestCase):
         Check that if incorrect uid is provided, then validation error is arisen.
         """
         wrong_uid = 'MQ'
-        expected_error_message = str(self.mixin.error_messages['invalid_uid'])
+        expected_error_message = str(self.mixin.default_error_messages['invalid_uid'])
 
         with self.assertRaisesMessage(serializers.ValidationError, expected_error_message):
             self.mixin.confirm_uid(wrong_uid)
@@ -60,7 +60,7 @@ class UidAndTokenValidationMixinNegativeTest(APITestCase):
         Check that if incorrect token is provided, then validation error is arisen.
         """
         wrong_token = 'wrong_token'
-        expected_error_message = str(self.mixin.error_messages['invalid_token'])
+        expected_error_message = str(self.mixin.default_error_messages['invalid_token'])
 
         with self.assertRaisesMessage(serializers.ValidationError, expected_error_message):
             self.mixin.confirm_token(self.user_1, wrong_token)

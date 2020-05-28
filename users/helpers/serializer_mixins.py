@@ -99,7 +99,7 @@ class UidAndTokenValidationMixin:
     """
     defines few methods to validate UID and token + extract user object from Db based on this information.
     """
-    error_messages = {
+    default_error_messages = {
         'invalid_token': djoser_settings.CONSTANTS.messages.INVALID_TOKEN_ERROR,
         'invalid_uid': djoser_settings.CONSTANTS.messages.INVALID_UID_ERROR,
     }
@@ -116,7 +116,7 @@ class UidAndTokenValidationMixin:
         except (get_user_model().DoesNotExist, ValueError, TypeError, OverflowError) as err:
             key_error = 'invalid_uid'
             raise serializers.ValidationError(
-                {'uid': [self.error_messages[key_error]]}, code=key_error
+                {'uid': [self.default_error_messages[key_error]]}, code=key_error,
             ) from err
         else:
             return user
@@ -130,6 +130,37 @@ class UidAndTokenValidationMixin:
         if not is_token_valid:
             key_error = 'invalid_token'
             raise serializers.ValidationError(
-                     {'token': [self.error_messages[key_error]]}, code=key_error
+                     {'token': [self.default_error_messages[key_error]]}, code=key_error
                  )
 
+
+class UserSlaveMutualValidationMixin:
+    """
+    Provides set of data validation in case of slave to user attachment.
+    """
+    @staticmethod
+    def master_slave_mutual_data_validation(*, slave: User_instance, master: User_instance) -> None:
+        """
+        Validates slave to master attachment
+        :param slave: User model instance of slave.
+        :param master: User model instance of master.
+        :return: None
+        """
+        # Slave account cant be equal to master account.
+        if slave == master:
+            raise serializers.ValidationError(
+                {'slave_email': error_codes.MASTER_OF_SELF.message},
+                code=error_codes.MASTER_OF_SELF.code
+            )
+        # Master cant be slave.
+        if master.is_slave:
+            raise serializers.ValidationError(
+                {'slave_email': error_codes.SLAVE_CANT_HAVE_SALVES.message},
+                code=error_codes.SLAVE_CANT_HAVE_SALVES.code
+            )
+        # Check whether potential slave is available for this role.
+        if not slave.is_available_slave:
+            raise serializers.ValidationError(
+                {'slave_email': error_codes.SLAVE_UNAVAILABLE.message},
+                code=error_codes.SLAVE_UNAVAILABLE.code,
+            )

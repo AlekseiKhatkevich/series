@@ -179,14 +179,13 @@ class SetSlavesNegativeTest(APITestCase):
     /auth/users/set_slaves/ POST
     """
 
-    @classmethod
-    def setUpTestData(cls):
-        cls.users = create_test_users.create_users()
-        cls.user_1, cls.user_2, cls.user_3 = cls.users
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
 
-        cls.password = 'my_secret_password228882'
-        cls.user_3.set_password(cls.password)
-        cls.user_3.save()
+        self.password = 'my_secret_password228882'
+        self.user_3.set_password(self.password)
+        self.user_3.save()
 
     def test_slave_is_not_available(self):
         """
@@ -247,6 +246,32 @@ class SetSlavesNegativeTest(APITestCase):
         self.assertEqual(
             response.data['slave_email'][0],
             expected_error_message
+        )
+
+    def test_master_is_slave(self):
+        """
+        Check that potential master can't be slave himself.
+        """
+        self.user_1.master = self.user_2
+        self.user_1.save()
+        expected_error_message = error_codes.SLAVE_CANT_HAVE_SALVES.message
+        data = dict(
+            slave_email=self.user_3.email,
+            slave_password=self.password,
+        )
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=False):
+            response = self.client.post(
+                reverse('user-set-slaves'),
+                data=data,
+                format='json',
+            )
+
+        TestHelpers().check_status_and_error(
+            response, status_code=status.HTTP_400_BAD_REQUEST,
+            field='slave_email',
+            error_message=expected_error_message,
         )
 
 

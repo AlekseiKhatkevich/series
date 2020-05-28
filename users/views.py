@@ -24,6 +24,16 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     """
     Custom viewset based on Djoser viewset.
     """
+    @classmethod
+    def get_child_extra_actions(cls):
+        """
+        Returns only extra actions defined in this exact viewset exclude actions defined in superclasses.
+        """
+        all_extra_actions = cls.get_extra_actions()
+        parent_extra_actions = cls.__base__.get_extra_actions()
+        child_extra_actions = set(all_extra_actions).difference(parent_extra_actions)
+        return (act.__name__ for act in child_extra_actions)
+
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.prefetch_related('slaves')
@@ -46,6 +56,24 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
 
+    @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.confirm_set_slaves)
+    def confirm_set_slaves(self, request, *args, **kwargs):
+        """
+        Action confirms 2 pcs. uid and token received from FE and attaches slave to master.
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if djoser_settings.SEND_CONFIRMATION_EMAIL:
+            slave, master = serializer.slave, serializer.master
+            for person in (master, slave):
+                context = {'user': person}
+                to = [get_user_email(person)]
+                djoser_settings.EMAIL.confirmation(self.request, context).send(to)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.undelete_account)
     def undelete_account(self, request, *args, **kwargs):
         """
@@ -53,6 +81,7 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
         if djoser_settings.SEND_ACTIVATION_EMAIL:
             soft_deleted_user = serializer.soft_deleted_user
             context = {'soft_deleted_user': soft_deleted_user}
@@ -76,15 +105,14 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         user.save()
 
         if djoser_settings.SEND_CONFIRMATION_EMAIL:
-            context = {"user": user}
+            context = {'user': user}
             to = [get_user_email(user)]
             djoser_settings.EMAIL.confirmation(self.request, context).send(to)
-            return Response(status=status.HTTP_202_ACCEPTED)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
-        if self.action in ('set_slaves', 'undelete_account', 'confirm_undelete_account'):
+        if self.action in self.get_child_extra_actions():
             return getattr(djoser_settings.SERIALIZERS, self.action)
         return super().get_serializer_class()
 

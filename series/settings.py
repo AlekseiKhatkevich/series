@@ -193,7 +193,8 @@ REST_FRAMEWORK = {
         'user': '1000/minute',
         'resend_activation': '1/minute',
         'undelete_account': '1/minute',
-        'confirm_undelete_account': '10/minute',
+        'confirm_undelete_account': '1/minute',
+        'confirm_set_slaves': '3/minute',
         'activation': '5/minute',
     }
 }
@@ -229,12 +230,14 @@ DJOSER = {
         'set_slaves': 'users.serializers.SetSlavesSerializer',
         'undelete_account': 'users.serializers.UndeleteUserAccountSerializer',
         'confirm_undelete_account': 'users.serializers.CommitUndeleteUserAccountSerializer',
+        'confirm_set_slaves': 'users.serializers.CommitSetSlavesSerializer',
     },
     'PERMISSIONS': {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin', ],
         'password_reset': ['users.permissions.UserIPPermission', ],
         'undelete_account': ['rest_framework.permissions.AllowAny', ],
         'confirm_undelete_account': ['rest_framework.permissions.AllowAny', ],
+        'confirm_set_slaves': ['rest_framework.permissions.AllowAny', ],
         },
 }
 #  Email related settings.

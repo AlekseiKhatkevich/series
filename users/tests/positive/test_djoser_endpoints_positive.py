@@ -579,3 +579,49 @@ class ConfirmUserUndeletePositiveTest(APITestCase):
             self.user_1.deleted
         )
 
+
+class ConfirmSetSlavesPositive(APITestCase):
+    """
+    Positive test on API endpoint that confirms pair of uid and token received from FE and on success
+    attaches slave to user.
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        caches['throttling'].clear()
+
+    def test_slave_confirms(self):
+        """
+        Check that if potential slave confirms to his decision to be turned into a slave then provided
+        that both uid and token are valid -hi became attached to a master.
+        """
+        token = tokens.PasswordResetTokenGenerator().make_token(self.user_2)
+        master_uid = utils.encode_uid(self.user_1.pk)
+        slave_uid = utils.encode_uid(self.user_2.pk)
+
+        data = dict(
+            token=token,
+            slave_uid=slave_uid,
+            master_uid=master_uid,
+        )
+        response = self.client.post(
+            reverse('user-confirm-set-slaves'),
+            data=data,
+            format='json',
+        )
+        self.user_2.refresh_from_db()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+        self.assertEqual(
+            self.user_2.master_id,
+            self.user_1.pk
+        )

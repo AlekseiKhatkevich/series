@@ -88,6 +88,12 @@ class User(AbstractUser):
 
     def clean(self):
         errors = {}
+        # Prevent master fc point to itself(master cant be his own master, same for slave).
+        if self.master == self:
+            errors.update(
+                {'master': exceptions.ValidationError(
+                    *error_codes.MASTER_OF_SELF, )}
+            )
         #  We make sure  that slave cant own slaves(slave acc. can't have it's own slave accounts).
         #  We use 'filter(master__email=self.email)' lookup as model object doesnt have a pk yet
         #  until it created in DB at least.
@@ -101,12 +107,6 @@ class User(AbstractUser):
             errors.update(
                 {'master': exceptions.ValidationError(
                     *error_codes.MASTER_CANT_BE_SLAVE, )}
-            )
-        # Prevent master fc point to itself(master cant be his own master, same for slave).
-        if self.master == self:
-            errors.update(
-                {'master': exceptions.ValidationError(
-                    *error_codes.MASTER_OF_SELF, )}
             )
 
         if errors:
