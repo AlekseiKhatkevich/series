@@ -25,7 +25,6 @@ class User(AbstractUser):
         'self',
         blank=True,
         null=True,
-        db_index=False,
         verbose_name='Slave account if not null',
         related_name='slaves',
         on_delete=models.SET_NULL
@@ -143,7 +142,7 @@ class User(AbstractUser):
         """
         Returns queryset of slaves accounts if user have them or None.
         """
-        return self.__class__.objects.filter(master=self) or None
+        return self.slaves.all() or None
 
     @property
     def is_slave(self) -> bool:

@@ -1,3 +1,4 @@
+import collections
 from types import MappingProxyType
 from typing import Optional
 
@@ -146,21 +147,20 @@ class UserSlaveMutualValidationMixin:
         :param master: User model instance of master.
         :return: None
         """
+        errors = collections.defaultdict(list)
+        codes = set()
         # Slave account cant be equal to master account.
-        if slave == master:
-            raise serializers.ValidationError(
-                {'slave_email': error_codes.MASTER_OF_SELF.message},
-                code=error_codes.MASTER_OF_SELF.code
-            )
+        if master == slave:
+            errors['master_email'].append(error_codes.MASTER_OF_SELF.message,)
+            codes.add(error_codes.MASTER_OF_SELF.code,)
         # Master cant be slave.
         if master.is_slave:
-            raise serializers.ValidationError(
-                {'slave_email': error_codes.SLAVE_CANT_HAVE_SALVES.message},
-                code=error_codes.SLAVE_CANT_HAVE_SALVES.code
-            )
+            errors['master_email'].append(error_codes.SLAVE_CANT_HAVE_SALVES.message,)
+            codes.add(error_codes.SLAVE_CANT_HAVE_SALVES.code,)
         # Check whether potential slave is available for this role.
         if not slave.is_available_slave:
-            raise serializers.ValidationError(
-                {'slave_email': error_codes.SLAVE_UNAVAILABLE.message},
-                code=error_codes.SLAVE_UNAVAILABLE.code,
-            )
+            errors['slave_email'].append(error_codes.SLAVE_UNAVAILABLE.message,)
+            codes.add(error_codes.SLAVE_UNAVAILABLE.code,)
+        if errors:
+            raise serializers.ValidationError(errors, codes,)
+

@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import caches
 from djoser import utils
-from rest_framework import status, throttling
+from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
@@ -172,7 +171,7 @@ class DjoserUserCreateNegativeTest(APITestCase):
         )
 
 
-class SetSlavesNegativeTest(APITestCase):
+class SetSlavesNegativeTest(TestHelpers, APITestCase):
     """
     Test on Djoser custom endpoint that attaches slave to master. Test whether or not endpoint's
     serializer resists against attempts of putting inside it bad data.
@@ -210,13 +209,11 @@ class SetSlavesNegativeTest(APITestCase):
                 format='json',
             )
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_400_BAD_REQUEST
-        )
-        self.assertEqual(
-            response.data['slave_email'][0],
-            expected_error_message
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            field='slave_email',
+            error_message=expected_error_message,
         )
 
     def test_slave_equal_user(self):
@@ -239,13 +236,11 @@ class SetSlavesNegativeTest(APITestCase):
                 format='json',
             )
 
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_400_BAD_REQUEST
-        )
-        self.assertEqual(
-            response.data['slave_email'][0],
-            expected_error_message
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            field='master_email',
+            error_message=expected_error_message,
         )
 
     def test_master_is_slave(self):
@@ -268,14 +263,15 @@ class SetSlavesNegativeTest(APITestCase):
                 format='json',
             )
 
-        TestHelpers().check_status_and_error(
-            response, status_code=status.HTTP_400_BAD_REQUEST,
-            field='slave_email',
+        TestHelpers().check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            field='master_email',
             error_message=expected_error_message,
         )
 
 
-class UserResendActivationEmailNegativeTest(APITestCase):
+class UserResendActivationEmailNegativeTest(TestHelpers, APITestCase):
     """
     Negative test for User resent activation email API custom permission class.
     we check how well permission class secure api from wrong requests.
@@ -347,31 +343,19 @@ class UserResendActivationEmailNegativeTest(APITestCase):
         self.user_2.save()
         ip = self.user_2.user_ip.all().order_by('?').first().ip
         data = {'email': self.user_2.email}
-        rate = settings.REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']['resend_activation']
-        overflow_rate = throttling.ScopedRateThrottle().parse_rate(rate)[0] + 1
 
-        for _ in range(overflow_rate):
-            with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
-                response = self.client.post(
-                    reverse('user-resend-activation'),
-                    data=data,
-                    format='json',
-                    HTTP_X_FORWARDED_FOR=ip,
-                    REMOTE_ADDR=ip,
-                )
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_429_TOO_MANY_REQUESTS
-        )
-
-        cache_key = throttling.ScopedRateThrottle.cache_format % {
-            'scope': 'resend_activation',
-            'ident': ip
-        }
-        caches['throttling'].delete(cache_key)
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            self.check_scope_throttling(
+                scope='resend_activation',
+                url_name='user-resend-activation',
+                data=data,
+                http_verb='POST',
+                HTTP_X_FORWARDED_FOR=ip,
+                REMOTE_ADDR=ip,
+            )
 
 
-class UserUndeleteNegativeTest(APITestCase):
+class UserUndeleteNegativeTest(TestHelpers, APITestCase):
     """
     Test for endpoint for user account undelete.
     /auth/users/undelete_account/ POST
@@ -403,7 +387,7 @@ class UserUndeleteNegativeTest(APITestCase):
             data=data,
             format='json',
         )
-        TestHelpers().check_status_and_error(
+        self.check_status_and_error_message(
             response,
             field='email',
             error_message=expected_error_message,
@@ -419,18 +403,11 @@ class UserUndeleteNegativeTest(APITestCase):
             email=self.user_3.email,
             password=self.password
         )
-        rate = settings.REST_FRAMEWORK['DEFAULT_THROTTLE_RATES']['undelete_account']
-        overflow_rate = throttling.ScopedRateThrottle().parse_rate(rate)[0] + 1
-
-        for _ in range(overflow_rate):
-            response = self.client.post(
-                reverse('user-undelete-account'),
-                data=data,
-                format='json',
-            )
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_429_TOO_MANY_REQUESTS
+        self.check_scope_throttling(
+            scope='undelete_account',
+            url_name='user-undelete-account',
+            data=data,
+            http_verb='POST'
         )
 
 
@@ -466,7 +443,7 @@ class JWTTokenObtainNegativeTest(APITestCase):
             data=data,
             format='json',
         )
-        TestHelpers().check_status_and_error(
+        TestHelpers().check_status_and_error_message(
             response,
             field='email',
             error_message=expected_error_message,
@@ -499,7 +476,7 @@ class RefreshTokenEndpointNegativeTest(APITestCase):
             data=data,
             format='json',
         )
-        TestHelpers().check_status_and_error(
+        TestHelpers().check_status_and_error_message(
             response,
             field='email',
             error_message=expected_error_message,
@@ -536,7 +513,7 @@ class ConfirmUserUndeleteNegativeTest(APITestCase):
             data=data,
             format='json',
         )
-        TestHelpers().check_status_and_error(
+        TestHelpers().check_status_and_error_message(
             response,
             field='uid',
             error_message=expected_error_message,

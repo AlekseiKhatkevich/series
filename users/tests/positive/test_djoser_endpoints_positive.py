@@ -200,14 +200,12 @@ class SetSlavesPositiveTest(APITestCase):
                 data=data,
                 format='json',
             )
+        self.user_3.refresh_from_db()
 
         self.assertEqual(
             response.status_code,
             status.HTTP_201_CREATED
         )
-
-        self.user_3.refresh_from_db()
-
         self.assertEqual(
             self.user_3.master,
             self.user_1

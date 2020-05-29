@@ -1,13 +1,18 @@
+from django.core.cache import caches
+from django.conf import settings as django_settings
+from django.urls import resolve
+from rest_framework import settings, status, test, throttling
 from rest_framework.response import Response
-from rest_framework.test import APISimpleTestCase
+from rest_framework.reverse import reverse
 
 
-class TestHelpers(APISimpleTestCase):
+class TestHelpers(test.APISimpleTestCase):
     """
     Collection of helper methods for tests.
     """
-    def check_status_and_error(
-            self, response: Response, *, field: str, error_message: str, status_code: str
+
+    def check_status_and_error_message(
+            self, response: Response, /, *, field: str, error_message: str, status_code: str
     ) -> None:
         """
         Helper function to check response status code and exception message in one go.
@@ -30,3 +35,34 @@ class TestHelpers(APISimpleTestCase):
             error_in_response,
             error_message
         )
+
+    def check_scope_throttling(self, *, scope: str, url_name: str, data: dict, http_verb: str, **kwargs) -> None:
+        """
+         Check whether scope throttling is applied.
+        :param scope: Throttling scope
+        :param url_name: Base url name for 'reverse'  function.
+        :param data: Request data.
+        :param http_verb: Http verb for this API action.
+        :param kwargs: Extra request header strings.
+        :return: None
+        """
+        cache_name = django_settings.SCOPE_THROTTLING_CACHE
+        throttler = throttling.ScopedRateThrottle()
+        rate = settings.api_settings.DEFAULT_THROTTLE_RATES[scope]
+        overflow_rate = throttler.parse_rate(rate)[0] + 1
+
+        client = getattr(self.client, http_verb.lower())
+
+        for _ in range(overflow_rate):
+            response = client(
+                reverse(url_name),
+                data=data,
+                format='json',
+                **kwargs
+            )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_429_TOO_MANY_REQUESTS
+        )
+
+        caches[cache_name].clear()

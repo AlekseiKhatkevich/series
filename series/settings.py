@@ -196,7 +196,7 @@ REST_FRAMEWORK = {
         'confirm_undelete_account': '1/minute',
         'confirm_set_slaves': '3/minute',
         'activation': '5/minute',
-    }
+    },
 }
 
 #  djangorestframework_simplejwt related settings.
@@ -255,3 +255,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     },
 }
+
+#  Scope throttling cache.
+SCOPE_THROTTLING_CACHE = 'throttling'

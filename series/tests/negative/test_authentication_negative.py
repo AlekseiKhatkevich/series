@@ -37,7 +37,7 @@ class AuthenticationNegativeTest(APITestCase):
             format='json',
         )
 
-        TestHelpers().check_status_and_error(
+        TestHelpers().check_status_and_error_message(
             response,
             field='detail',
             status_code=status.HTTP_401_UNAUTHORIZED,

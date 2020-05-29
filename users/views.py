@@ -1,3 +1,4 @@
+import collections
 from typing import Optional, Type
 
 import djoser.views
@@ -9,14 +10,14 @@ from django.http.request import HttpRequest
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
 from rest_framework import exceptions, status, throttling
-from rest_framework.settings import api_settings
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
-
+from rest_framework.utils.serializer_helpers import ReturnDict
 import users.models
-from series.helpers.typing import jwt_token
 from series import error_codes
+from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
 
 
@@ -34,9 +35,32 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         child_extra_actions = set(all_extra_actions).difference(parent_extra_actions)
         return (act.__name__ for act in child_extra_actions)
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.prefetch_related('slaves')
+    def add_slaves_data(self, data: ReturnDict) -> ReturnDict:
+        """
+         Adds to each master information about his slave's pks in paginated response data.
+        """
+        model = self.get_serializer_class().Meta.model
+
+        masters_id_list = [
+            user['id'] for user in data if user['master'] is None
+        ]  # filter out slaves
+        slaves = model.objects.filter(
+            master_id__in=masters_id_list
+        ).values_list('master_id', 'id', named=True)
+
+        slaves_dict = collections.defaultdict(list)
+        for slave in slaves:
+            slaves_dict[slave.master_id].append(slave.id)
+
+        for user in data:
+            user['slave_accounts_ids'] = slaves_dict.get(user['id'], None)
+
+        return data
+
+    def get_paginated_response(self, data):
+        if self.action == 'list':
+            data = self.add_slaves_data(data)
+        return super().get_paginated_response(data)
 
     @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.set_slaves)
     def set_slaves(self, request, *args, **kwargs):
