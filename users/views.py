@@ -40,18 +40,20 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
          Adds to each master information about his slave's pks in paginated response data.
         """
         model = self.get_serializer_class().Meta.model
-
+        # List of users in data except slaves.
         masters_id_list = [
             user['id'] for user in data if user['master'] is None
-        ]  # filter out slaves
+        ]
+        # List of aforementioned users slaves.
         slaves = model.objects.filter(
             master_id__in=masters_id_list
         ).values_list('master_id', 'id', named=True)
-
+        # Mapping master_id: user.id where later is contained in list.
+        # (allows multiple slaves pk as a dict value).
         slaves_dict = collections.defaultdict(list)
         for slave in slaves:
             slaves_dict[slave.master_id].append(slave.id)
-
+        # Attaching slaves pks into return data.
         for user in data:
             user['slave_accounts_ids'] = slaves_dict.get(user['id'], None)
 

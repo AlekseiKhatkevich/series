@@ -11,6 +11,8 @@ from django.utils.deconstruct import deconstructible
 
 from archives.helpers import custom_functions
 
+from series.helpers import project_decorators
+
 test_dict = {'a': 1587902034.039742, 1: 1587902034.039742, 2: 1587902034.039742,
              99: 1587902034.039742, -8: 1587902034.039742, 2.2: 1587902034.039742,
              'sfsdfdf': 1587902034.039742, '6': 1587902034.039742, '88': 1587902034.039742,
@@ -86,6 +88,7 @@ def validate_timestamp(value: [dict, bytes]) -> None:
 
 
 @deconstructible
+@project_decorators.typeassert(_domain=str)
 class ValidateUrlDomain:
     """
     Validates that given 2nd level domain is a domain of a validated url. 
@@ -106,6 +109,7 @@ class ValidateUrlDomain:
 
 
 @deconstructible
+@project_decorators.typeassert(_timeout=int)
 class ValidateIfUrlIsAlive:
     """
     Checks whether or not given url is alive by sending HEAD request to resource
