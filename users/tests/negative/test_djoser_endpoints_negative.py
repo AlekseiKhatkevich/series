@@ -21,7 +21,7 @@ class DjoserUserCreateNegativeTest(APITestCase):
     def setUpTestData(cls):
         cls.user_1, cls.user_2, cls.user_3 = create_test_users.create_users()
         cls.user_1.set_password('secret_password')
-        cls.user_1.save(update_fields=('password', ))
+        cls.user_1.save(update_fields=('password',))
 
     def setUp(self) -> None:
         self.test_user_data = dict(
@@ -416,6 +416,7 @@ class JWTTokenObtainNegativeTest(APITestCase):
     Test on JWT token obtain endpoint.
     /auth/jwt/create/ POST
     """
+
     def setUp(self) -> None:
         self.users = create_test_users.create_users()
         self.user_1, self.user_2, self.user_3 = self.users
@@ -451,36 +452,59 @@ class JWTTokenObtainNegativeTest(APITestCase):
         )
 
 
-class RefreshTokenEndpointNegativeTest(APITestCase):
+class RefreshTokenEndpointNegativeTest(TestHelpers, APITestCase):
     """
     Test on JWT token refresh API endpoint.
     auth/jwt/refresh/ POST
     """
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.users = create_test_users.create_users()
-        cls.user_1, cls.user_2, cls.user_3 = cls.users
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+        self.refresh_token = self.user_2.get_tokens_for_user()['refresh']
+        self.data = {'refresh': self.refresh_token}
 
     def test_soft_deleted_user_not_gonna_have_access(self):
         """
         Check that soft-deleted user is not allowed to refresh his token.
         """
-        refresh_token = self.user_2.get_tokens_for_user()['refresh']
-        data = {'refresh': refresh_token}
         expected_error_message = error_codes.SOFT_DELETED_DENIED.message
-        self.user_2.delete()
+        self.user_2.deleted = True
+        self.user_2.save()
 
         response = self.client.post(
             reverse('jwt-refresh'),
-            data=data,
+            data=self.data,
             format='json',
         )
-        TestHelpers().check_status_and_error_message(
+        self.check_status_and_error_message(
             response,
             field='email',
             error_message=expected_error_message,
             status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+    def test_user_with_blacklisted_token_not_gonna_have_access(self):
+        """
+        Check that if user provides blacklisted update token(all update tokens of soft-deleted users
+        are blacklisted by default), then he will not get access token on exchange on black
+        listed update token.
+        """
+        expected_error_message = 'Token is blacklisted'
+        self.user_2.delete()  # Delete() should black-list all user's update tokens.
+
+        response = self.client.post(
+            reverse('jwt-refresh'),
+            data=self.data,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED
+        )
+        self.check_status_and_error_message(
+            response,
+            error_message=expected_error_message,
+            status_code=status.HTTP_401_UNAUTHORIZED
         )
 
 

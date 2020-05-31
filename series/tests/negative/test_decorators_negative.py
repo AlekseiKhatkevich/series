@@ -30,7 +30,7 @@ class DecoratorsNegativeTest(APISimpleTestCase):
 
     def test_type_assert_receives_wrong_type_arg(self):
         """
-        Check instance where decorated instance receives wrong type of argument.
+        Check instance when decorated instance receives wrong type of argument.
         """
         kwargs = dict(string='test', integer=228, tup=2.3)
         expected_error_message = \

@@ -2,8 +2,10 @@ from types import MappingProxyType
 from typing import Any, ContextManager, NoReturn
 
 from django.db.models.base import ModelBase
+from series.helpers import project_decorators
 
 
+@project_decorators.typeassert(model=ModelBase, field=str)
 class OverrideModelAttributes:
     """
     Context managers to override attributes in model's fields.

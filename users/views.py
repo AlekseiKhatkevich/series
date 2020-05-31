@@ -13,8 +13,9 @@ from rest_framework import exceptions, status, throttling
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 from rest_framework.utils.serializer_helpers import ReturnDict
+from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
+
 import users.models
 from series import error_codes
 from series.helpers.typing import jwt_token
@@ -60,7 +61,7 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         return data
 
     def get_paginated_response(self, data):
-        if self.action == 'list':
+        if self.action in 'list':
             data = self.add_slaves_data(data)
         return super().get_paginated_response(data)
 

@@ -12,7 +12,7 @@ class TestHelpers(test.APISimpleTestCase):
     """
 
     def check_status_and_error_message(
-            self, response: Response, /, *, field: str, error_message: str, status_code: str
+            self, response: Response, /, *, field: str = 'detail', error_message: str, status_code: str
     ) -> None:
         """
         Helper function to check response status code and exception message in one go.

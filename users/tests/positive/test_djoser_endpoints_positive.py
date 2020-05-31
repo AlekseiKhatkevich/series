@@ -623,3 +623,56 @@ class ConfirmSetSlavesPositive(APITestCase):
             self.user_2.master_id,
             self.user_1.pk
         )
+
+
+class MePositiveTest(APITestCase):
+    """
+    Positive test on Djoser endpoint that shows request user information.
+    auth/users/me/ POST
+    """
+
+    def setUp(self):
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+    def test_slaves_in_representation(self):
+        """
+        Check that if user has slaves, their pr would be present in response.
+        """
+        self.user_1.slaves.add(self.user_2, self.user_3)
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+            reverse('user-me'),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertCountEqual(
+            [self.user_2.pk, self.user_3.pk],
+            response.data['slave_accounts_ids'],
+        )
+
+    def test_none_in_representation_if_no_slaves(self):
+        """
+        Check that if user has no any slaves that he would have None instead of [] for slaves
+        list in representation.
+        """
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+            reverse('user-me'),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertIsNone(
+            response.data['slave_accounts_ids']
+        )

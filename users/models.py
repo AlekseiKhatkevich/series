@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt import tokens as jwt_tokens
+from rest_framework_simplejwt.token_blacklist import models as sjwt_blacklist_models
 
 import users.managers as users_managers
 from series import error_codes
@@ -119,6 +120,7 @@ class User(AbstractUser):
     @transaction.atomic
     def delete(self, soft_del=True, using=None, keep_parents=False):
         if soft_del:
+            self.blacklist_tokens()  # Blacklist all refresh tokens.
             self.liberate()  # Deallocate all slaves.
             self.deleted = True  # Soft delete self.
             self.save(update_fields=('deleted',))
@@ -132,6 +134,22 @@ class User(AbstractUser):
         """
         self.deleted = False
         return self.save(update_fields=('deleted',))
+
+    def blacklist_tokens(self):
+        """
+        Blacklists all user's refresh tokens.
+        """
+        outstanding_tokens_pks = sjwt_blacklist_models.OutstandingToken.objects.filter(
+                user=self).values_list('pk', flat=True
+                                       )
+        blacklist_instances = (
+            sjwt_blacklist_models.BlacklistedToken(token_id=pk) for pk in outstanding_tokens_pks
+        )
+        created_instances = sjwt_blacklist_models.BlacklistedToken.objects.bulk_create(
+            blacklist_instances,
+            ignore_conflicts=True,
+        )
+        return created_instances
 
     @cached_property
     def get_absolute_url(self) -> url:

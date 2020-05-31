@@ -5,9 +5,11 @@ from django.utils.deconstruct import deconstructible
 from rest_framework import validators
 
 from series import error_codes
+from series.helpers import project_decorators
 
 
 @deconstructible
+@project_decorators.typeassert(_container=Iterable)
 class ValidateOverTheRange:
     """
     Validates whether key withing the iterable.

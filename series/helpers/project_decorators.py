@@ -49,10 +49,3 @@ def typeassert(**kwargs: type) -> Callable:
         return cls
     return decorate
 
-
-@typeassert(string=str, integer=int, tup=tuple)
-class TestClass:
-    def __init__(self, string: str, integer: int, tup: tuple) -> None:
-        self.string = string
-        self.integer = integer
-        self.tup = tup

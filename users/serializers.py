@@ -77,8 +77,14 @@ class CustomUserSerializer(
     """
 
     class Meta(djoser_serializers.UserSerializer.Meta):
-        fields = djoser_serializers.UserSerializer.Meta.fields + ('user_country', 'master',)
-        read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master',)
+        fields = djoser_serializers.UserSerializer.Meta.fields + ('user_country', 'master', )
+        read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master', )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if self.context['view'].action != 'list':
+            data['slave_accounts_ids'] = instance.slaves.all().values_list('pk', flat=True) or None
+        return data
 
 
 class SetSlavesSerializer(
@@ -213,6 +219,3 @@ class CommitSetSlavesSerializer(
         self.slave.master = self.master
         self.slave.save()
         return self.slave
-
-
-

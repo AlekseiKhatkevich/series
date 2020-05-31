@@ -246,15 +246,23 @@ if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+#  Scope throttling cache.
+SCOPE_THROTTLING_CACHE = 'throttling'
+
 #  Caches related settings
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    },
-    'throttling': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    },
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/13',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+        }, },
+    SCOPE_THROTTLING_CACHE: {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/14',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+        }, },
 }
 
-#  Scope throttling cache.
-SCOPE_THROTTLING_CACHE = 'throttling'
+

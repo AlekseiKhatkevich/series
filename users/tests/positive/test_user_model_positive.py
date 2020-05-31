@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 import operator
-
+from rest_framework_simplejwt.token_blacklist import models as sjwt_blacklist_models
 from users.helpers import countries, create_test_users
 
 
@@ -187,3 +187,14 @@ class CreateUserModelPositiveTest(APITestCase):
             get_user_model().all_objects.filter(pk=self.user_1.pk).exists()
         )
 
+    def test_blacklist_tokens_method(self):
+        """
+        Check that 'blacklist_tokens' effectively blacklists users update tokens on call.
+        """
+        user = self.user_3
+        user.get_tokens_for_user()
+        user.blacklist_tokens()
+
+        self.assertTrue(
+            sjwt_blacklist_models.BlacklistedToken.objects.filter(token__user=user).exists()
+        )

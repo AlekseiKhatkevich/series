@@ -1,14 +1,16 @@
 from typing import Any, Optional
 
 from django.contrib.auth.base_user import BaseUserManager
+from django.core import exceptions
 from django.db import models
 from django.db.models import Exists, OuterRef
-from django.core import exceptions
 
-from series.helpers.typing import User_instance
 from series import error_codes
+from series.helpers import project_decorators
+from series.helpers.typing import User_instance
 
 
+@project_decorators.typeassert(alive_only=bool)
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
