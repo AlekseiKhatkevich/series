@@ -1,7 +1,5 @@
 from rest_framework.test import APISimpleTestCase
 
-from django.contrib.auth import get_user_model
-
 from series.helpers import custom_functions
 
 
@@ -23,6 +21,8 @@ class CustomFunctionsPositiveTest(APISimpleTestCase):
         self.assertFalse(
             custom_functions.check_code_inside(code=('lambda',), func=test_function)
         )
+
+
 
 
 

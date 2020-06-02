@@ -1,6 +1,5 @@
 from django.contrib.auth import tokens
 from djoser import utils
-from djoser.conf import settings as djoser_settings
 from rest_framework import serializers
 from rest_framework.test import APISimpleTestCase, APITestCase
 
@@ -64,3 +63,13 @@ class UidAndTokenValidationMixinNegativeTest(APITestCase):
 
         with self.assertRaisesMessage(serializers.ValidationError, expected_error_message):
             self.mixin.confirm_token(self.user_1, wrong_token)
+
+    def test_check_password_raises_message(self):
+        """
+        Checks if method 'check_password' receives wrong password, then validation error is arisen.
+        """
+        expected_error_message = f'Incorrect password for slave with email - {self.user_1.email}'
+
+        with self.assertRaisesMessage(serializers.ValidationError, expected_error_message):
+            serializer_mixins.UserSlaveMutualValidationMixin.check_password(
+                self.user_1, 'random_password')

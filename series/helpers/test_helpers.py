@@ -39,8 +39,8 @@ class TestHelpers(test.APISimpleTestCase):
     def check_scope_throttling(self, *, scope: str, url_name: str, data: dict, http_verb: str, **kwargs) -> None:
         """
          Check whether scope throttling is applied.
-        :param scope: Throttling scope
-        :param url_name: Base url name for 'reverse'  function.
+        :param scope: Throttling scope.
+        :param url_name: Base url name for 'reverse' function.
         :param data: Request data.
         :param http_verb: Http verb for this API action.
         :param kwargs: Extra request header strings.

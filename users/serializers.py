@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import EmailValidator
+from django.db.models import F, Q
+from django.db.models.functions import NullIf
 from djoser import serializers as djoser_serializers
-from rest_framework import exceptions as drf_exceptions, serializers
-from djoser.conf import settings as djoser_settings
+from rest_framework import serializers
+
 from series import error_codes
 from users.helpers import serializer_mixins, validators as custom_validators
 
@@ -77,8 +79,8 @@ class CustomUserSerializer(
     """
 
     class Meta(djoser_serializers.UserSerializer.Meta):
-        fields = djoser_serializers.UserSerializer.Meta.fields + ('user_country', 'master', )
-        read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master', )
+        fields = djoser_serializers.UserSerializer.Meta.fields + ('user_country', 'master',)
+        read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master',)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -124,6 +126,46 @@ class SetSlavesSerializer(
         self.slave.master = validated_data['user']
         self.slave.save()
         return self.slave
+
+
+class MasterSlaveInterchangeSerializer(SetSlavesSerializer):
+    """
+    Change master to slave account and other way around.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        #  Change queryset on 'slave_email' field in order to validate whether this slave belong
+        #  to a master.
+        request_user = self.context['request'].user
+        slave_email_field = self.fields['slave_email']
+        slave_email_field.queryset = request_user.slaves.all()
+
+    slave_email = serializers.SlugRelatedField(
+        write_only=True,
+        validators=(EmailValidator,),
+        error_messages={
+            'required': error_codes.SLAVE_FIELDS_REQUIRED.message,
+            'does_not_exist': error_codes.NOT_YOUR_SLAVE.message,
+        },
+        queryset=get_user_model().objects.none(),
+        slug_field='email',
+    )
+
+    def validate(self, attrs):
+        slave = attrs['slave_email']
+        slave_password = attrs['slave_password']
+        self.check_password(slave, slave_password)
+        return attrs
+
+    def create(self, validated_data):
+        slave = validated_data['slave_email']
+        master = validated_data['user']
+        #  Changes master to slave and attach all slaves to a former slave.
+        get_user_model().all_objects.filter(
+            Q(master=master) | Q(pk=master.pk)
+        ).update(master_id=NullIf(slave.pk, F('pk')))
+        return slave
 
 
 class UndeleteUserAccountSerializer(serializers.ModelSerializer):

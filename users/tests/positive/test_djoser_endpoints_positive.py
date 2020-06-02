@@ -608,6 +608,7 @@ class ConfirmSetSlavesPositive(APITestCase):
             slave_uid=slave_uid,
             master_uid=master_uid,
         )
+
         response = self.client.post(
             reverse('user-confirm-set-slaves'),
             data=data,
@@ -676,3 +677,54 @@ class MePositiveTest(APITestCase):
         self.assertIsNone(
             response.data['slave_accounts_ids']
         )
+
+
+class MasterSlaveSwapPositiveTest(APITestCase):
+    """
+    Positive test on API that swaps master wit slave.
+    /auth/users/master_slave_interchange/ POST
+    """
+    def setUp(self):
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+        self.password = 'testpassword228'
+        self.user_2.set_password(self.password)
+        self.user_2.save()
+
+    def test_swap_master_and_slave(self):
+        """
+        Check whether it is possible to successfully swap master to slave provided that correct data
+        being posted.
+        """
+        self.user_1.slaves.add(self.user_2, self.user_3)
+        self.user_3.delete()
+        data = dict(
+            slave_email=self.user_2.email,
+            slave_password=self.password,
+        )
+
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=False):
+            response = self.client.post(
+                reverse('user-master-slave-interchange'),
+                data=data,
+                format='json',
+            )
+
+        for user in self.users:
+            user.refresh_from_db()
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED,
+        )
+        self.assertIsNone(
+            self.user_2.master
+        )
+        for user in (self.user_1, self.user_3,):
+            with self.subTest(user=user):
+                self.assertEqual(
+                    user.master,
+                    self.user_2
+                )

@@ -6,6 +6,7 @@ import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.utils.functional import cached_property
 from django.http.request import HttpRequest
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
@@ -26,11 +27,12 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     """
     Custom viewset based on Djoser viewset.
     """
-    @classmethod
-    def get_child_extra_actions(cls):
+    @cached_property
+    def get_child_extra_actions(self):
         """
         Returns only extra actions defined in this exact viewset exclude actions defined in superclasses.
         """
+        cls = self.__class__
         all_extra_actions = cls.get_extra_actions()
         parent_extra_actions = cls.__base__.get_extra_actions()
         child_extra_actions = set(all_extra_actions).difference(parent_extra_actions)
@@ -64,6 +66,16 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         if self.action in 'list':
             data = self.add_slaves_data(data)
         return super().get_paginated_response(data)
+
+    @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.master_slave_interchange)
+    def master_slave_interchange(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if djoser_settings.SEND_ACTIVATION_EMAIL:
+            pass
+        else:
+            serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.set_slaves)
     def set_slaves(self, request, *args, **kwargs):
@@ -139,7 +151,7 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_serializer_class(self):
-        if self.action in self.get_child_extra_actions():
+        if self.action in self.get_child_extra_actions:
             return getattr(djoser_settings.SERIALIZERS, self.action)
         return super().get_serializer_class()
 

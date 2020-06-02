@@ -543,3 +543,87 @@ class ConfirmUserUndeleteNegativeTest(APITestCase):
             error_message=expected_error_message,
             status_code=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class MasterSlaveSwapNegativeTest(TestHelpers, APITestCase):
+    """
+    Negative test on API that swaps master wit slave.
+    /auth/users/master_slave_interchange/ POST
+    """
+    def setUp(self):
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+        self.password = 'testpassword228'
+        self.user_2.set_password(self.password)
+        self.user_2.save()
+
+    def test_permission(self):
+        """
+        Check that only masters are allowed to this endpoint.
+        """
+        expected_error_message = error_codes.ONLY_MASTERS_ALLOWED.message
+        data = dict(
+            slave_email=self.user_2.email,
+            slave_password=self.password,
+        )
+
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=False):
+            response = self.client.post(
+                reverse('user-master-slave-interchange'),
+                data=data,
+                format='json',
+            )
+
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_403_FORBIDDEN,
+            error_message=expected_error_message,
+        )
+
+    def test_throttling(self):
+        """
+        Check whether scope throttling is work correctly.
+        """
+        self.user_1.slaves.add(self.user_2, self.user_3)
+        data = dict(
+            slave_email=self.user_2.email,
+            slave_password=self.password,
+        )
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=True):
+            self.check_scope_throttling(
+                scope='master_slave_interchange',
+                url_name='user-master-slave-interchange',
+                data=data,
+                http_verb='POST',
+            )
+
+    def test_trying_to_use_other_master_slave(self):
+        """
+        Check if 'slave_email' of the slave, who is not current master's slave is used, than
+        exception is arisen.
+        """
+        expected_error_message = error_codes.NOT_YOUR_SLAVE.message
+        self.user_1.slaves.add(self.user_3, )
+        data = dict(
+            slave_email=self.user_2.email,
+            slave_password=self.password,
+        )
+        self.client.force_authenticate(user=self.user_1)
+
+        with context_managers.OverrideDjoserSetting(SEND_ACTIVATION_EMAIL=False):
+            response = self.client.post(
+                reverse('user-master-slave-interchange'),
+                data=data,
+                format='json',
+            )
+
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            error_message=expected_error_message,
+            field='slave_email',
+        )

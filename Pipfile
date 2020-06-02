@@ -22,5 +22,6 @@ cryptography = "*"
 django-cors-headers = "*"
 django-redis = "*"
 
+
 [requires]
 python_version = "3.8"

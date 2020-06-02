@@ -58,4 +58,15 @@ def key_field_to_field_dict(response: Response, key_field: str, other_field: str
     return return_dict
 
 
+def dict_from_names(*variable_names: str, namespace: Callable = globals) -> dict:
+    """
+    Returns a dict constructed from variables and their values.
+    a = 1
+    b = 2
+    c = 3
+    dict_from_names('a', 'b', 'c') -> {'a': 1, 'b': 2, 'c': 3}
+    """
+    namespace = namespace()
+    return {name: namespace[name] for name in variable_names}
+
 

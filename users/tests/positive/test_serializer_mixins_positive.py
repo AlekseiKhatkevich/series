@@ -2,7 +2,7 @@ import unittest
 
 from django.contrib.auth import tokens
 from djoser import utils
-from rest_framework import exceptions as drf_exceptions, serializers
+from rest_framework import serializers
 from rest_framework.test import APISimpleTestCase, APITestCase
 
 from series import error_codes
@@ -15,8 +15,8 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
     """
 
     class TestSerializer(
-            serializer_mixins.RequiredTogetherFieldsMixin,
-            serializers.Serializer):
+        serializer_mixins.RequiredTogetherFieldsMixin,
+        serializers.Serializer):
         field_1 = serializers.CharField(max_length=10, required=True)
         field_2 = serializers.IntegerField(required=False)
         field_3 = serializers.EmailField(required=False)
@@ -63,8 +63,8 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
         )
 
     class TestSerializer_2(
-            serializer_mixins.ReadOnlyRaisesException,
-            serializers.Serializer):
+        serializer_mixins.ReadOnlyRaisesException,
+        serializers.Serializer):
         field_1 = serializers.CharField(max_length=10, read_only=True)
         field_2 = serializers.IntegerField()
         field_3 = serializers.EmailField()
@@ -84,6 +84,7 @@ class UidAndTokenValidationMixinPositiveTest(APITestCase):
     """
     Positive test on 'UidAndTokenValidationMixin' functionality.
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.mixin = serializer_mixins.UidAndTokenValidationMixin()
@@ -113,3 +114,14 @@ class UidAndTokenValidationMixinPositiveTest(APITestCase):
         """
         with self.assertRaises(serializers.ValidationError):
             self.mixin.confirm_token(self.user_1, self.user_1.token)
+
+    def test_check_password(self):
+        """
+        Checks correct work of the method 'check_password'.
+        """
+        self.user_1.set_password('test_password_12345')
+
+        self.assertIsNone(
+            serializer_mixins.UserSlaveMutualValidationMixin.check_password(
+                self.user_1, 'test_password_12345'
+            ))

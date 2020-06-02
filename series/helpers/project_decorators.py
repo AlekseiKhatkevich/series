@@ -49,3 +49,4 @@ def typeassert(**kwargs: type) -> Callable:
         return cls
     return decorate
 
+

@@ -9,6 +9,7 @@ from rest_framework import serializers
 
 from series import error_codes
 from series.helpers.typing import User_instance
+from django.conf import settings
 
 
 class ConditionalRequiredPerFieldMixin:
@@ -164,3 +165,13 @@ class UserSlaveMutualValidationMixin:
         if errors:
             raise serializers.ValidationError(errors, codes,)
 
+    @staticmethod
+    def check_password(user: settings.AUTH_USER_MODEL, password: str) -> None:
+        """
+        Checks user's password and raises Validation error in case password is incorrect
+        """
+        if not user.check_password(password):
+            raise serializers.ValidationError(
+                {'slave_password': f'Incorrect password for slave with email - {user.email}'},
+                code='invalid_password',
+            )

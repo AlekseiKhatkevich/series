@@ -26,3 +26,13 @@ class UserIPPermission(permissions.BasePermission):
             users.models.UserIP.objects.filter(user__email=user_email).values_list('ip', flat=True)
 
         return any((is_admin, not user_ips_in_db, user_ip_address in user_ips_in_db))
+
+
+class IsUserMasterPermission(permissions.BasePermission):
+    """
+    Permission allows access only to masters.
+    """
+    message = error_codes.ONLY_MASTERS_ALLOWED.message
+
+    def has_permission(self, request, view):
+        return request.user.slaves.exists()

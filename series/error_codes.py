@@ -71,5 +71,14 @@ USER_IS_DELETED = exc_msg(
     'User is deleted.',
     'user_is_deleted',
 )
+ONLY_MASTERS_ALLOWED = exc_msg(
+    'Access is allowed only to masters',
+    'only_masters_allowed',
+)
+
+NOT_YOUR_SLAVE = exc_msg(
+    'This email does not belong to your slave account or this is not a slave account at all',
+    'not_your_slave',
+)
 
 

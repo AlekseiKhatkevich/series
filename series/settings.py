@@ -191,13 +191,24 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/minute',
         'user': '1000/minute',
-        'resend_activation': '1/minute',
-        'undelete_account': '1/minute',
-        'confirm_undelete_account': '1/minute',
-        'confirm_set_slaves': '3/minute',
-        'activation': '5/minute',
     },
 }
+SCOPE_THROTTLE_RATES = {
+    'resend_activation': '1/minute',
+    'undelete_account': '1/minute',
+    'confirm_undelete_account': '1/minute',
+    'confirm_set_slaves': '3/minute',
+    'activation': '3/minute',
+    'master_slave_interchange': '3/minute',
+}
+
+#  Add SCOPE_THROTTLE_RATES into DEFAULT_THROTTLE_CLASSES.
+if not IM_IN_TEST_MODE:
+    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].update(SCOPE_THROTTLE_RATES)
+else:  # Same in tests but change rate to '1/minute'.
+    REST_FRAMEWORK['DEFAULT_THROTTLE_RATES'].update(
+        dict.fromkeys(SCOPE_THROTTLE_RATES, '1/minute')
+    )
 
 #  djangorestframework_simplejwt related settings.
 SIMPLE_JWT = {
@@ -231,6 +242,7 @@ DJOSER = {
         'undelete_account': 'users.serializers.UndeleteUserAccountSerializer',
         'confirm_undelete_account': 'users.serializers.CommitUndeleteUserAccountSerializer',
         'confirm_set_slaves': 'users.serializers.CommitSetSlavesSerializer',
+        'master_slave_interchange': 'users.serializers.MasterSlaveInterchangeSerializer',
     },
     'PERMISSIONS': {
         'set_slaves': ['djoser.permissions.CurrentUserOrAdmin', ],
@@ -238,7 +250,8 @@ DJOSER = {
         'undelete_account': ['rest_framework.permissions.AllowAny', ],
         'confirm_undelete_account': ['rest_framework.permissions.AllowAny', ],
         'confirm_set_slaves': ['rest_framework.permissions.AllowAny', ],
-        },
+        'master_slave_interchange': ['users.permissions.IsUserMasterPermission', ]
+    },
 }
 #  Email related settings.
 if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
@@ -264,5 +277,3 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient'
         }, },
 }
-
-
