@@ -6,8 +6,8 @@ import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
-from django.utils.functional import cached_property
 from django.http.request import HttpRequest
+from django.utils.functional import cached_property
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
 from rest_framework import exceptions, status, throttling

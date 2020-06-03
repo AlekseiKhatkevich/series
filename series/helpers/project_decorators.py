@@ -1,5 +1,7 @@
 from typing import Any, Callable, Optional
 
+from django.utils.decorators import classproperty
+
 
 class Typed:
     """
@@ -48,5 +50,4 @@ def typeassert(**kwargs: type) -> Callable:
             setattr(cls, name, Typed(name, expected_type))
         return cls
     return decorate
-
 

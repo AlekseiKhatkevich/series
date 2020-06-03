@@ -21,6 +21,8 @@ djangorestframework-simplejwt = "*"
 cryptography = "*"
 django-cors-headers = "*"
 django-redis = "*"
+celery = "*"
+redis = "*"
 
 
 [requires]

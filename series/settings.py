@@ -226,7 +226,7 @@ SIMPLE_JWT = {
 DJOSER = {
     'TOKEN_MODEL': None,
     'HIDE_USERS': True,
-    'SEND_ACTIVATION_EMAIL': False,
+    'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'example_frontend_url/{uid}/{token}',
     'USER_UNDELETE_URL': 'example_frontend_url/{uid}/{token}',
     'SLAVE_ACTIVATION_URL': 'example_frontend_url/{master_uid}/{slave_uid}/{token}',
@@ -277,3 +277,12 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient'
         }, },
 }
+
+# REDIS related settings
+REDIS_HOST = 'localhost'
+REDIS_PORT = '6379'
+BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'

@@ -1,7 +1,6 @@
 from django.contrib.auth.tokens import default_token_generator
 from djoser import utils
 from djoser.conf import settings as djoser_settings
-
 from templated_mail.mail import BaseEmailMessage
 
 
