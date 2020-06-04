@@ -27,6 +27,7 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     """
     Custom viewset based on Djoser viewset.
     """
+
     @cached_property
     def get_child_extra_actions(self):
         """
