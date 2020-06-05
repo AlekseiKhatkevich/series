@@ -23,7 +23,7 @@ django-cors-headers = "*"
 django-redis = "*"
 celery = "*"
 redis = "*"
-
+future = "*"
 
 [requires]
 python_version = "3.8"

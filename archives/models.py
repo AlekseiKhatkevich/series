@@ -33,7 +33,6 @@ class GroupingModel(models.Model):
         related_name='+',
     )
     reason_for_interrelationship = models.TextField(
-        null=True,
         verbose_name='Reason for relationship to an another series.'
     )
 
@@ -121,10 +120,10 @@ class TvSeriesModel(models.Model):
     def __str__(self):
         return f'{self.pk} / {self.name}'
 
-    def save(self, fc=False, force_insert=False, force_update=False, using=None, update_fields=None):
-        # exclude 'url_to_imdb' field validation if field hasn't changed or model instance is just created.
+    def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
+        # Exclude 'url_to_imdb' from field validation if field hasn't changed or model instance is not just created.
         if fc:
-            exclude = ('url_to_imdb', ) if self.pk is not None and ('url_to_imdb' in self.changed_fields) else ()
+            exclude = ('url_to_imdb', ) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) else ()
             self.full_clean(exclude=exclude, validate_unique=True)
 
         super().save(force_insert, force_update, using, update_fields)

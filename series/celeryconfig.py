@@ -17,7 +17,7 @@ timezone = 'Europe/Moscow'
 beat_schedule = {
     'delete stale tokens': {
         'task': 'users.tasks.clean_stale_tokens',
-        'schedule': crontab(minute=00, hour=17),
+        'schedule': crontab(hour=17, minute=00),
     },
 }
 

@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 from django.db import models, transaction
 from django.utils import timezone
+from django.utils.decorators import classonlymethod
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
 from rest_framework_simplejwt import tokens as jwt_tokens
@@ -193,6 +194,13 @@ class User(AbstractUser):
         Returns True if user is available for a slave role.
         """
         return self.__class__.objects.get_available_slaves().filter(pk=self.pk).exists()
+
+    @classonlymethod
+    def get_fields_names(cls) -> list:
+        """
+        Returns list of model's fields names.
+        """
+        return [field.name for field in cls._meta.local_fields]
 
 
 class UserIP(models.Model):

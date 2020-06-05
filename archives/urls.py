@@ -1,6 +1,7 @@
 from django.urls import path
+import archives.views
 
-#  archives  URLs
 urlpatterns = [
+    path('tvseries/', archives.views.TvSeriesListCreateView.as_view(), name='tvseries'),
 
 ]

@@ -1,17 +1,15 @@
-'''Project root urlconf'''
+"""Project root urlconf"""
 
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, re_path
-from drf_yasg import openapi
-from drf_yasg.views import get_schema_view
-from rest_framework import permissions
-from rest_framework.routers import DefaultRouter
+from drf_yasg import openapi, views
+from rest_framework import permissions, routers
 
 import users.views
 
 #  Move routing from Djoser app here in order to plug our custom view in case they needed.
-djoser_router = DefaultRouter()
+djoser_router = routers.DefaultRouter()
 djoser_router.register('users', users.views.CustomDjoserUserViewSet)
 
 #  Project level URLs
@@ -32,7 +30,7 @@ urlpatterns = [
 ]
 
 #  drf_yasg related settings.
-schema_view = get_schema_view(
+schema_view = views.get_schema_view(
     openapi.Info(
         title='Series API',
         default_version='only one version',

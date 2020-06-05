@@ -1,6 +1,8 @@
 import inspect
-from typing import Callable, Container, Iterable
+from typing import Callable, Container, Iterable, Union, Optional
 
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.base import ModelBase
 from rest_framework.response import Response
 
 
@@ -70,3 +72,31 @@ def dict_from_names(*variable_names: str, namespace: Callable = globals) -> dict
     return {name: namespace[name] for name in variable_names}
 
 
+def get_model_fields_subset(
+        model: Union[ModelBase, str],
+        fields_to_remove: Iterable[str] = (),
+        prefix: Optional[str] = None,
+) -> set:
+    """
+       Function builds set of model field's names without certain specified fields in 'fields_to_remove', possibly
+       prepended with an optional prefix.
+       :param model: Model instance or model name in format app name.model name (users.user).
+       :param fields_to_remove: Field names to be removed from final set of fields.
+       :param prefix: Prefix to prepend each field name in resulted set. Optional.
+       :return: Set of model's field names.
+    """
+
+    if isinstance(model, str):
+        app_label, model = model.lower().split('.')
+        try:
+            model = ContentType.objects.get(app_label=app_label, model=model).model_class()
+        except ContentType.DoesNotExist as err:
+            raise NameError(f'Model with name "{model}" not found in app "{app_label}".') from err
+
+    fields = set(
+        f'{prefix}{field.name}' if prefix is not None else field.name
+        for field in model._meta.local_fields
+        if field.name not in fields_to_remove
+    )
+
+    return fields

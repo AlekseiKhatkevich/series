@@ -62,7 +62,7 @@ class TvSeriesModelNegativeTest(APITestCase):
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, 'rating_from_1_to_10'):
                 self.series_1.rating = 11
-                self.series_1.save()
+                self.series_1.save(fc=False)
 
         self.series_1.refresh_from_db()
 
@@ -77,7 +77,7 @@ class TvSeriesModelNegativeTest(APITestCase):
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, 'url_to_imdb_check'):
                 self.series_1.imdb_url = 'https://stackoverflow.com/'
-                self.series_1.save()
+                self.series_1.save(fc=False)
 
         self.series_1.refresh_from_db()
 
