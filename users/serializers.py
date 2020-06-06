@@ -7,12 +7,14 @@ from djoser import serializers as djoser_serializers
 from rest_framework import serializers
 
 from series import error_codes
-from users.helpers import serializer_mixins, validators as custom_validators
+from users.helpers import validators as custom_validators
+from users.helpers import serializer_mixins
+from series.helpers import serializer_mixins as project_serializer_mixins
 
 
 class CustomDjoserUserCreateSerializer(
-    serializer_mixins.RequiredTogetherFieldsMixin,
-    djoser_serializers.UserCreateSerializer):
+    project_serializer_mixins.RequiredTogetherFieldsMixin,
+        djoser_serializers.UserCreateSerializer):
     """
     Serializer for create_user action.
     """
@@ -70,7 +72,7 @@ class CustomDjoserUserCreateSerializer(
 
 
 class CustomUserSerializer(
-    serializer_mixins.ReadOnlyRaisesException,
+    project_serializer_mixins.ReadOnlyRaisesException,
     djoser_serializers.UserSerializer
 ):
     """

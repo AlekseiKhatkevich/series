@@ -30,7 +30,7 @@ class GroupingModel(models.Model):
     to_series = models.ForeignKey(
         'TvSeriesModel',
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name='group_to',
     )
     reason_for_interrelationship = models.TextField(
         verbose_name='Reason for relationship to an another series.'
