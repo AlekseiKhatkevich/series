@@ -78,8 +78,8 @@ def get_model_fields_subset(
         prefix: Optional[str] = None,
 ) -> set:
     """
-       Function builds set of model field's names without certain specified fields in 'fields_to_remove', possibly
-       prepended with an optional prefix.
+       Function builds set of model field's names without certain specified fields in 'fields_to_remove',
+        possibly prepended with an optional prefix.
        :param model: Model instance or model name in format app name.model name (users.user).
        :param fields_to_remove: Field names to be removed from final set of fields.
        :param prefix: Prefix to prepend each field name in resulted set. Optional.

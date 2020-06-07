@@ -36,6 +36,15 @@ class GroupingModel(models.Model):
         verbose_name='Reason for relationship to an another series.'
     )
 
+    class Meta:
+        verbose_name = 'Group'
+        verbose_name_plural = 'Groups'
+        constraints = [
+            models.CheckConstraint(
+                name='interrelationship_on_self',
+                check=~models.Q(from_series=models.F('to_series')),
+            )]
+
     def __str__(self):
         return f'pk - {self.pk} / {self.from_series.name} / pk - {self.from_series_id} <->' \
                f' {self.to_series.name} / pk - {self.to_series_id}'
@@ -123,7 +132,7 @@ class TvSeriesModel(models.Model):
     def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
         # Exclude 'url_to_imdb' from field validation if field hasn't changed or model instance is not just created.
         if fc:
-            exclude = ('url_to_imdb', ) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) else ()
+            exclude = ('url_to_imdb',) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) else ()
             self.full_clean(exclude=exclude, validate_unique=True)
 
         super().save(force_insert, force_update, using, update_fields)
@@ -200,7 +209,7 @@ class SeasonModel(models.Model):
             models.CheckConstraint(
                 name='last_watched_episode_and_number_of_episodes_are_gte_one',
                 check=(models.Q(last_watched_episode__gte=1) | models.Q(last_watched_episode__isnull=True))
-                & models.Q(number_of_episodes__gte=1)
+                      & models.Q(number_of_episodes__gte=1)
             ),
             #  Number_of_episodes >= last_watched_episode
             models.CheckConstraint(

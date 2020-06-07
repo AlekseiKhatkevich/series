@@ -1,7 +1,7 @@
+from django.db import transaction
 from rest_framework import serializers
 
 import archives.models
-
 from series.helpers import serializer_mixins
 
 
@@ -12,7 +12,7 @@ class InterrelationshipSerializer(serializers.ModelSerializer):
     name = serializers.SlugRelatedField(
         source='to_series',
         slug_field='name',
-        queryset=archives.models.GroupingModel.objects.all()
+        queryset=archives.models.TvSeriesModel.objects.all()
     )
 
     class Meta:
@@ -41,29 +41,26 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         source='group',
         required=False,
     )
-    entry_author = serializers.CharField(
+    entry_author = serializers.ReadOnlyField(
         source='entry_author.get_full_name',
-        read_only=True,
+    )
+    request_user = serializers.HiddenField(
         default=serializers.CurrentUserDefault(),
     )
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault(),
-    )
-    number_of_seasons = serializers.IntegerField(
-        read_only=True,
+    number_of_seasons = serializers.ReadOnlyField(
         source='seasons_cnt',
     )
-    number_of_episodes = serializers.IntegerField(
-        read_only=True,
+    number_of_episodes = serializers.ReadOnlyField(
         source='episodes_cnt',
     )
-    images = ImagesSerializer(
-        many=True,
-    )
+    # images = ImagesSerializer(
+    #     many=True,
+    #     required=False
+    # )
 
     class Meta:
         model = archives.models.TvSeriesModel
-        none_if_empty = ('interrelationship', 'images', )
+        #none_if_empty = ('interrelationship', 'images', )
         fields = (
             'pk',
             'entry_author',
@@ -71,13 +68,43 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
             'imdb_url',
             'is_finished',
             'rating',
-            'user',
+            'entry_author',
+            'request_user',
             'interrelationship',
             'number_of_seasons',
             'number_of_episodes',
-            'images'
+            #'images',
         )
         extra_kwargs = {
             'imdb_url': {'validators': ()},
         }
+
+    def validate(self, attrs):
+        return super().validate(attrs)
+
+    @transaction.atomic
+    def create(self, validated_data):
+        #images_data = validated_data.pop('images', None)
+        interrelationship_data = validated_data.pop('group', None)
+        request_user = validated_data.pop('request_user')
+        series = self.Meta.model.objects.create(
+            **validated_data,
+            entry_author=request_user
+        )
+
+        if interrelationship_data is not None:
+            [interrelationship_data] = interrelationship_data
+            series.interrelationship.add(
+                interrelationship_data['to_series'],
+                through_defaults={
+                    'reason_for_interrelationship': interrelationship_data['reason_for_interrelationship']}
+            )
+        return series
+
+
+
+
+
+
+
 

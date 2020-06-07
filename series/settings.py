@@ -168,7 +168,7 @@ DEBUG_TOOLBAR_PANELS = [
 ]
 
 #  custom test runner
-TEST_RUNNER = 'series.helpers.testrunner.MyTestSuiteRunner'
+TEST_RUNNER = 'series.testrunner.MyTestSuiteRunner'
 
 #  DRF related options.
 REST_FRAMEWORK = {
@@ -179,14 +179,15 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
         'series.permissions.SoftDeletedUsersDenied',
     ],
-    'EXCEPTION_HANDLER': 'series.helpers.exception_handler.custom_exception_handler',
+    'EXCEPTION_HANDLER': 'series.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    #'DEFAULT_PAGINATION_CLASS': 'series.pagination.FasterLimitOffsetPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
-        'series.helpers.throttling.CustomScopeThrottle',
+        'series.throttling.CustomScopeThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '60/minute',

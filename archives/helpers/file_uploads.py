@@ -1,6 +1,6 @@
-from archives import models
-
 import os
+
+from archives import models
 
 
 def save_image_path(instance: 'models.ImageModel', filename: str) -> str:

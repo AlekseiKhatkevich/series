@@ -6,9 +6,11 @@ from rest_framework import generics, permissions
 import archives.models
 import archives.serializers
 from series.helpers import custom_functions
+from series import pagination
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView):
+    pagination_class = pagination.FasterLimitOffsetPagination
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     serializer_class = archives.serializers.TvSeriesSerializer
     model = serializer_class.Meta.model
@@ -28,11 +30,11 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
         # Annotations for seasons and episodes.
         annotations = dict(
             seasons_cnt=NullIf(Count('seasons'), 0),
-            episodes_cnt=Sum('seasons__number_of_episodes')
+            episodes_cnt=Sum('seasons__number_of_episodes'),
         )
         self.queryset = self.model.objects.all().\
             annotate(**annotations).\
-            select_related('entry_author').\
+            select_related('entry_author',).\
             prefetch_related('interrelationship', 'images', pr_groups).\
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
