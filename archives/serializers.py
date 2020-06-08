@@ -53,14 +53,15 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
     number_of_episodes = serializers.ReadOnlyField(
         source='episodes_cnt',
     )
-    # images = ImagesSerializer(
-    #     many=True,
-    #     required=False
-    # )
+
+    images = ImagesSerializer(
+        many=True,
+        required=False
+    )
 
     class Meta:
         model = archives.models.TvSeriesModel
-        #none_if_empty = ('interrelationship', 'images', )
+        none_if_empty = ('interrelationship', 'images', )
         fields = (
             'pk',
             'entry_author',
@@ -73,18 +74,15 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
             'interrelationship',
             'number_of_seasons',
             'number_of_episodes',
-            #'images',
+            'images',
         )
         extra_kwargs = {
             'imdb_url': {'validators': ()},
         }
 
-    def validate(self, attrs):
-        return super().validate(attrs)
-
     @transaction.atomic
     def create(self, validated_data):
-        #images_data = validated_data.pop('images', None)
+        images_data = validated_data.pop('images', None)
         interrelationship_data = validated_data.pop('group', None)
         request_user = validated_data.pop('request_user')
         series = self.Meta.model.objects.create(
@@ -93,18 +91,28 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         )
 
         if interrelationship_data is not None:
-            [interrelationship_data] = interrelationship_data
-            series.interrelationship.add(
-                interrelationship_data['to_series'],
-                through_defaults={
-                    'reason_for_interrelationship': interrelationship_data['reason_for_interrelationship']}
+            list_of_interrelationships = []
+            for i_ship in interrelationship_data:
+                seq = (series, i_ship['to_series'])
+                for num, _ in enumerate(seq):
+                    list_of_interrelationships.append(
+                        archives.models.GroupingModel(
+                            from_series=seq[num],
+                            to_series=seq[not num],
+                            reason_for_interrelationship=i_ship['reason_for_interrelationship']
+                        ),)
+
+            archives.models.GroupingModel.objects.bulk_create(
+                list_of_interrelationships,
+                ignore_conflicts=True,
             )
+
+        for image in self.context['request'].FILES:
+            archives.models.ImageModel.objects.create(
+                    image=image,
+                    content_type_id=7,
+                    object_id=series.pk,
+                )
+
         return series
-
-
-
-
-
-
-
 

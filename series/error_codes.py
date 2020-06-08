@@ -72,13 +72,17 @@ USER_IS_DELETED = exc_msg(
     'user_is_deleted',
 )
 ONLY_MASTERS_ALLOWED = exc_msg(
-    'Access is allowed only to masters',
+    'Access is allowed only to masters.',
     'only_masters_allowed',
 )
 
 NOT_YOUR_SLAVE = exc_msg(
-    'This email does not belong to your slave account or this is not a slave account at all',
+    'This email does not belong to your slave account or this is not a slave account at all.',
     'not_your_slave',
+)
+INTERRELATIONSHIP_ON_SELF = exc_msg(
+    'Series can not have interrelationship on itself.',
+    'interrelationship_on_self',
 )
 
 

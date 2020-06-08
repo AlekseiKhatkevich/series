@@ -143,3 +143,14 @@ class ValidateIfUrlIsAlive:
                 )
 
 
+class ValidateInterrelationship:
+    """
+
+    """
+    requires_context = True
+
+    def __init__(self):
+        pass
+
+    def __call__(self, value, serializer_field):
+        pass

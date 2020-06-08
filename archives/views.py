@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, parsers
 
 import archives.models
 import archives.serializers
@@ -14,6 +14,7 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     serializer_class = archives.serializers.TvSeriesSerializer
     model = serializer_class.Meta.model
+    #parser_classes = [parsers.MultiPartParser,]
 
     def get_queryset(self):
         #  deferred fields for User model instance.
@@ -38,4 +39,9 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
             prefetch_related('interrelationship', 'images', pr_groups).\
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
+
+
+
+
+
 

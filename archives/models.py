@@ -26,11 +26,13 @@ class GroupingModel(models.Model):
         'TvSeriesModel',
         on_delete=models.CASCADE,
         related_name='group',
+        verbose_name='relationship with series.'
     )
     to_series = models.ForeignKey(
         'TvSeriesModel',
         on_delete=models.CASCADE,
         related_name='group_to',
+        verbose_name='relationship with series.'
     )
     reason_for_interrelationship = models.TextField(
         verbose_name='Reason for relationship to an another series.'
@@ -39,6 +41,9 @@ class GroupingModel(models.Model):
     class Meta:
         verbose_name = 'Group'
         verbose_name_plural = 'Groups'
+        unique_together = (
+            ('from_series', 'to_series',),
+        )
         constraints = [
             models.CheckConstraint(
                 name='interrelationship_on_self',
@@ -48,6 +53,17 @@ class GroupingModel(models.Model):
     def __str__(self):
         return f'pk - {self.pk} / {self.from_series.name} / pk - {self.from_series_id} <->' \
                f' {self.to_series.name} / pk - {self.to_series_id}'
+
+    def clean(self):
+        if self.from_series == self.to_series:
+            raise exceptions.ValidationError(
+                *error_codes.INTERRELATIONSHIP_ON_SELF
+            )
+
+    def save(self, fc=True, *args, **kwargs):
+        if fc:
+            self.full_clean(validate_unique=True)
+        super().save(*args, **kwargs)
 
 
 class TvSeriesModel(models.Model):
@@ -129,13 +145,13 @@ class TvSeriesModel(models.Model):
     def __str__(self):
         return f'{self.pk} / {self.name}'
 
-    def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, fc=True, *args, **kwargs):
         # Exclude 'url_to_imdb' from field validation if field hasn't changed or model instance is not just created.
         if fc:
             exclude = ('url_to_imdb',) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) else ()
             self.full_clean(exclude=exclude, validate_unique=True)
 
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(*args, **kwargs)
         self._original_model_state = model_to_dict(self, exclude='interrelationship')
 
     # todo

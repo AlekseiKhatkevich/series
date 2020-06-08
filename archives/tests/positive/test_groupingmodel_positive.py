@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 
+from archives.tests.data import initial_data
 from users.helpers import create_test_users
-from ..data import initial_data
 
 
 class GroupingModelPositiveTest(APITestCase):
