@@ -14,7 +14,6 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     serializer_class = archives.serializers.TvSeriesSerializer
     model = serializer_class.Meta.model
-    #parser_classes = [parsers.MultiPartParser,]
 
     def get_queryset(self):
         #  deferred fields for User model instance.
@@ -36,7 +35,7 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
         self.queryset = self.model.objects.all().\
             annotate(**annotations).\
             select_related('entry_author',).\
-            prefetch_related('interrelationship', 'images', pr_groups).\
+            prefetch_related('images', pr_groups).\
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
 

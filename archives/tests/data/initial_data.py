@@ -1,24 +1,25 @@
-import archives.models
-
-from typing import Sequence
-from PIL import Image
-from io import BytesIO
 import itertools
+from io import BytesIO
+from typing import Sequence
 
+from PIL import Image
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db.models.base import ModelBase
 
+import archives.models
 
 users_instances = Sequence[settings.AUTH_USER_MODEL, ]
 series_instances = Sequence[archives.models.TvSeriesModel, ]
 season_instances = Sequence[archives.models.SeasonModel, ]
+models_instance = Sequence[ModelBase, ]
 
 
 def create_tvseries(users: users_instances) -> series_instances:
     """
     Creates test series for unittests.
-    :param users: container or iterable of user's instances.
-    :return: container of series instances.
+    :param users: Container or iterable of user's instances.
+    :return: Container of series instances.
     """
     tv_series_data = {
         'series_1':
@@ -27,7 +28,7 @@ def create_tvseries(users: users_instances) -> series_instances:
              'imdb_url': 'https://www.imdb.com'
              },
         'series_2':
-            {'entry_author': users[0],
+            {'entry_author': users[1],
              'name': 'Shameless',
              'imdb_url': 'https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649'
              }
@@ -75,3 +76,20 @@ def generate_test_image() -> ContentFile:
     file.seek(0)
     django_friendly_file = ContentFile(file.read(), 'test.png')
     return django_friendly_file
+
+
+def create_images_instances(model_instances: models_instance) -> None:
+    """
+    Attaches generated images to model instances via generic relations.
+    """
+    instances_pool = []
+    for instance in model_instances:
+        instances_pool.append(
+            archives.models.ImageModel(
+                image=generate_test_image(),
+                content_object=instance
+            )
+        )
+    archives.models.ImageModel.objects.bulk_create(
+        instances_pool
+    )

@@ -1,3 +1,4 @@
+from django.core.files import images
 from django.db import transaction
 from rest_framework import serializers
 
@@ -30,6 +31,12 @@ class ImagesSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'image': {'max_length': 100}
         }
+
+    def create(self, validated_data):
+        series = self.context['series']
+        image = validated_data['image']
+        img_instance = series.images.create(image=images.ImageFile(image))
+        return img_instance
 
 
 class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.ModelSerializer):
@@ -107,12 +114,20 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
                 ignore_conflicts=True,
             )
 
-        for image in self.context['request'].FILES:
-            archives.models.ImageModel.objects.create(
-                    image=image,
-                    content_type_id=7,
-                    object_id=series.pk,
-                )
+        if 'image' in (data := self.context['request'].data):
+            serializer = ImagesSerializer(
+                data=data,
+                context={'series': series}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
         return series
+
+
+
+
+
+
+
 
