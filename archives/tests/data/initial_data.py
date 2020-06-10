@@ -1,6 +1,7 @@
 import itertools
 from io import BytesIO
 from typing import Sequence
+import random
 
 from PIL import Image
 from django.conf import settings
@@ -9,10 +10,10 @@ from django.db.models.base import ModelBase
 
 import archives.models
 
-users_instances = Sequence[settings.AUTH_USER_MODEL, ]
-series_instances = Sequence[archives.models.TvSeriesModel, ]
-season_instances = Sequence[archives.models.SeasonModel, ]
-models_instance = Sequence[ModelBase, ]
+users_instances = Sequence[settings.AUTH_USER_MODEL,]
+series_instances = Sequence[archives.models.TvSeriesModel,]
+season_instances = Sequence[archives.models.SeasonModel,]
+models_instance = Sequence[ModelBase,]
 
 
 def create_tvseries(users: users_instances) -> series_instances:
@@ -52,12 +53,13 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
 
     for single_series in series:
         for season_number in range(num_episodes):
-            new_season_data = {f'{single_series.name} season {season_number + 1}': {
-                'series': single_series,
-                'season_number': season_number + 1,
-                'number_of_episodes': 5,
-                '_order': next(order),
-            }}
+            new_season_data = {
+                f'{single_series.name} season {season_number + 1}': {
+                    'series': single_series,
+                    'season_number': season_number + 1,
+                    'number_of_episodes': random.randint(7, 10),
+                    '_order': next(order),
+                }}
             seasons.update(new_season_data)
 
     seasons = archives.models.SeasonModel.objects.bulk_create(
@@ -83,13 +85,13 @@ def create_images_instances(model_instances: models_instance) -> None:
     Attaches generated images to model instances via generic relations.
     """
     instances_pool = []
+
     for instance in model_instances:
         instances_pool.append(
             archives.models.ImageModel(
                 image=generate_test_image(),
                 content_object=instance
-            )
-        )
+            ))
     archives.models.ImageModel.objects.bulk_create(
         instances_pool
     )

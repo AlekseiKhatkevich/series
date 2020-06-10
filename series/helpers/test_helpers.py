@@ -1,7 +1,6 @@
-from django.core.cache import caches
 from django.conf import settings as django_settings
-from django.urls import resolve
-from rest_framework import settings, status, test, throttling
+from django.core.cache import caches
+from rest_framework import exceptions, settings, status, test, throttling
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 
@@ -22,10 +21,14 @@ class TestHelpers(test.APISimpleTestCase):
         :param status_code: Expected status code.
         :return: None
         """
-        if isinstance(response.data[field], str):
-            error_in_response = response.data[field]
+        value = response.data[field]
+
+        if isinstance(value, exceptions.ErrorDetail):
+            error_in_response = str(value)
+        elif isinstance(value, str):
+            error_in_response = value
         else:
-            error_in_response = response.data[field][0]
+            error_in_response = value[0]
 
         self.assertEqual(
             response.status_code,

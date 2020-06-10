@@ -26,3 +26,7 @@ app.autodiscover_tasks()
 def debug_task(self):
     print('Request: {0!r}'.format(self.request))
 
+
+@app.task
+def delete_file(path: str) -> None:
+    os.remove(path)

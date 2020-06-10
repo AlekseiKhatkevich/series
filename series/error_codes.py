@@ -84,5 +84,9 @@ INTERRELATIONSHIP_ON_SELF = exc_msg(
     'Series can not have interrelationship on itself.',
     'interrelationship_on_self',
 )
+WRONG_PATH = exc_msg(
+    'Path does not exists or this is a file but not a folder',
+    'wrong_path',
+)
 
 

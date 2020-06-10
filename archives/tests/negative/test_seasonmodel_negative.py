@@ -96,7 +96,7 @@ class SeasonModelNegativeTest(APITestCase):
         can be saved in DB. Constraint should resist against this configuration.
         """
         expected_constraint_code = 'mutual_watched_episode_and_number_of_episodes_check'
-        self.season_1_1.last_watched_episode = 6
+        self.season_1_1.last_watched_episode = 99
 
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
@@ -133,7 +133,7 @@ class SeasonModelNegativeTest(APITestCase):
         last_watched_episode number is bigger then number of episodes in season
         """
 
-        self.season_1_1.last_watched_episode = 10
+        self.season_1_1.last_watched_episode = 99
         expected_exception_message = f'Last watched episode number {self.season_1_1.last_watched_episode}' \
                                      f' is greater then number of episodes {self.season_1_1.number_of_episodes}' \
                                      f' in the whole season!!!'
@@ -147,8 +147,8 @@ class SeasonModelNegativeTest(APITestCase):
         we have a key in JSON data in episodes field with number greater
         then number of episodes in season.
         """
-        self.season_1_1.episodes = {10: 1588596739.336106}
-        expected_exception_message = f'Episode number 10 in "episodes"  field is greater then' \
+        self.season_1_1.episodes = {99: 1588596739.336106}
+        expected_exception_message = f'Episode number 99 in "episodes"  field is greater then' \
                                      f' number of episodes {self.season_1_1.number_of_episodes}'
 
         with self.assertRaisesMessage(ValidationError, expected_exception_message):

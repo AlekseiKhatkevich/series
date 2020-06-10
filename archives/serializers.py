@@ -60,7 +60,6 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
     number_of_episodes = serializers.ReadOnlyField(
         source='episodes_cnt',
     )
-
     images = ImagesSerializer(
         many=True,
         required=False
@@ -92,6 +91,7 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         images_data = validated_data.pop('images', None)
         interrelationship_data = validated_data.pop('group', None)
         request_user = validated_data.pop('request_user')
+
         series = self.Meta.model.objects.create(
             **validated_data,
             entry_author=request_user
