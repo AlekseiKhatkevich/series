@@ -1,19 +1,20 @@
 import itertools
+import random
 from io import BytesIO
 from typing import Sequence
-import random
 
 from PIL import Image
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.db.models.base import ModelBase
+from django.db import models
 
 import archives.models
 
-users_instances = Sequence[settings.AUTH_USER_MODEL,]
-series_instances = Sequence[archives.models.TvSeriesModel,]
-season_instances = Sequence[archives.models.SeasonModel,]
-models_instance = Sequence[ModelBase,]
+users_instances = Sequence[settings.AUTH_USER_MODEL, ]
+series_instances = Sequence[archives.models.TvSeriesModel, ]
+season_instances = Sequence[archives.models.SeasonModel, ]
+models_instances = Sequence[models.Model]
+image_instances = Sequence[archives.models.ImageModel, ]
 
 
 def create_tvseries(users: users_instances) -> series_instances:
@@ -80,7 +81,7 @@ def generate_test_image() -> ContentFile:
     return django_friendly_file
 
 
-def create_images_instances(model_instances: models_instance) -> None:
+def create_images_instances(model_instances: models_instances) -> image_instances:
     """
     Attaches generated images to model instances via generic relations.
     """
@@ -92,6 +93,7 @@ def create_images_instances(model_instances: models_instance) -> None:
                 image=generate_test_image(),
                 content_object=instance
             ))
-    archives.models.ImageModel.objects.bulk_create(
+    images = archives.models.ImageModel.objects.bulk_create(
         instances_pool
     )
+    return images

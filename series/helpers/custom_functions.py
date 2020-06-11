@@ -1,3 +1,4 @@
+import functools
 import inspect
 import os
 from typing import Callable, Container, Iterable, Optional, Union
@@ -110,33 +111,41 @@ def get_model_fields_subset(
 MEDIA_ROOT_FULL_PATH = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT)
 
 
-def remove_files(path: Optional[str] = MEDIA_ROOT_FULL_PATH) -> None:
+def clean_garbage_in_folder(path: str = MEDIA_ROOT_FULL_PATH) -> None:
     """
     Removes files and sub-folders in chosen folder. Also cleans ImageModel from entries
     that leads to non-existent files.
     """
-
+    assert path == MEDIA_ROOT_FULL_PATH, 'Temporary assertion.'
     assert os.path.exists(path) and os.path.isdir(path), error_codes.WRONG_PATH.message
+    assert not settings.IM_IN_TEST_MODE, error_codes.NOT_IN_TESTS.message
 
+    #  Full path to MEDIA_ROOT.
+    media_root_partial = functools.partial(os.path.join, settings.BASE_DIR, settings.MEDIA_ROOT)
+
+    #  Container with all files in MEDIA ROOT.
     media_root_files = set()
-    #  All files im MEDIA ROOT.
+
     for (dirpath, dirnames, filenames) in os.walk(path):
         for file in filenames:
-            file_path = os.path.join(dirpath, file)
+            file_path = os.path.join(dirpath, file)  # full path here
             file_path = os.path.normpath(file_path)
             media_root_files.add(file_path)
 
     db_files = set()
+
     #  All alive file path in ImageModel.
-    images_in_db = archives.models.ImageModel.objects.all().only('image')
+    images_in_db = archives.models.ImageModel.objects.all().values_list('image', flat=True)
     for image in images_in_db:
-        image_path = image.image.path
+        image_path = media_root_partial(image)
+        image_path = os.path.normpath(image_path)
+
         #  If image file path is dead -delete image entry.
         if not os.path.exists(image_path):
             image.delete()
         else:
-            image_path = os.path.normpath(image_path)
             db_files.add(image_path)
+
     #  Files in MEDIA_ROOT that are not present in ImageModel and should be deleted.
     files_to_delete = media_root_files - db_files
 
@@ -158,7 +167,11 @@ def remove_files(path: Optional[str] = MEDIA_ROOT_FULL_PATH) -> None:
     print(
         f'Total - {len(media_root_files)}',
         f'Files in DB - {len(db_files)}',
-        f'Deleted - {len(files_to_delete)}',
-        f'Deleted  - {counter} empty folders.',
+        f'Deleted - {len(files_to_delete)} files',
+        f'Deleted - {counter} empty folders.',
         sep='\n'
     )
+# from django.core.files.images import ImageFile
+# f = open(r'C:\Users\hardcase1\PycharmProjects\series\media\Breaking-Bad-with-Walter-White-320x240_bVh7ibq.jpg','rb')
+# series = TvSeriesModel.objects.first()
+# ImageModel.objects.create(content_object=series, image=ImageFile(f))

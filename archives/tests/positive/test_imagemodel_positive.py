@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from rest_framework.test import APITestCase
-import shutil
+
 from archives import models as archive_models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
@@ -25,17 +25,6 @@ class ImageModelPositiveTest(APITestCase):
 
         cls.raw_image = initial_data.generate_test_image()
         cls.test_image_instance = cls.series_1.images.create(image=cls.raw_image)
-
-    # @classmethod
-    # def tearDownClass(cls):
-    #     super(ImageModelPositiveTest, cls).tearDownClass()
-    #     series_path = os.path.join(
-    #         settings.BASE_DIR,
-    #         settings.MEDIA_ROOT,
-    #         cls.series_1.name
-    #     )
-    #     normalized_series_path = os.path.normpath(series_path)
-    #     shutil.rmtree(normalized_series_path)
 
     def test_file_upload_function_tvseriesmodel(self):
         """

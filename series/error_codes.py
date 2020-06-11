@@ -88,5 +88,13 @@ WRONG_PATH = exc_msg(
     'Path does not exists or this is a file but not a folder',
     'wrong_path',
 )
+NOT_IN_TESTS = exc_msg(
+    'This function or method is not applicable in tests',
+    'not_in_tests',
+)
+NOT_A_BINARY = exc_msg(
+    'This api endpoint only accepts binary file transmission. No multipart or JSON, sorry.',
+    'not_a_binary'
+)
 
 

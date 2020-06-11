@@ -1,6 +1,5 @@
 from rest_framework.test import APITestCase
 
-
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
 from archives import models
@@ -12,6 +11,7 @@ class CreateInitialDataPositiveTest(APITestCase):
     """
     Test process and result of creating test initial data for 'Archives' app tests.
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
@@ -50,3 +50,15 @@ class CreateInitialDataPositiveTest(APITestCase):
             image,
             files.base.ContentFile
         )
+
+    def test_create_images_instances(self):
+        """
+        Check that 'create_images_instances' function attaches images to model instances.
+        """
+        series = initial_data.create_tvseries(self.users)
+        images = initial_data.create_images_instances(series)
+
+        self.assertListEqual(
+            [image.pk for image in images],
+            list(models.TvSeriesModel.objects.all().values_list('images__pk', flat=True)
+                 ))

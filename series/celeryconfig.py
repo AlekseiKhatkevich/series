@@ -19,5 +19,9 @@ beat_schedule = {
         'task': 'users.tasks.clean_stale_tokens',
         'schedule': crontab(hour=17, minute=00),
     },
+    'clean_media_root': {
+        'task': 'archives.tasks.clean_media_root',
+        'schedule': crontab(hour=17, minute=1, day_of_week='sat'),
+    }
 }
 

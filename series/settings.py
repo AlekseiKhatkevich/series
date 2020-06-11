@@ -193,7 +193,13 @@ REST_FRAMEWORK = {
         'anon': '60/minute',
         'user': '1000/minute',
     },
+    'TEST_REQUEST_RENDERER_CLASSES': [
+        'rest_framework.renderers.MultiPartRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        'series.renderers.JPEGRenderer',
+    ]
 }
+
 SCOPE_THROTTLE_RATES = {
     'resend_activation': '1/minute',
     'undelete_account': '1/minute',

@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse
 from rest_framework import status
-
+from archives.tests.data import initial_data
 from users.helpers import create_test_users
 
 from series import error_codes
@@ -59,4 +59,29 @@ class CustomExceptionHandlerPositiveTest(APITestCase):
             expected_error_message
         )
 
+    def test_django_404_error(self):
+        """
+        Check that descriptive error message is provided on Django 404 error.
+        """
+        f = open(r'Breaking-Bad-with-Walter-White-320x240_bVh7ibq.jpg', 'rb')
+        data = {'file': open(r'Breaking-Bad-with-Walter-White-320x240_bVh7ibq.jpg', 'rb')}
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        uploaded_file = SimpleUploadedFile('test.jpg', f.read(), 'image/jpeg')
+        data = {'file': uploaded_file}
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.post(
+            reverse('upload', args=(99999999, 'filename.jpg')),
+            data=data,
+            format='jpg',
+        )
+        # self.assertEqual(
+        #     response.status_code,
+        #     status.HTTP_404_NOT_FOUND
+        # )
+        self.assertEqual(
+            response.data['image'],
+            'sfdgdgdfgdfg'
+        )
 

@@ -1,7 +1,6 @@
 from typing import Optional
-
+from django.http import Http404
 from django.core import exceptions
-from django.db.utils import IntegrityError
 from django.http.response import HttpResponseBase
 from django.views import View
 from rest_framework import status
@@ -29,8 +28,7 @@ def custom_exception_handler(exc: Exception, context: View) -> Optional[HttpResp
     if isinstance(exc, (exceptions.ValidationError,)):
         data = exc.message_dict
         return DRF_response(data=data, status=status.HTTP_400_BAD_REQUEST, )
-    # elif isinstance(exc,  IntegrityError,):
-    #     data = str(exc)
-    #     return DRF_response(data=data, status=status.HTTP_400_BAD_REQUEST, )
+    elif isinstance(exc, Http404):
+        response.data['detail'] = str(exc)
 
     return response

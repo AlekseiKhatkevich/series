@@ -1,5 +1,6 @@
-from rest_framework.test import APITestCase
 from django.contrib.auth import get_user_model
+from rest_framework.test import APITestCase
+
 from series.helpers import custom_functions
 
 
@@ -7,6 +8,9 @@ class CustomFunctionsPositiveTest(APITestCase):
     """
     Test for custom functions in series project root.
     """
+    @classmethod
+    def setUpTestData(cls):
+        pass
 
     def test_check_code_inside(self):
         """

@@ -1,12 +1,15 @@
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
-from rest_framework import generics, permissions, parsers
+from rest_framework import exceptions, generics, parsers, permissions, status
+from rest_framework.response import Response
 
 import archives.models
 import archives.serializers
+from series import error_codes, pagination
 from series.helpers import custom_functions
-from series import pagination
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView):
@@ -38,6 +41,40 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
             prefetch_related('images', pr_groups).\
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
+
+
+class FileUploadView(generics.CreateAPIView):
+    """
+    Api for uploading images for TvSeries.
+    Filename should be with extension, for example 'picture.jpg'.
+    """
+    parser_classes = (parsers.FileUploadParser, )
+    serializer_class = archives.serializers.ImagesSerializer
+
+    def get_file(self, request, *args, **kwargs) -> ContentFile:
+        """
+        Fetches file stream from request and transforms it into actual file object.
+        """
+        try:
+            in_memory_uploaded_file = request.data['file']
+            assert isinstance(in_memory_uploaded_file, InMemoryUploadedFile)
+        except (KeyError, AssertionError) as err:
+            raise exceptions.ValidationError(*error_codes.NOT_A_BINARY) from err
+
+        image_file = ContentFile(
+            in_memory_uploaded_file.read(),
+            name=self.kwargs['filename']
+        )
+        image_file.close()
+        return image_file
+
+    def create(self, request, *args, **kwargs):
+        request.data['image'] = self.get_file(request)
+        return super().create(request, *args, **kwargs)
+
+
+
+
 
 
 
