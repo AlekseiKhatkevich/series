@@ -1,5 +1,6 @@
 """Series project root settings."""
 
+import functools
 import os
 from datetime import timedelta
 
@@ -143,6 +144,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = 'media/'
+MEDIA_ROOT_FULL_PATH = os.path.join(BASE_DIR, MEDIA_ROOT)
+
 
 # https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project
 

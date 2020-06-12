@@ -96,5 +96,17 @@ NOT_A_BINARY = exc_msg(
     'This api endpoint only accepts binary file transmission. No multipart or JSON, sorry.',
     'not_a_binary'
 )
+ONLY_AUTHORS = exc_msg(
+    'Only authors of this entry are allowed to make this action.',
+    'only_authors'
+)
+ONLY_SLAVES_AND_MASTER = exc_msg(
+    'Only slaves or master of the entry creator are allowed to make this action.',
+    'only_slaves_and_master'
+)
+NOT_AN_IMAGE = exc_msg(
+    'This file is not an image.',
+    'not_an-image'
+)
 
 

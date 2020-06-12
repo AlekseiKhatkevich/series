@@ -1,10 +1,13 @@
+import shutil
+import tempfile
+
+from django.conf import settings
+from django.core import files
 from rest_framework.test import APITestCase
 
+from archives import models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
-from archives import models
-
-from django.core import files
 
 
 class CreateInitialDataPositiveTest(APITestCase):
@@ -12,9 +15,20 @@ class CreateInitialDataPositiveTest(APITestCase):
     Test process and result of creating test initial data for 'Archives' app tests.
     """
 
+    original_media_root = settings.MEDIA_ROOT
+
     @classmethod
     def setUpTestData(cls):
+        cls.temp_dir = tempfile.mkdtemp()
+        settings.MEDIA_ROOT = cls.temp_dir
+
         cls.users = create_test_users.create_users()
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        settings.MEDIA_ROOT = cls.original_media_root
+        shutil.rmtree(cls.temp_dir)
 
     def test_create_tvseries(self):
         """

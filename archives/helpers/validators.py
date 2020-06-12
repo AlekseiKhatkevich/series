@@ -1,17 +1,24 @@
 import datetime
+import functools
+import imghdr
 import json
+import os
 import urllib.error
 import urllib.parse
 import urllib.request
 from types import MappingProxyType
 
 import rest_framework.status as status_codes
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.files.base import File
 from django.utils.deconstruct import deconstructible
 
 from archives.helpers import custom_functions
-
+from series import error_codes
 from series.helpers import project_decorators
+
+media_root_full_path_partial = functools.partial(os.path.join, settings.MEDIA_ROOT_FULL_PATH)
 
 test_dict = {'a': 1587902034.039742, 1: 1587902034.039742, 2: 1587902034.039742,
              99: 1587902034.039742, -8: 1587902034.039742, 2.2: 1587902034.039742,
@@ -96,6 +103,7 @@ class ValidateUrlDomain:
     'https://www.imdb.com/title/tt12162902/?ref_=hm_hp_cap_pri_5'
     are the same.
     """
+
     def __init__(self, domain: str, *args, **kwargs):
         self._domain = domain
 
@@ -115,10 +123,11 @@ class ValidateIfUrlIsAlive:
     Checks whether or not given url is alive by sending HEAD request to resource
      and analyze status code of response.
     """
+
     def __init__(self, timeout: int):
         self._timeout = timeout
 
-    def __call__(self, value: str,  *args, **kwargs) -> None:
+    def __call__(self, value: str, *args, **kwargs) -> None:
 
         request = urllib.request.Request(value, method='HEAD')
 
@@ -143,14 +152,37 @@ class ValidateIfUrlIsAlive:
                 )
 
 
-class ValidateInterrelationship:
+@functools.singledispatch
+def validate_is_image(value) -> None:
     """
-
+    Validates whether image file is actually an image file and not just a random file with image-like
+    file extension.
+    :param value: Path of the file or file-like object.
+    :return: None
     """
-    requires_context = True
+    raise TypeError(f'This argument type {str(type(value))} is not supported by validator'
+                    f'function "validate_is_image"')
 
-    def __init__(self):
-        pass
 
-    def __call__(self, value, serializer_field):
-        pass
+@validate_is_image.register(File)
+def _(value) -> None:
+    result = imghdr.what(value, h=None)
+
+    if not result:
+        raise ValidationError(
+            *error_codes.NOT_AN_IMAGE
+        )
+
+
+@validate_is_image.register(str)
+def _(value) -> None:
+    value = os.path.normpath(value)
+    path = os.path.normpath(
+        media_root_full_path_partial(value)
+    )
+    result = imghdr.what(path, h=None)
+
+    if not result:
+        raise ValidationError(
+            *error_codes.NOT_AN_IMAGE
+        )

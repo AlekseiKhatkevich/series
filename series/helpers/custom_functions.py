@@ -108,15 +108,12 @@ def get_model_fields_subset(
     return fields
 
 
-MEDIA_ROOT_FULL_PATH = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT)
-
-
-def clean_garbage_in_folder(path: str = MEDIA_ROOT_FULL_PATH) -> None:
+def clean_garbage_in_folder(path: str = settings.MEDIA_ROOT_FULL_PATH) -> None:
     """
     Removes files and sub-folders in chosen folder. Also cleans ImageModel from entries
     that leads to non-existent files.
     """
-    assert path == MEDIA_ROOT_FULL_PATH, 'Temporary assertion.'
+    assert path == settings.MEDIA_ROOT_FULL_PATH, 'Temporary assertion.'
     assert os.path.exists(path) and os.path.isdir(path), error_codes.WRONG_PATH.message
     assert not settings.IM_IN_TEST_MODE, error_codes.NOT_IN_TESTS.message
 
@@ -133,6 +130,7 @@ def clean_garbage_in_folder(path: str = MEDIA_ROOT_FULL_PATH) -> None:
             media_root_files.add(file_path)
 
     db_files = set()
+    models_counter = 0
 
     #  All alive file path in ImageModel.
     images_in_db = archives.models.ImageModel.objects.all().values_list('image', flat=True)
@@ -142,7 +140,8 @@ def clean_garbage_in_folder(path: str = MEDIA_ROOT_FULL_PATH) -> None:
 
         #  If image file path is dead -delete image entry.
         if not os.path.exists(image_path):
-            image.delete()
+            archives.models.ImageModel.objects.filter(image=image).delete()
+            models_counter += 1
         else:
             db_files.add(image_path)
 
@@ -155,23 +154,25 @@ def clean_garbage_in_folder(path: str = MEDIA_ROOT_FULL_PATH) -> None:
     for file in files_to_delete:
         os.remove(file)
 
-    counter = 0
+    folders_counter = 0
+
     #  Delete all empty folders.
     for (dirpath, dirnames, filenames) in os.walk(path):
         for folder in dirnames:
             folder_path = os.path.join(dirpath, folder)
             if os.path.isdir(folder_path) and not os.listdir(folder_path):
                 os.rmdir(folder_path)
-                counter += 1
+                folders_counter += 1
 
     print(
         f'Total - {len(media_root_files)}',
         f'Files in DB - {len(db_files)}',
         f'Deleted - {len(files_to_delete)} files',
-        f'Deleted - {counter} empty folders.',
+        f'Deleted - {folders_counter} empty folders.',
+        f'Deleted - {models_counter} empty model instances.',
         sep='\n'
     )
 # from django.core.files.images import ImageFile
-# f = open(r'C:\Users\hardcase1\PycharmProjects\series\media\Breaking-Bad-with-Walter-White-320x240_bVh7ibq.jpg','rb')
+# f = open(r'C:\Users\hardcase1\PycharmProjects\series\media\Breaking-Bad-with-Walter-White-320x240_b_8Ee3Aej.jpg','rb')
 # series = TvSeriesModel.objects.first()
 # ImageModel.objects.create(content_object=series, image=ImageFile(f))

@@ -313,7 +313,8 @@ class ImageModel(models.Model):
 
     image = models.ImageField(
         upload_to=file_uploads.save_image_path,
-        verbose_name='An image'
+        verbose_name='An image',
+        validators=[custom_validators.validate_is_image, ],
     )
     content_type = models.ForeignKey(
         ContentType,
@@ -338,3 +339,12 @@ class ImageModel(models.Model):
         Returns name of the image file.
         """
         return os.path.basename(self.image.file.name)
+
+    def save(self, fc=True, *args, **kwargs):
+        if fc:
+            self.full_clean()
+        super().save(*args, **kwargs)
+
+
+
+

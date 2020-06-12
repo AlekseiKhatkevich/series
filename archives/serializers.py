@@ -1,7 +1,7 @@
-from django.core.files import images
 from django.db import transaction
+from django.conf import settings
 from rest_framework import serializers
-from django.shortcuts import get_object_or_404
+
 import archives.models
 from series.helpers import serializer_mixins
 
@@ -25,22 +25,21 @@ class ImagesSerializer(serializers.ModelSerializer):
     """
     Serializer for displaying and creating Image instances.
     """
+    #if settings.IM_IN_TEST_MODE:
+    image = serializers.FileField()
 
     class Meta:
         model = archives.models.ImageModel
         fields = ('image',)
         extra_kwargs = {
-            'image': {'max_length': 100},
-            }
+            'image': {
+                'max_length': 100,
+                'validators': ()
+            }, }
 
-    def validate(self, attrs):
-        series_pk = self.context['view'].kwargs['series_pk']
-        series = get_object_or_404(
-            archives.models.TvSeriesModel,
-            pk=series_pk
-        )
-        attrs['content_object'] = series
-        return attrs
+    def create(self, validated_data):
+        validated_data['content_object'] = self.context['series']
+        return super().create(validated_data)
 
 
 class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.ModelSerializer):
@@ -66,7 +65,7 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
     )
     images = ImagesSerializer(
         many=True,
-        required=False
+        read_only=True,
     )
 
     class Meta:
@@ -92,7 +91,6 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
 
     @transaction.atomic
     def create(self, validated_data):
-        images_data = validated_data.pop('images', None)
         interrelationship_data = validated_data.pop('group', None)
         request_user = validated_data.pop('request_user')
 
@@ -117,14 +115,6 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
                 list_of_interrelationships,
                 ignore_conflicts=True,
             )
-
-        # if 'image' in (data := self.context['request'].data):
-        #     serializer = ImagesSerializer(
-        #         data=data,
-        #         context={'series': series}
-        #     )
-        #     serializer.is_valid(raise_exception=True)
-        #     serializer.save()
 
         return series
 

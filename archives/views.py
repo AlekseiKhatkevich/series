@@ -3,10 +3,10 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
-from rest_framework import exceptions, generics, parsers, permissions, status
-from rest_framework.response import Response
+from rest_framework import exceptions, generics, parsers, permissions
 
 import archives.models
+import archives.permissions
 import archives.serializers
 from series import error_codes, pagination
 from series.helpers import custom_functions
@@ -49,9 +49,17 @@ class FileUploadView(generics.CreateAPIView):
     Filename should be with extension, for example 'picture.jpg'.
     """
     parser_classes = (parsers.FileUploadParser, )
+    permission_classes = (archives.permissions.MasterSlaveRelations, )
     serializer_class = archives.serializers.ImagesSerializer
+    queryset = archives.models.TvSeriesModel.objects.all().select_related('entry_author')
+    lookup_url_kwarg = 'series_pk'
 
-    def get_file(self, request, *args, **kwargs) -> ContentFile:
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['series'] = self.get_object()
+        return context
+
+    def get_file(self, request) -> ContentFile:
         """
         Fetches file stream from request and transforms it into actual file object.
         """
@@ -71,6 +79,8 @@ class FileUploadView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         request.data['image'] = self.get_file(request)
         return super().create(request, *args, **kwargs)
+
+
 
 
 
