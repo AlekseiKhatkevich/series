@@ -45,7 +45,7 @@ class TvSeriesModelPositiveTest(APITestCase):
         """
         raw_image = initial_data.generate_test_image()
         image = archive_models.ImageModel(content_object=self.series_1, image=raw_image)
-        image.save()
+        image.save(fc=False)
 
         self.assertEqual(
             image,

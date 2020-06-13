@@ -1,6 +1,5 @@
 """Series project root settings."""
 
-import functools
 import os
 from datetime import timedelta
 

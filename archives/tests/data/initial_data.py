@@ -81,6 +81,15 @@ def generate_test_image() -> ContentFile:
     return django_friendly_file
 
 
+def generate_test_image_as_file():
+    """
+    Generates small file.
+    """
+    img = Image.new('RGBA', (60, 30), color='red')
+    img.save('test_image_file.png')
+    return img
+
+
 def create_images_instances(model_instances: models_instances) -> image_instances:
     """
     Attaches generated images to model instances via generic relations.

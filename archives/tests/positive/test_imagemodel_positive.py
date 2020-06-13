@@ -24,7 +24,7 @@ class ImageModelPositiveTest(APITestCase):
         cls.season_1, *tail = cls.seasons
 
         cls.raw_image = initial_data.generate_test_image()
-        cls.test_image_instance = cls.series_1.images.create(image=cls.raw_image)
+        cls.test_image_instance = cls.series_1.images.create(image=cls.raw_image, fc=False)
 
     def test_file_upload_function_tvseriesmodel(self):
         """
@@ -56,6 +56,7 @@ class ImageModelPositiveTest(APITestCase):
         image_model_instance = archive_models.ImageModel.objects.create(
             image=self.raw_image,
             content_object=self.season_1,
+            fc=False,
         )
 
         expected_file_path = os.path.join(
@@ -81,6 +82,7 @@ class ImageModelPositiveTest(APITestCase):
         image_model_instance = archive_models.ImageModel.objects.create(
             image=self.raw_image,
             content_object=self.users[0],
+            fc=False,
         )
 
         expected_file_path = os.path.join(

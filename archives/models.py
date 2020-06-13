@@ -310,11 +310,12 @@ class ImageModel(models.Model):
     Model represents an image. Can be attached to any model in the project.
     Based on a Generic FK.
     """
+    objects = managers.ImageManager.from_queryset(managers.ImageQueryset)()
 
     image = models.ImageField(
         upload_to=file_uploads.save_image_path,
         verbose_name='An image',
-        validators=[custom_validators.validate_is_image, ],
+        validators=[custom_validators.IsImageValidator(), ],
     )
     content_type = models.ForeignKey(
         ContentType,

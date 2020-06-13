@@ -130,7 +130,7 @@ def clean_garbage_in_folder(path: str = settings.MEDIA_ROOT_FULL_PATH) -> None:
             media_root_files.add(file_path)
 
     db_files = set()
-    models_counter = 0
+    images_to_delete = []
 
     #  All alive file path in ImageModel.
     images_in_db = archives.models.ImageModel.objects.all().values_list('image', flat=True)
@@ -140,10 +140,12 @@ def clean_garbage_in_folder(path: str = settings.MEDIA_ROOT_FULL_PATH) -> None:
 
         #  If image file path is dead -delete image entry.
         if not os.path.exists(image_path):
-            archives.models.ImageModel.objects.filter(image=image).delete()
-            models_counter += 1
+            images_to_delete.append(image)
         else:
             db_files.add(image_path)
+
+    deleted_model_instances_count, _ = archives.models.ImageModel.objects.filter(
+        image__in=images_to_delete).delete()
 
     #  Files in MEDIA_ROOT that are not present in ImageModel and should be deleted.
     files_to_delete = media_root_files - db_files
@@ -151,8 +153,13 @@ def clean_garbage_in_folder(path: str = settings.MEDIA_ROOT_FULL_PATH) -> None:
     assert len(media_root_files) == (len(db_files) + len(files_to_delete)),\
         'Something went really wrong!'
 
+    errors_in_delete = []
+
     for file in files_to_delete:
-        os.remove(file)
+        try:
+            os.remove(file)
+        except (PermissionError, OSError):
+            errors_in_delete.append(file)
 
     folders_counter = 0
 
@@ -165,14 +172,12 @@ def clean_garbage_in_folder(path: str = settings.MEDIA_ROOT_FULL_PATH) -> None:
                 folders_counter += 1
 
     print(
-        f'Total - {len(media_root_files)}',
+        f'Total files - {len(media_root_files)}',
         f'Files in DB - {len(db_files)}',
         f'Deleted - {len(files_to_delete)} files',
         f'Deleted - {folders_counter} empty folders.',
-        f'Deleted - {models_counter} empty model instances.',
+        f'Deleted - {deleted_model_instances_count} empty model instances.',
+        f'{len(errors_in_delete)} errors happened during file deletion process.'
+        f' Filenames are --{errors_in_delete}',
         sep='\n'
     )
-# from django.core.files.images import ImageFile
-# f = open(r'C:\Users\hardcase1\PycharmProjects\series\media\Breaking-Bad-with-Walter-White-320x240_b_8Ee3Aej.jpg','rb')
-# series = TvSeriesModel.objects.first()
-# ImageModel.objects.create(content_object=series, image=ImageFile(f))

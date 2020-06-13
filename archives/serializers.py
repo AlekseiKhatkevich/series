@@ -25,8 +25,8 @@ class ImagesSerializer(serializers.ModelSerializer):
     """
     Serializer for displaying and creating Image instances.
     """
-    #if settings.IM_IN_TEST_MODE:
-    image = serializers.FileField()
+    if settings.IM_IN_TEST_MODE:
+        image = serializers.FileField()
 
     class Meta:
         model = archives.models.ImageModel

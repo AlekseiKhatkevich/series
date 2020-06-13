@@ -22,7 +22,7 @@ class TvSeriesQueryset(models.QuerySet):
         )
         return self.filter(rating__range=top_range)
 
-    def running_series(self):
+    def running_series(self) -> models.QuerySet:
         """
         Returns only not finished series.
         """
@@ -48,6 +48,29 @@ class SeasonQueryset(models.QuerySet):
 class SeasonManager(models.Manager):
     """
     SeasonModel custom manager.
+    """
+    pass
+
+# -----------------------------------------------------------------------------------
+
+
+class ImageQueryset(models.QuerySet):
+    """
+    ImageModel custom queryset.
+    """
+    def create(self, fc: bool = True, **kwargs) -> models.Model:
+        """
+        Add 'fc' option to switch off/on full_clean() model method on save().
+        """
+        obj = self.model(**kwargs)
+        self._for_write = True
+        obj.save(force_insert=True, using=self.db, fc=fc)
+        return obj
+
+
+class ImageManager(models.Manager):
+    """
+    ImageModel custom manager.
     """
     pass
 

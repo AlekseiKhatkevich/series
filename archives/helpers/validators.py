@@ -81,6 +81,7 @@ def validate_timestamp(value: [dict, bytes]) -> None:
         value = MappingProxyType(value)
 
     wrong_timestamps = {}
+
     for episode, timestamp in value.items():
         try:
             datetime.datetime.fromtimestamp(timestamp)
@@ -112,7 +113,7 @@ class ValidateUrlDomain:
         if domain_of_the_given_url != self._domain:
             raise ValidationError(
                 f'Please provide url to {self._domain} exactly. Your provided url - {value}',
-                code='wrong_url'
+                code='wrong_url',
             )
 
 
@@ -152,37 +153,39 @@ class ValidateIfUrlIsAlive:
                 )
 
 
-@functools.singledispatch
-def validate_is_image(value) -> None:
+class IsImageValidator:
     """
     Validates whether image file is actually an image file and not just a random file with image-like
     file extension.
-    :param value: Path of the file or file-like object.
-    :return: None
     """
-    raise TypeError(f'This argument type {str(type(value))} is not supported by validator'
-                    f'function "validate_is_image"')
 
+    @staticmethod
+    def raise_exception(is_image_file: bool) -> None:
+        if not is_image_file:
+            raise ValidationError(
+                *error_codes.NOT_AN_IMAGE
+            )
 
-@validate_is_image.register(File)
-def _(value) -> None:
-    result = imghdr.what(value, h=None)
-
-    if not result:
-        raise ValidationError(
-            *error_codes.NOT_AN_IMAGE
+    @functools.singledispatchmethod
+    def __call__(self, value) -> None:
+        """
+        :param value: Path of the file or file-like object.
+        """
+        raise TypeError(
+            f'This argument type {str(type(value))} is not supported by validator function '
+            f'"validate_is_image"'
         )
 
+    @__call__.register(File)
+    def _(self, value: File) -> None:
+        is_image_file = imghdr.what(value, h=None)
+        self.raise_exception(is_image_file)
 
-@validate_is_image.register(str)
-def _(value) -> None:
-    value = os.path.normpath(value)
-    path = os.path.normpath(
-        media_root_full_path_partial(value)
-    )
-    result = imghdr.what(path, h=None)
-
-    if not result:
-        raise ValidationError(
-            *error_codes.NOT_AN_IMAGE
+    @__call__.register(str)
+    def _(self, value: str) -> None:
+        value = os.path.normpath(value)
+        path = os.path.normpath(
+            media_root_full_path_partial(value)
         )
+        is_image_file = imghdr.what(path, h=None)
+        self.raise_exception(is_image_file)
