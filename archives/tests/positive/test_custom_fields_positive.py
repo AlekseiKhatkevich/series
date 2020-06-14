@@ -1,11 +1,10 @@
-from rest_framework.test import APISimpleTestCase
-
 import unittest
 
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
+from rest_framework.test import APISimpleTestCase
 
-from ...helpers import custom_fields
+from archives.helpers import custom_fields
 
 
 class CustomFieldsPositiveTest(APISimpleTestCase):

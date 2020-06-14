@@ -1,13 +1,14 @@
-from rest_framework.test import APITestCase
-from rest_framework.reverse import reverse
 from rest_framework import status
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
+
 from archives.tests.data import initial_data
+from series import error_codes
+from series.helpers import test_helpers
 from users.helpers import create_test_users
 
-from series import error_codes
 
-
-class CustomExceptionHandlerPositiveTest(APITestCase):
+class CustomExceptionHandlerPositiveTest(test_helpers.TestHelpers, APITestCase):
     """
     Test for custom exception handler functions.
     """
@@ -15,6 +16,7 @@ class CustomExceptionHandlerPositiveTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user_1, cls.user_2, cls.user_3 = create_test_users.create_users()
+        cls.image = initial_data.generate_test_image()
 
     def setUp(self) -> None:
         self.test_user_data = dict(
@@ -63,5 +65,19 @@ class CustomExceptionHandlerPositiveTest(APITestCase):
         """
         Check that descriptive error message is provided on Django 404 error.
         """
-        pass
+        expected_error_code = 'No TvSeriesModel matches the given query.'
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.post(
+            reverse('upload', args=(999, 'test.jpg')),
+            data={'file': self.image},
+            format='jpg',
+        )
+
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_404_NOT_FOUND,
+            error_message=expected_error_code,
+        )
 

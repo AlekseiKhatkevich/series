@@ -101,12 +101,16 @@ ONLY_AUTHORS = exc_msg(
     'only_authors'
 )
 ONLY_SLAVES_AND_MASTER = exc_msg(
-    'Only slaves or master of the entry creator are allowed to make this action.',
+    'Only slaves or master of the entry creator and entry creator himself are allowed to make this action.',
     'only_slaves_and_master'
 )
 NOT_AN_IMAGE = exc_msg(
     'This file is not an image.',
     'not_an-image'
+)
+IMAGE_NOT_EXISTS = exc_msg(
+    'Image matching given pk does not exists.',
+    'image_not_exists',
 )
 
 

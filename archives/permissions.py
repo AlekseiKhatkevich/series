@@ -3,7 +3,7 @@ from rest_framework import permissions
 from series import error_codes
 
 
-class IsObjectOwner(permissions.BasePermission):
+class IsObjectOwner(permissions.IsAuthenticated):
     """
     Permission allows to enter only to authors of an entry.
     """
@@ -17,9 +17,7 @@ class MasterSlaveRelations(IsObjectOwner):
     """
     Permission that allows users and  master - salve relations with each other access an api endpoint.
     """
-    message = (IsObjectOwner.message,
-               error_codes.ONLY_SLAVES_AND_MASTER.message
-               )
+    message = error_codes.ONLY_SLAVES_AND_MASTER.message
 
     def has_object_permission(self, request, view, obj):
         is_master = request.user == obj.entry_author.master
