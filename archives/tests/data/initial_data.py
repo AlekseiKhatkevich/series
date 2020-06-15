@@ -90,18 +90,19 @@ def generate_test_image_as_file():
     return img
 
 
-def create_images_instances(model_instances: models_instances) -> image_instances:
+def create_images_instances(model_instances: models_instances, num_img: int = 1) -> image_instances:
     """
     Attaches generated images to model instances via generic relations.
     """
     instances_pool = []
 
     for instance in model_instances:
-        instances_pool.append(
-            archives.models.ImageModel(
-                image=generate_test_image(),
-                content_object=instance
-            ))
+        for _ in range(num_img):
+            instances_pool.append(
+                archives.models.ImageModel(
+                    image=generate_test_image(),
+                    content_object=instance
+                ))
     images = archives.models.ImageModel.objects.bulk_create(
         instances_pool
     )

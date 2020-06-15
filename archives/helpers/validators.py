@@ -153,6 +153,7 @@ class ValidateIfUrlIsAlive:
                 )
 
 
+@deconstructible
 class IsImageValidator:
     """
     Validates whether image file is actually an image file and not just a random file with image-like

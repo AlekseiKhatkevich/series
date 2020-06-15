@@ -1,6 +1,3 @@
-import shutil
-import tempfile
-
 from django.conf import settings
 from django.core import files
 from rest_framework.test import APITestCase
@@ -19,16 +16,7 @@ class CreateInitialDataPositiveTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.temp_dir = tempfile.mkdtemp()
-        settings.MEDIA_ROOT = cls.temp_dir
-
         cls.users = create_test_users.create_users()
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        settings.MEDIA_ROOT = cls.original_media_root
-        shutil.rmtree(cls.temp_dir)
 
     def test_create_tvseries(self):
         """
@@ -70,9 +58,14 @@ class CreateInitialDataPositiveTest(APITestCase):
         Check that 'create_images_instances' function attaches images to model instances.
         """
         series = initial_data.create_tvseries(self.users)
-        images = initial_data.create_images_instances(series)
+        images = initial_data.create_images_instances(series, 3)
 
         self.assertListEqual(
-            [image.pk for image in images],
-            list(models.TvSeriesModel.objects.all().values_list('images__pk', flat=True)
+            sorted([image.pk for image in images]),
+            list(models.TvSeriesModel.objects.all().values_list('images__pk', flat=True).order_by('pk')
                  ))
+
+        self.assertEqual(
+            len(images),
+            len(series) * 3,
+        )

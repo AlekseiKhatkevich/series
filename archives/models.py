@@ -1,5 +1,8 @@
 import heapq
 import os
+import io
+import imagehash
+import PIL
 from types import MappingProxyType
 from typing import KeysView
 
@@ -317,6 +320,10 @@ class ImageModel(models.Model):
         verbose_name='An image',
         validators=[custom_validators.IsImageValidator(), ],
     )
+    image_hash = models.CharField(
+        max_length=50,
+        verbose_name='Image hash.',
+    )
     content_type = models.ForeignKey(
         ContentType,
         on_delete=models.CASCADE
@@ -341,11 +348,25 @@ class ImageModel(models.Model):
         """
         return os.path.basename(self.image.file.name)
 
+    def make_image_hash(self):
+        """
+        Makes hash for image file.
+        """
+        try:
+            image_hash = custom_functions.create_image_hash(self.image.open('rb'))
+        finally:
+            self.image.close()
+        return image_hash
+
     def save(self, fc=True, *args, **kwargs):
+        """
+        image instance - ImageFieldFile, django.db.models.fields.files.
+        """
+        #positioning
         if fc:
-            self.full_clean()
+            self.full_clean(exclude=('image_hash', ))
+        if not self.image_hash:
+            self.image_hash = str(self.make_image_hash())
         super().save(*args, **kwargs)
-
-
 
 

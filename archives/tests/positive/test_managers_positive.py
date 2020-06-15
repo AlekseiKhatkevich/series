@@ -19,7 +19,7 @@ class ManagersPositiveTest(APITestCase):
         value_of_one_percent = 0.08
         low_value = 6.8
         filtering_range = (6.8-10)  # their ceil and floor as rating is INT.
-        expected_series_range = (Ceil(6.8), Floor(10))
+        expected_series_range = (Ceil(low_value), Floor(10))
         expected_queryset = archives.models.TvSeriesModel.objects.filter(
             rating__range=expected_series_range
         )

@@ -12,6 +12,7 @@ class ImageModelPositiveTest(APITestCase):
     """
     Test for 'ImageModel' instance smooth creation if proper set of data is provided.
     """
+    original_media_root = settings.MEDIA_ROOT
 
     @classmethod
     def setUpTestData(cls):

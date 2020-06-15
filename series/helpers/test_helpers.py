@@ -3,6 +3,7 @@ from django.core.cache import caches
 from rest_framework import exceptions, settings, status, test, throttling
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from typing import Optional
 
 
 class TestHelpers(test.APISimpleTestCase):
@@ -11,7 +12,13 @@ class TestHelpers(test.APISimpleTestCase):
     """
 
     def check_status_and_error_message(
-            self, response: Response, /, *, field: str = 'detail', error_message: str, status_code: str
+            self,
+            response: Response,
+            /,
+            *,
+            field: Optional[str] = 'detail',
+            error_message: str,
+            status_code: str
     ) -> None:
         """
         Helper function to check response status code and exception message in one go.
@@ -21,7 +28,7 @@ class TestHelpers(test.APISimpleTestCase):
         :param status_code: Expected status code.
         :return: None
         """
-        value = response.data[field]
+        value = response.data[field]if field is not None else response.data[0]
 
         if isinstance(value, exceptions.ErrorDetail):
             error_in_response = str(value)
@@ -39,7 +46,14 @@ class TestHelpers(test.APISimpleTestCase):
             error_message
         )
 
-    def check_scope_throttling(self, *, scope: str, url_name: str, data: dict, http_verb: str, **kwargs) -> None:
+    def check_scope_throttling(
+            self,
+            *,
+            scope: str,
+            url_name: str,
+            data: dict,
+            http_verb: str,
+            **kwargs) -> None:
         """
          Check whether scope throttling is applied.
         :param scope: Throttling scope.

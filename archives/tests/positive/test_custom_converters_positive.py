@@ -1,6 +1,6 @@
-from rest_framework.test import APISimpleTestCase
-from rest_framework.reverse import reverse
 from django.urls import resolve
+from rest_framework.reverse import reverse
+from rest_framework.test import APISimpleTestCase
 
 
 class CustomConvertersPositiveTest(APISimpleTestCase):
@@ -31,6 +31,7 @@ class CustomConvertersPositiveTest(APISimpleTestCase):
         returns comma separated list of string digits.
         """
         url = reverse('delete-image', args=[129, (399, 331)])
+
         self.assertTrue(
             url.endswith('399,331/')
         )

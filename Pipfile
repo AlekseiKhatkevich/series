@@ -24,6 +24,7 @@ django-redis = "*"
 celery = "*"
 redis = "*"
 future = "*"
+imagehash = "*"
 
 [requires]
 python_version = "3.8"

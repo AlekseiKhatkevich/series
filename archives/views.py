@@ -12,6 +12,7 @@ import archives.permissions
 import archives.serializers
 from series import error_codes, pagination
 from series.helpers import custom_functions
+from typing import Sequence
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView):
@@ -83,16 +84,21 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         return super().create(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        images_pks = self.kwargs['image_pk']
         series = self.get_object()
-        self.validate_images_to_delete(series)
-        deleted_amount, _ = series.images.filter(pk__in=self.kwargs['image_pk']).delete()
+        self.validate_images_to_delete(series, images_pks)
+        deleted_amount, _ = series.images.filter(pk__in=images_pks).delete()
 
         return Response(
             data={'Number_of_deleted_images': deleted_amount},
             status=status.HTTP_204_NO_CONTENT
         )
 
-    def validate_images_to_delete(self, series: archives.models.TvSeriesModel) -> None:
+    def validate_images_to_delete(
+            self,
+            series: archives.models.TvSeriesModel,
+            images_pks: Sequence[int],
+    ) -> None:
         """
         Validates whether images with a given pks exist in database. raises exception if at least
         one of the images pks does not exist in the database.
@@ -100,7 +106,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         exists_in_db = series.images.filter(
             pk__in=self.kwargs['image_pk']).values_list('pk', flat=True
                                                         )
-        wrong_image_pks = set(self.kwargs['image_pk']).difference(exists_in_db)
+        wrong_image_pks = set(images_pks).difference(exists_in_db)
         if wrong_image_pks:
             raise exceptions.ValidationError(
                 f'Images with pk {" ,".join(map(str, wrong_image_pks))} does not exist in the database.'

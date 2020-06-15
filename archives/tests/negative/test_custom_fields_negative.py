@@ -1,6 +1,6 @@
 from rest_framework.test import APISimpleTestCase
 
-from ...helpers import custom_fields
+from archives.helpers import custom_fields
 
 
 class CustomFieldsNegativeTest(APISimpleTestCase):

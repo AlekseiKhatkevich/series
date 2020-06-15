@@ -1,5 +1,8 @@
 import itertools
-from typing import Iterable, Iterator, Union
+from typing import BinaryIO, Iterable, Iterator, Union
+
+import PIL
+import imagehash
 
 test_list = ['a', 1, 2, 99, -8, 2.2, 'sfsdfdf', '6', '88', '5.6', '-67']
 
@@ -32,3 +35,12 @@ def filter_positive_int_or_digit(container: Iterable, to_integer: bool = True) -
             final_list_of_positive_numbers_gte_zero
         )
     return final_list_of_positive_numbers_gte_zero
+
+
+def create_image_hash(image: BinaryIO) -> str:
+    """
+    Creates image hash on image file.
+    """
+    image_hash = imagehash.average_hash(PIL.Image.open(image))
+    return image_hash
+

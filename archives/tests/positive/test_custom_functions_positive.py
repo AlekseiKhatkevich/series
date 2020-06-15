@@ -1,6 +1,6 @@
 from rest_framework.test import APISimpleTestCase
 
-from ...helpers import custom_functions
+from archives.helpers import custom_functions
 
 
 class CustomFunctionsPositiveTest(APISimpleTestCase):
