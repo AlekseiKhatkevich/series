@@ -1,5 +1,5 @@
 import itertools
-from typing import BinaryIO, Iterable, Iterator, Union
+from typing import BinaryIO, Iterable, Iterator, Union, Optional
 
 import PIL
 import imagehash
@@ -37,10 +37,14 @@ def filter_positive_int_or_digit(container: Iterable, to_integer: bool = True) -
     return final_list_of_positive_numbers_gte_zero
 
 
-def create_image_hash(image: BinaryIO) -> str:
+def create_image_hash(image: BinaryIO, raise_errors: bool = False) -> Optional[imagehash.ImageHash]:
     """
     Creates image hash on image file.
     """
-    image_hash = imagehash.average_hash(PIL.Image.open(image))
+    try:
+        image_hash = imagehash.average_hash(PIL.Image.open(image))
+    except PIL.UnidentifiedImageError as err:
+        if raise_errors:
+            raise err from err
+        return None
     return image_hash
-

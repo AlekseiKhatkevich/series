@@ -6,6 +6,7 @@ from typing import Sequence
 from PIL import Image
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 
 import archives.models
@@ -79,6 +80,19 @@ def generate_test_image() -> ContentFile:
     file.seek(0)
     django_friendly_file = ContentFile(file.read(), 'test.png')
     return django_friendly_file
+
+
+def generate_test_image_2() -> SimpleUploadedFile:
+    """
+    Generates simple test image.
+    """
+    small_gif = (
+        b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+        b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+        b'\x02\x4c\x01\x00\x3b'
+    )
+    return SimpleUploadedFile('small.gif', small_gif, content_type='image/gif')
+
 
 
 def generate_test_image_as_file():

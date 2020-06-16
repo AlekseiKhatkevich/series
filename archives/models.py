@@ -1,8 +1,5 @@
 import heapq
 import os
-import io
-import imagehash
-import PIL
 from types import MappingProxyType
 from typing import KeysView
 
@@ -17,7 +14,7 @@ from django.utils import timezone
 from django.utils.functional import cached_property
 
 from archives import managers
-from archives.helpers import custom_functions, file_uploads, validators as custom_validators
+from archives.helpers import custom_functions, file_uploads, validators as custom_validators, custom_fields
 from series import error_codes
 
 
@@ -320,8 +317,10 @@ class ImageModel(models.Model):
         verbose_name='An image',
         validators=[custom_validators.IsImageValidator(), ],
     )
-    image_hash = models.CharField(
+    image_hash = custom_fields.ImageHashField(
         max_length=50,
+        null=True,
+        blank=True,
         verbose_name='Image hash.',
     )
     content_type = models.ForeignKey(
@@ -352,21 +351,23 @@ class ImageModel(models.Model):
         """
         Makes hash for image file.
         """
-        try:
-            image_hash = custom_functions.create_image_hash(self.image.open('rb'))
-        finally:
-            self.image.close()
+        image_hash = custom_functions.create_image_hash(self.image.open('rb'))
         return image_hash
 
     def save(self, fc=True, *args, **kwargs):
         """
         image instance - ImageFieldFile, django.db.models.fields.files.
         """
-        #positioning
+        #  'image_hash' assigment should take place after 'full_clean' as 'make_image_hash' empties
+        #  file stream iterator and validator in 'full_clean' receives empty iterator, which it can not
+        #  validate successfully.
         if fc:
-            self.full_clean(exclude=('image_hash', ))
-        if not self.image_hash:
-            self.image_hash = str(self.make_image_hash())
-        super().save(*args, **kwargs)
+            self.full_clean()
+        try:
+            if not self.image_hash:
+                self.image_hash = self.make_image_hash()
+        finally:
+            super().save(*args, **kwargs)
+            self.image.close()
 
 

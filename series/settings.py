@@ -145,9 +145,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = 'media/'
 MEDIA_ROOT_FULL_PATH = os.path.join(BASE_DIR, MEDIA_ROOT)
 
+#  Path to test images directory.
+IMAGES_FOR_TESTS = os.path.join(BASE_DIR, 'series', 'images_for_tests', )
 
-# https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project
-
+#  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project
 AUTH_USER_MODEL = 'users.User'
 
 #  for Django Debug toolbar

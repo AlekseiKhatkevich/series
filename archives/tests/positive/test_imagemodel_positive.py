@@ -1,8 +1,11 @@
 import os
-
+from django.db.models.fields.files import ImageFieldFile
+import io
+import shutil
+from django.core.files.base import ContentFile
 from django.conf import settings
 from rest_framework.test import APITestCase
-
+from django.core.files.images import ImageFile
 from archives import models as archive_models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
@@ -12,7 +15,6 @@ class ImageModelPositiveTest(APITestCase):
     """
     Test for 'ImageModel' instance smooth creation if proper set of data is provided.
     """
-    original_media_root = settings.MEDIA_ROOT
 
     @classmethod
     def setUpTestData(cls):
@@ -25,7 +27,10 @@ class ImageModelPositiveTest(APITestCase):
         cls.season_1, *tail = cls.seasons
 
         cls.raw_image = initial_data.generate_test_image()
-        cls.test_image_instance = cls.series_1.images.create(image=cls.raw_image, fc=False)
+        cls.test_image_instance = cls.series_1.images.create(
+            image=cls.raw_image,
+            fc=False
+        )
 
     def test_file_upload_function_tvseriesmodel(self):
         """
@@ -122,4 +127,18 @@ class ImageModelPositiveTest(APITestCase):
             self.test_image_instance.image_file_name,
             expected_result
         )
+
+    def test_image_hash(self):
+        """
+        Check that during model instance creation image_hash would be created and written in DB as well.
+        """
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from django.db import models
+        test_image_instance = self.series_1.images.create(
+                image=ImageFile(
+                    open(os.path.join(settings.MEDIA_ROOT, 'images_for_tests', 'real_test_image.jpg'))
+                ),
+                fc=False
+        )
+
 

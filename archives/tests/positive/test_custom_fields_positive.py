@@ -6,6 +6,8 @@ from rest_framework.test import APISimpleTestCase
 
 from archives.helpers import custom_fields
 
+import imagehash
+
 
 class CustomFieldsPositiveTest(APISimpleTestCase):
     """
@@ -65,4 +67,26 @@ class CustomFieldsPositiveTest(APISimpleTestCase):
         self.assertSequenceEqual(
             custom_field.empty_values,
             self.standard_PositiveSmallIntegerField.empty_values
+        )
+
+    def test_ImageHashField(self):
+        """
+        Check that 'ImageHashField' successfully converts image hash to string and other way around.
+        """
+        field_class = custom_fields.ImageHashField
+        original_string_hash = '00041dff9f101800'
+        original_image_hash = imagehash.hex_to_hash(original_string_hash)
+
+        output_string_hash = field_class(original_image_hash).get_prep_value(original_image_hash)
+
+        self.assertEqual(
+            original_string_hash,
+            output_string_hash
+        )
+
+        output_image_hash = field_class(original_string_hash).to_python(original_string_hash)
+
+        self.assertEqual(
+            original_image_hash,
+            output_image_hash
         )

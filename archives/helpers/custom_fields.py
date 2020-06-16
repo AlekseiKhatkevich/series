@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+import imagehash
 
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
@@ -66,3 +67,26 @@ class ExcludeEmptyValuesMixin:
 
 class CustomPositiveSmallIntegerField(ExcludeEmptyValuesMixin, models.PositiveSmallIntegerField):
     pass
+
+
+class ImageHashField(models.CharField):
+    """
+    Field for handling image hash.
+    """
+
+    def to_python(self, value):
+        """
+        Converts string hash representation to hash array.
+        """
+        return imagehash.hex_to_hash(value) if value is not None else value
+
+    def from_db_value(self, value, expression, connection):
+        return self.to_python(value)
+
+    def get_prep_value(self, value):
+        """
+        Converts hash array to string.
+        """
+        return str(value) if value is not None else value
+
+

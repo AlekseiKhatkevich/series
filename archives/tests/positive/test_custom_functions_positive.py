@@ -1,3 +1,7 @@
+import os
+
+import imagehash
+from django.conf import settings
 from rest_framework.test import APISimpleTestCase
 
 from archives.helpers import custom_functions
@@ -32,5 +36,19 @@ class CustomFunctionsPositiveTest(APISimpleTestCase):
                     lambda x: isinstance(x, str) and x.isdigit(),
                     result)
             )
+        )
+
+    def test_create_image_hash(self):
+        """
+        Check that 'create_image_hash' function create image hash.
+        """
+        image_path = os.path.join(settings.IMAGES_FOR_TESTS, 'real_test_image.jpg')
+
+        with open(image_path, 'rb') as image:
+            image_hash = custom_functions.create_image_hash(image)
+
+        self.assertIsInstance(
+            image_hash,
+            imagehash.ImageHash
         )
 
