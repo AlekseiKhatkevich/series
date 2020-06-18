@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core import files
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APITestCase
 
 from archives import models
@@ -50,7 +50,7 @@ class CreateInitialDataPositiveTest(APITestCase):
 
         self.assertIsInstance(
             image,
-            files.base.ContentFile
+            SimpleUploadedFile
         )
 
     def test_create_images_instances(self):

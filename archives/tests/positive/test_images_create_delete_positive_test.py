@@ -3,7 +3,7 @@ import operator
 from django.conf import settings
 from rest_framework import status
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIRequestFactory
 
 from archives.tests.data import initial_data
 from series.helpers import test_helpers

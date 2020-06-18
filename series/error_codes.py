@@ -112,5 +112,9 @@ IMAGE_NOT_EXISTS = exc_msg(
     'Image matching given pk does not exists.',
     'image_not_exists',
 )
+IMAGE_ALREADY_EXISTS = exc_msg(
+    'This image is already exists in the database.',
+    'image_already_exists',
+)
 
 

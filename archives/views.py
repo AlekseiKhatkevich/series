@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
 from rest_framework import exceptions, generics, mixins, parsers, permissions, status
@@ -68,7 +68,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         """
         try:
             in_memory_uploaded_file = request.data['file']
-            assert isinstance(in_memory_uploaded_file, InMemoryUploadedFile)
+            assert isinstance(in_memory_uploaded_file, UploadedFile)
         except (KeyError, AssertionError) as err:
             raise exceptions.ValidationError(*error_codes.NOT_A_BINARY) from err
 
@@ -88,6 +88,12 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         series = self.get_object()
         self.validate_images_to_delete(series, images_pks)
         deleted_amount, _ = series.images.filter(pk__in=images_pks).delete()
+        #  Delete image_has stored in view class.
+        for pk in images_pks:
+            try:
+                del archives.models.ImageModel.stored_image_hash[pk]
+            except(AttributeError, KeyError, ):
+                pass
 
         return Response(
             data={'Number_of_deleted_images': deleted_amount},

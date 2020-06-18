@@ -7,7 +7,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from types import MappingProxyType
+from typing import Optional
 
+import imagehash
 import rest_framework.status as status_codes
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -26,7 +28,7 @@ test_dict = {'a': 1587902034.039742, 1: 1587902034.039742, 2: 1587902034.039742,
              '5.6': 1587902034.039742, '-67': 1587902034.039742}
 
 
-def skip_if_none_none_zero_positive_validator(value: int) -> None:
+def skip_if_none_none_zero_positive_validator(value: Optional[int]) -> None:
     """
     Raises Validation error in case value is les then 1. Skips if value is None.
     Useful when field can hold none as a legit value
@@ -190,3 +192,14 @@ class IsImageValidator:
         )
         is_image_file = imghdr.what(path, h=None)
         self.raise_exception(is_image_file)
+
+
+def validate_image_hash(value: imagehash.ImageHash) -> None:
+    """
+    Validates image hash.
+    """
+    if not isinstance(value, imagehash.ImageHash):
+        raise ValidationError(
+            f'Value {value} is not an ImageHash.',
+            'not_an_image_hash',
+        )

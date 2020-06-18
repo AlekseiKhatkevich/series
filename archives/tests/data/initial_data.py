@@ -70,9 +70,9 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
     return seasons
 
 
-def generate_test_image() -> ContentFile:
+def generate_test_image_old_version() -> ContentFile:
     """
-    Generates simple test image.
+    Generates simple test image. Old version. Doesnt pass proper validation.
     """
     image = Image.new('RGBA', size=(50, 50), color=(155, 0, 0))
     file = BytesIO(image.tobytes())
@@ -82,9 +82,9 @@ def generate_test_image() -> ContentFile:
     return django_friendly_file
 
 
-def generate_test_image_2() -> SimpleUploadedFile:
+def generate_test_image() -> SimpleUploadedFile:
     """
-    Generates simple test image.
+    Generates simple test image. This seem work with all image validators.
     """
     small_gif = (
         b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
@@ -93,6 +93,18 @@ def generate_test_image_2() -> SimpleUploadedFile:
     )
     return SimpleUploadedFile('small.gif', small_gif, content_type='image/gif')
 
+
+def generate_random_test_image(size: int = 150) -> SimpleUploadedFile:
+    """
+    Generates random test image.
+    """
+    base = bytearray(
+        b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
+        b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
+        b'\x02\x4c\x01\x00\x3b'
+    )
+    random_part = bytearray(random.getrandbits(8) for _ in range(size))
+    return SimpleUploadedFile('small.gif', base + random_part, content_type='image/gif')
 
 
 def generate_test_image_as_file():

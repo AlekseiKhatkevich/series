@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 import imagehash
-
+from archives.helpers import validators as custom_validators
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 
@@ -73,7 +73,6 @@ class ImageHashField(models.CharField):
     """
     Field for handling image hash.
     """
-
     def to_python(self, value):
         """
         Converts string hash representation to hash array.

@@ -25,6 +25,7 @@ celery = "*"
 redis = "*"
 future = "*"
 imagehash = "*"
+btrees = "*"
 
 [requires]
 python_version = "3.8"

@@ -3,19 +3,23 @@ import os
 from types import MappingProxyType
 from typing import KeysView
 
+from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres import fields as psgr_fields
 from django.core import exceptions, validators
 from django.db import models
+from django.db.models.functions import Length
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.utils.functional import cached_property
 
 from archives import managers
-from archives.helpers import custom_functions, file_uploads, validators as custom_validators, custom_fields
+from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
 from series import error_codes
+
+models.CharField.register_lookup(Length)
 
 
 class GroupingModel(models.Model):
@@ -318,7 +322,7 @@ class ImageModel(models.Model):
         validators=[custom_validators.IsImageValidator(), ],
     )
     image_hash = custom_fields.ImageHashField(
-        max_length=50,
+        max_length=16,
         null=True,
         blank=True,
         verbose_name='Image hash.',
@@ -333,12 +337,67 @@ class ImageModel(models.Model):
         'content_type', 'object_id'
     )
 
-    def __str__(self):
-        return f'image - {self.image.name}, model - {self.content_type} - pk={self.object_id}'
-
     class Meta:
         verbose_name = 'Image'
         verbose_name_plural = 'Images'
+        constraints = [
+            models.CheckConstraint(
+                name='len_16_constraint',
+                check=models.Q(image_hash__length=16),
+            ), ]
+
+    def __str__(self):
+        return f'image - {self.image.name}, model - {self.content_type} - pk={self.object_id}'
+
+    def clean(self):
+        #  I instance has not image hash yet - try to generate and set hash to it.
+        if self.image_hash is None:
+            self.image_hash = self.make_image_hash()
+        # If hash is still None or this instance has already it image_hash stored in class attribute -
+        # - skip validation then.
+        if self.image_hash is None or (self.pk in self.__class__.stored_image_hash.keys()):
+            return None
+        # If image hash has Hamming difference les then X - raise validation error as this or closer
+        # to this image already exists in DB.
+        for img_hash in self.__class__.stored_image_hash.values():
+            if (img_hash - self.image_hash) < 10:
+                raise exceptions.ValidationError(
+                    {'image': error_codes.IMAGE_ALREADY_EXISTS.message},
+                    code=error_codes.IMAGE_ALREADY_EXISTS.code,
+                )
+
+    def save(self, fc=True, *args, **kwargs):
+        """
+        image instance - ImageFieldFile, django.db.models.fields.files.
+        """
+        #  'image_hash' assigment should take place after 'full_clean' as 'make_image_hash' empties
+        #  file stream iterator and validator in 'full_clean' receives empty iterator, which it can not
+        #  validate successfully.
+
+        try:
+            self.__class__.stored_image_hash
+        except AttributeError:
+            self.__class__.stored_image_hash = self.get_image_hash_from_db()
+
+        if fc:
+            self.full_clean(exclude=('image_hash',))
+
+        if not self.image_hash:
+            self.image_hash = self.make_image_hash()
+
+        super().save(*args, **kwargs)
+        self.image.close()
+        self.__class__.stored_image_hash[self.pk] = self.image_hash
+
+    def delete(self, using=None, keep_parents=False):
+        deleted = super().delete(using, keep_parents)
+
+        try:
+            del self.__class__.stored_image_hash[self.pk]
+        except AttributeError:
+            pass
+
+        return deleted
 
     @property
     def image_file_name(self):
@@ -354,20 +413,11 @@ class ImageModel(models.Model):
         image_hash = custom_functions.create_image_hash(self.image.open('rb'))
         return image_hash
 
-    def save(self, fc=True, *args, **kwargs):
+    @classmethod
+    def get_image_hash_from_db(cls):
         """
-        image instance - ImageFieldFile, django.db.models.fields.files.
+        Fetch all ImageModel instances pk and image_hash from DB.
         """
-        #  'image_hash' assigment should take place after 'full_clean' as 'make_image_hash' empties
-        #  file stream iterator and validator in 'full_clean' receives empty iterator, which it can not
-        #  validate successfully.
-        if fc:
-            self.full_clean()
-        try:
-            if not self.image_hash:
-                self.image_hash = self.make_image_hash()
-        finally:
-            super().save(*args, **kwargs)
-            self.image.close()
-
+        image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
+        return IOBTree(image_hash_from_db)
 

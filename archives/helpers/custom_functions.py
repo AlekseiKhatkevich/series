@@ -1,6 +1,6 @@
 import itertools
 from typing import BinaryIO, Iterable, Iterator, Union, Optional
-
+import archives.models
 import PIL
 import imagehash
 
@@ -48,3 +48,5 @@ def create_image_hash(image: BinaryIO, raise_errors: bool = False) -> Optional[i
             raise err from err
         return None
     return image_hash
+
+

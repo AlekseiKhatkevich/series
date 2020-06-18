@@ -1,11 +1,8 @@
 import os
-from django.db.models.fields.files import ImageFieldFile
-import io
-import shutil
-from django.core.files.base import ContentFile
+import imagehash
 from django.conf import settings
 from rest_framework.test import APITestCase
-from django.core.files.images import ImageFile
+
 from archives import models as archive_models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
@@ -29,7 +26,7 @@ class ImageModelPositiveTest(APITestCase):
         cls.raw_image = initial_data.generate_test_image()
         cls.test_image_instance = cls.series_1.images.create(
             image=cls.raw_image,
-            fc=False
+            fc=False,
         )
 
     def test_file_upload_function_tvseriesmodel(self):
@@ -132,13 +129,16 @@ class ImageModelPositiveTest(APITestCase):
         """
         Check that during model instance creation image_hash would be created and written in DB as well.
         """
-        from django.core.files.uploadedfile import SimpleUploadedFile
-        from django.db import models
         test_image_instance = self.series_1.images.create(
-                image=ImageFile(
-                    open(os.path.join(settings.MEDIA_ROOT, 'images_for_tests', 'real_test_image.jpg'))
-                ),
-                fc=False
+                image=initial_data.generate_test_image(),
+                fc=False,
         )
+        test_image_instance.refresh_from_db()
+
+        self.assertIsInstance(
+            test_image_instance.image_hash,
+            imagehash.ImageHash,
+        )
+
 
 
