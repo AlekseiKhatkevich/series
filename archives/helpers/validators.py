@@ -143,7 +143,7 @@ class ValidateIfUrlIsAlive:
             ) from err
         except urllib.error.URLError as err:
             raise ValidationError(
-                f'Url {value} has wrong format. Please double-check -- ({str(err)}',
+                f'Url {value} has wrong format. Please double-check -- ({str(err)})',
                 code='url_format_error'
             ) from err
         else:
@@ -161,8 +161,8 @@ class IsImageValidator:
     Validates whether image file is actually an image file and not just a random file with image-like
     file extension.
     """
-
     @staticmethod
+    @project_decorators.allow_disable_in_tests
     def raise_exception(is_image_file: bool) -> None:
         if not is_image_file:
             raise ValidationError(
@@ -175,7 +175,7 @@ class IsImageValidator:
         :param value: Path of the file or file-like object.
         """
         raise TypeError(
-            f'This argument type {str(type(value))} is not supported by validator function '
+            f'This argument type {str(type(value))} is not supported by validator function.'
             f'"validate_is_image"'
         )
 

@@ -1,18 +1,20 @@
+from typing import Sequence
+
+import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
 from rest_framework import exceptions, generics, mixins, parsers, permissions, status
-from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.response import Response
 
 import archives.models
 import archives.permissions
 import archives.serializers
 from series import error_codes, pagination
 from series.helpers import custom_functions
-from typing import Sequence
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView):
@@ -41,7 +43,7 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
         self.queryset = self.model.objects.all().\
             annotate(**annotations).\
             select_related('entry_author',).\
-            prefetch_related('images', pr_groups).\
+            prefetch_related('images', pr_groups, ).\
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
 
@@ -52,10 +54,23 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
     Filename should be with extension, for example 'picture.jpg'.
     """
     parser_classes = (parsers.FileUploadParser, )
-    permission_classes = (archives.permissions.MasterSlaveRelations, )
+    permission_classes = (
+            archives.permissions.MasterSlaveRelations |
+            archives.permissions.FriendsGuardianPermission,
+    )
     serializer_class = archives.serializers.ImagesSerializer
-    queryset = archives.models.TvSeriesModel.objects.all().select_related('entry_author')
     lookup_url_kwarg = 'series_pk'
+
+    def get_queryset(self):
+        pr_permissions = Prefetch(
+            'entry_author__userobjectpermission_set',
+            queryset=guardian.models.UserObjectPermission.objects.filter(
+                user=self.request.user,
+                object_pk=self.kwargs['series_pk'],
+            ))
+        self.queryset = archives.models.TvSeriesModel.objects.all().\
+            select_related('entry_author').prefetch_related(pr_permissions)
+        return super().get_queryset()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -72,11 +87,13 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         except (KeyError, AssertionError) as err:
             raise exceptions.ValidationError(*error_codes.NOT_A_BINARY) from err
 
-        image_file = ContentFile(
-            in_memory_uploaded_file.read(),
-            name=self.kwargs['filename']
-        )
-        image_file.close()
+        try:
+            image_file = ContentFile(
+                in_memory_uploaded_file.read(),
+                name=self.kwargs['filename']
+            )
+        finally:
+            in_memory_uploaded_file.close()
         return image_file
 
     def create(self, request, *args, **kwargs):

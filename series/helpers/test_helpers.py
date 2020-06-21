@@ -1,9 +1,30 @@
+import functools
+from typing import Callable, Optional
+
 from django.conf import settings as django_settings
-from django.core.cache import caches
-from rest_framework import exceptions, settings, status, test, throttling
+from django.core.cache import cache, caches
+from rest_framework import exceptions, settings as drf_settings, status, test, throttling
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from typing import Optional
+
+
+def switch_off_validator(validator_name: str) -> Callable:
+    """
+    Switches of chosen validator temporarily in tests.
+    Validator should implement extra functionality ti do so.
+    """
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            key = django_settings.VALIDATOR_SWITCH_OFF_KEY
+            try:
+                cache.set(key, True, 1, version=validator_name)
+                value = func(*args, **kwargs)
+            finally:
+                cache.delete(key, version=validator_name)
+            return value
+        return wrapper
+    return decorator
 
 
 class TestHelpers(test.APISimpleTestCase):
@@ -65,7 +86,7 @@ class TestHelpers(test.APISimpleTestCase):
         """
         cache_name = django_settings.SCOPE_THROTTLING_CACHE
         throttler = throttling.ScopedRateThrottle()
-        rate = settings.api_settings.DEFAULT_THROTTLE_RATES[scope]
+        rate = drf_settings.api_settings.DEFAULT_THROTTLE_RATES[scope]
         overflow_rate = throttler.parse_rate(rate)[0] + 1
 
         client = getattr(self.client, http_verb.lower())
@@ -83,3 +104,4 @@ class TestHelpers(test.APISimpleTestCase):
         )
 
         caches[cache_name].clear()
+

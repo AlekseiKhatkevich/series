@@ -135,6 +135,9 @@ class TvSeriesModel(models.Model):
     class Meta:
         verbose_name = 'series'
         verbose_name_plural = 'series'
+        permissions = (
+            ('permissiveness', 'Allow any action',),
+        )
         constraints = [
             models.CheckConstraint(
                 name='rating_from_1_to_10',
@@ -143,8 +146,7 @@ class TvSeriesModel(models.Model):
             models.CheckConstraint(
                 name='url_to_imdb_check',
                 check=models.Q(imdb_url__icontains='www.imdb.com')
-            ),
-        ]
+            ),]
 
     def __str__(self):
         return f'{self.pk} / {self.name}'
@@ -420,4 +422,5 @@ class ImageModel(models.Model):
         """
         image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
         return IOBTree(image_hash_from_db)
+
 

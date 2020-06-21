@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from series import error_codes
+from series import constants, error_codes
 
 
 class IsObjectOwner(permissions.IsAuthenticated):
@@ -23,3 +23,16 @@ class MasterSlaveRelations(IsObjectOwner):
         is_master = request.user == obj.entry_author.master
         is_slave = request.user.master == obj.entry_author
         return super().has_object_permission(request, view, obj) or is_master or is_slave
+
+
+class FriendsGuardianPermission(permissions.IsAuthenticated):
+    """
+    Permission class allows users with certain permissions access API endpoint. Based on Guardian
+    permissions backend.
+    """
+    message = error_codes.NO_GUARDIAN_PERMISSION.message
+    permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.has_perm(self.permission_code, obj)
+

@@ -1,0 +1,36 @@
+WARNING || 2020-06-21 15:38:58,412 || log || Bad Request: /archives/tvseries/129/delete-image/490,491/
+WARNING || 2020-06-21 15:38:58,412 || basehttp || "DELETE /archives/tvseries/129/delete-image/490,491/ HTTP/1.1" 400 59
+ERROR || 2020-06-21 15:39:46,952 || log || Internal Server Error: /archives/tvseries/129/delete-image/490,491/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 105, in delete
+    series = self.get_object()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 88, in get_object
+    assert lookup_url_kwarg in self.kwargs, (
+AssertionError: Expected view FileUploadDeleteView to be called with a URL keyword argument named "pk". Fix your URL conf, or set the `.lookup_field` attribute on the view correctly.
+ERROR || 2020-06-21 15:39:46,953 || basehttp || "DELETE /archives/tvseries/129/delete-image/490,491/ HTTP/1.1" 500 26182
+WARNING || 2020-06-21 15:40:24,880 || log || Bad Request: /archives/tvseries/129/delete-image/490,491/
+WARNING || 2020-06-21 15:40:24,881 || basehttp || "DELETE /archives/tvseries/129/delete-image/490,491/ HTTP/1.1" 400 59
+WARNING || 2020-06-21 15:42:20,804 || log || Bad Request: /archives/tvseries/129/delete-image/490,491/
+WARNING || 2020-06-21 15:42:20,805 || basehttp || "DELETE /archives/tvseries/129/delete-image/490,491/ HTTP/1.1" 400 59
+WARNING || 2020-06-21 15:43:10,920 || log || Bad Request: /archives/tvseries/129/delete-image/490,491/
+WARNING || 2020-06-21 15:43:10,921 || basehttp || "DELETE /archives/tvseries/129/delete-image/490,491/ HTTP/1.1" 400 59
+WARNING || 2020-06-21 15:44:05,560 || log || Bad Request: /archives/tvseries/129/delete-image/490,491/
+WARNING || 2020-06-21 15:44:05,560 || basehttp || "DELETE /archives/tvseries/129/delete-image/490,491/ HTTP/1.1" 400 59

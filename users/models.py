@@ -78,8 +78,7 @@ class User(AbstractUser):
             models.CheckConstraint(
                 name='point_on_itself_check',
                 check=~models.Q(master=models.F('pk'))
-            )
-        ]
+            )]
 
     def __str__(self):
         return f'{"SLAVE ACC." if self.master else "MASTER ACC."} ' \

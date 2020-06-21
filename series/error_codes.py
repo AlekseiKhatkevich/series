@@ -116,5 +116,9 @@ IMAGE_ALREADY_EXISTS = exc_msg(
     'This image is already exists in the database.',
     'image_already_exists',
 )
+NO_GUARDIAN_PERMISSION = exc_msg(
+    'You do not have necessary permission from object creator to modify this object.',
+    'no_guardian_permission',
+)
 
 

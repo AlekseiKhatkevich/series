@@ -1,7 +1,7 @@
 import operator
 
 from django.conf import settings
-from rest_framework import status
+from rest_framework import status, exceptions as drf_exceptions
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
@@ -11,14 +11,45 @@ from series.helpers import test_helpers
 from users.helpers import create_test_users
 
 
-# todo
 class ImagesCreateNegativeTest(test_helpers.TestHelpers, APITestCase):
     """
     Negative test on images upload/create api endpoint.
     /tvseries/{1}/upload-image/{2}/ POST
     1 - id of the series; 2 - image file filename with extension.
     """
-    pass
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
+
+        cls.series = initial_data.create_tvseries(cls.users)
+        cls.series_1, cls.series_2 = cls.series
+
+        cls.image = initial_data.generate_test_image()
+
+    def test_not_binary_mode_upload(self):
+        """
+        Check that if upload happens in non-binary mode, then exception would be arisen.
+        """
+        data = None
+        user = self.series_1.entry_author
+        filename = 'small_image.gif'
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.post(
+            reverse('upload', args=[self.series_1.pk, filename]),
+            data=data,
+            format='gif',
+        )
+
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            error_message=error_codes.NOT_A_BINARY.message,
+            field=None,
+        )
 
 
 class ImageDeleteNegativeTest(test_helpers.TestHelpers, APITestCase):
@@ -93,7 +124,7 @@ class ImageDeleteNegativeTest(test_helpers.TestHelpers, APITestCase):
         Check that not a series creator, not a series creator slave or master
         can not access API endpoint.
         """
-        expected_error_message = error_codes.ONLY_SLAVES_AND_MASTER.message
+        expected_error_message = drf_exceptions.PermissionDenied.default_detail
         wrong_user = self.series_2.entry_author
 
         self.client.force_authenticate(user=wrong_user)

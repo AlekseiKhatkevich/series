@@ -22,6 +22,10 @@ beat_schedule = {
     'clean_media_root': {
         'task': 'archives.tasks.clean_media_root',
         'schedule': crontab(hour=17, minute=1, day_of_week='sat'),
-    }
+    },
+    'clean_stale_permissions': {
+        'task': 'users.tasks.clean_stale_permissions',
+        'schedule': crontab(hour=17, minute=2),
+    },
 }
 

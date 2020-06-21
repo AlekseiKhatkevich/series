@@ -1,6 +1,8 @@
+import functools
 from typing import Any, Callable, Optional
 
-from django.utils.decorators import classproperty
+from django.conf import settings
+from django.core.cache import cache
 
 
 class Typed:
@@ -51,3 +53,29 @@ def typeassert(**kwargs: type) -> Callable:
         return cls
     return decorate
 
+
+def allow_disable_in_tests(func):
+    """
+    Gives a chosen validator possibility to be switched off in tests.
+     In test fixture decorator '@test_helpers.switch_off_validator' should be used as well.
+     Doesnt work with @method_decorator.
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # https://stackoverflow.com/questions/62470603/
+        # get-function-or-class-method-name-from-inside-decorator-in-python
+        try:
+            version = func.__func__.__qualname__.split('.')[0]  # to support @classmethod.
+        except AttributeError:
+            version = func.__qualname__.split('.')[0]  # bound methods, static methods and plain functions.
+
+        need_to_switch_off_in_tests = cache.get('switch_off_in_tests', False, version=version)
+
+        if settings.IM_IN_TEST_MODE and need_to_switch_off_in_tests:
+            return None
+
+        value = func(*args, **kwargs)
+
+        return value
+
+    return wrapper

@@ -1,0 +1,1 @@
+DEFAULT_OBJECT_LEVEL_PERMISSION_CODE = 'permissiveness'

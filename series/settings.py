@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'debug_toolbar',
     'corsheaders',
+    'guardian',
 ]
 
 MIDDLEWARE = [
@@ -185,7 +186,7 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'series.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    #'DEFAULT_PAGINATION_CLASS': 'series.pagination.FasterLimitOffsetPagination',
+    # 'DEFAULT_PAGINATION_CLASS': 'series.pagination.FasterLimitOffsetPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
@@ -200,6 +201,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.MultiPartRenderer',
         'rest_framework.renderers.JSONRenderer',
         'series.renderers.JPEGRenderer',
+        'series.renderers.GIFRenderer',
     ]
 }
 
@@ -272,6 +274,9 @@ else:
 #  Scope throttling cache.
 SCOPE_THROTTLING_CACHE = 'throttling'
 
+#  Test messaging broker keys:
+VALIDATOR_SWITCH_OFF_KEY = 'switch_off_in_tests'
+
 #  Caches related settings
 CACHES = {
     'default': {
@@ -288,6 +293,56 @@ CACHES = {
         }, },
 }
 
+#  Guardian.
+ANONYMOUS_USER_NAME = None
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+)
 
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': r'series/logs/logfile.txt',
+            'formatter': 'verbose',
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        # 'django.db.backends': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        #     'filters': ['require_debug_true'],
+        #     'propagate': False,
+        # }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} || {asctime} || {module} || {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+}
