@@ -1,7 +1,7 @@
 from types import MappingProxyType
 
 from rest_framework import serializers
-
+import collections.abc
 from series import error_codes
 
 
@@ -99,6 +99,43 @@ class NoneInsteadEmptyMixin:
     """
     swap_empty_container = True
     swap_value = None
+
+    test_dict = {
+    "pk": 5,
+    "entry_author": "Aleksei Khatkevich",
+    "name": "Akbar",
+    "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164944",
+    "is_finished": False,
+    "rating": 5,
+    "interrelationship": None,
+    "number_of_seasons": 1,
+    "number_of_episodes": 9,
+    "images": None,
+    "allowed_redactors": [{
+        "master": None,
+        "friends": [],
+        "slaves": None,
+        'test': [(), 2, 3, 'fghgh', [], {}]
+    }]
+}
+
+    def traverse(self, data, keys_to_swap, empty_container_to_swap):
+        list_and_dict = list, dict
+        if isinstance(data, dict):
+            for k, v in data.items():
+                if k in keys_to_swap and isinstance(v, collections.abc.Sized) and not len(v):
+                    data[k] = self.swap_value
+                elif isinstance(v, list_and_dict):
+                    self.traverse(v, keys_to_swap,empty_container_to_swap)
+        elif isinstance(data, list):
+            for num, i in enumerate(data):
+                print('LIST')
+                if i in empty_container_to_swap:
+                    print('Is not None')
+                    data[num] = self.swap_value
+                elif isinstance(i, list_and_dict):
+                    self.traverse(i, keys_to_swap, empty_container_to_swap)
+        return data
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

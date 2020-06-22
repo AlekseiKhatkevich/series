@@ -79,3 +79,17 @@ def allow_disable_in_tests(func):
         return value
 
     return wrapper
+
+
+def profiler(func):
+    """
+    Counts number of calls to a function.
+    """
+    ncalls = 0
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        nonlocal ncalls
+        ncalls += 1
+        return func(*args, **kwargs)
+    wrapper.ncalls = lambda: ncalls
+    return wrapper

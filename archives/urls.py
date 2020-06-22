@@ -20,6 +20,11 @@ urlpatterns = [
                     'delete-image/<int_list:image_pk>/',
                     archives.views.FileUploadDeleteView.as_view(),
                     name='delete-image',
+                ),
+                path(
+                    '',
+                    archives.views.TvSeriesDetailView.as_view(),
+                    name='tvseries-detail',
                 )])),
     path(
         'tvseries/',

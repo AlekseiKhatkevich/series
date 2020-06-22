@@ -1,3 +1,4 @@
+import guardian.models
 from rest_framework import permissions
 
 from series import constants, error_codes
@@ -34,5 +35,11 @@ class FriendsGuardianPermission(permissions.IsAuthenticated):
     permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
 
     def has_object_permission(self, request, view, obj):
-        return request.user.has_perm(self.permission_code, obj)
+        return guardian.models.UserObjectPermission.objects.filter(
+            object_pk=obj.pk,
+            content_type__model=obj.__class__.__name__.lower(),
+            content_type__app_label=obj.__class__._meta.app_label.lower(),
+            user=request.user,
+            permission__codename=self.permission_code,
+        ).exists()
 

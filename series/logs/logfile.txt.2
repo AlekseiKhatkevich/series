@@ -1,4 +1,4 @@
-ERROR || 2020-06-22 15:44:02,525 || log || Internal Server Error: /archives/tvseries/5/
+ERROR || 2020-06-22 15:32:25,227 || log || Internal Server Error: /archives/tvseries/5/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
     response = get_response(request)
@@ -32,13 +32,11 @@ Traceback (most recent call last):
     ret[field.field_name] = field.to_representation(attribute)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 1905, in to_representation
     return method(value)
-  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 153, in get_allowed_redactors
-    slaves = {slave.pk: slave.full_name for slave in obj.entry_author.my_slaves}
-  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 153, in <dictcomp>
-    slaves = {slave.pk: slave.full_name for slave in obj.entry_author.my_slaves}
-AttributeError: 'User' object has no attribute 'full_name'
-ERROR || 2020-06-22 15:44:02,719 || basehttp || "GET /archives/tvseries/5/ HTTP/1.1" 500 169065
-ERROR || 2020-06-22 15:54:23,460 || log || Internal Server Error: /archives/tvseries/5/
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 144, in get_allowed_redactors
+    name=obj.entry_author.master.get_full_name(),
+AttributeError: 'NoneType' object has no attribute 'get_full_name'
+ERROR || 2020-06-22 15:32:25,389 || basehttp || "GET /archives/tvseries/5/ HTTP/1.1" 500 164741
+ERROR || 2020-06-22 15:34:31,391 || log || Internal Server Error: /archives/tvseries/5/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
     response = get_response(request)
@@ -72,11 +70,11 @@ Traceback (most recent call last):
     ret[field.field_name] = field.to_representation(attribute)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 1905, in to_representation
     return method(value)
-  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 157, in get_allowed_redactors
-    slaves = {slave.pk: slave.get_full_name() for slave in obj.entry_author.my_slaves} or None
-TypeError: 'NoneType' object is not iterable
-ERROR || 2020-06-22 15:54:23,621 || basehttp || "GET /archives/tvseries/5/ HTTP/1.1" 500 160801
-ERROR || 2020-06-22 15:56:22,332 || log || Internal Server Error: /archives/tvseries/5/
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 137, in get_allowed_redactors
+    name=obj.entry_author.master.get_full_name(),
+AttributeError: 'NoneType' object has no attribute 'get_full_name'
+ERROR || 2020-06-22 15:34:31,558 || basehttp || "GET /archives/tvseries/5/ HTTP/1.1" 500 164871
+ERROR || 2020-06-22 15:35:04,010 || log || Internal Server Error: /archives/tvseries/14/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
     response = get_response(request)
@@ -104,7 +102,13 @@ Traceback (most recent call last):
     ret = super().data
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
     self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 113, in to_representation
-    assert not (wrong_fields := set(fields_to_swap).difference(self.fields.keys())), \
-AssertionError: Fields {'friends'} do not belong to serializer "TvSeriesDetailSerializer"
-ERROR || 2020-06-22 15:56:22,552 || basehttp || "GET /archives/tvseries/5/ HTTP/1.1" 500 147166
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 104, in to_representation
+    data = super().to_representation(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 529, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 1905, in to_representation
+    return method(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 137, in get_allowed_redactors
+    name=obj.entry_author.master.get_full_name(),
+AttributeError: 'NoneType' object has no attribute 'get_full_name'
+ERROR || 2020-06-22 15:35:04,134 || basehttp || "GET /archives/tvseries/14/ HTTP/1.1" 500 164584

@@ -17,17 +17,19 @@ from series import error_codes, pagination
 from series.helpers import custom_functions
 
 
-class TvSeriesListCreateView(generics.ListCreateAPIView):
-    pagination_class = pagination.FasterLimitOffsetPagination
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
-    serializer_class = archives.serializers.TvSeriesSerializer
-    model = serializer_class.Meta.model
+class TvSeriesBase(generics.GenericAPIView):
+    """
+    Base view class for TV series views.
+    """
+    @property
+    def model(self):
+        return getattr(self.serializer_class.Meta, 'model')
 
     def get_queryset(self):
         #  deferred fields for User model instance.
         user_model_deferred_fields = custom_functions.get_model_fields_subset(
             model=get_user_model(),
-            fields_to_remove=('pk', 'first_name', 'last_name'),
+            fields_to_remove=('pk', 'first_name', 'last_name', 'master'),
             prefix='entry_author__',
         )
         #  Prefetch to show interrelationship connected series name and reason for interrelationship.
@@ -42,10 +44,29 @@ class TvSeriesListCreateView(generics.ListCreateAPIView):
         )
         self.queryset = self.model.objects.all().\
             annotate(**annotations).\
-            select_related('entry_author',).\
+            select_related('entry_author', ).\
             prefetch_related('images', pr_groups, ).\
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
+
+
+class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
+    permission_classes = (
+        archives.permissions.MasterSlaveRelations |
+        archives.permissions.FriendsGuardianPermission,
+    )
+    lookup_url_kwarg = 'series_pk'
+    serializer_class = archives.serializers.TvSeriesDetailSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.select_related('entry_author__master')
+
+
+class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
+    pagination_class = pagination.FasterLimitOffsetPagination
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    serializer_class = archives.serializers.TvSeriesSerializer
 
 
 class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
@@ -60,6 +81,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
     )
     serializer_class = archives.serializers.ImagesSerializer
     lookup_url_kwarg = 'series_pk'
+    model = serializer_class.Meta.model
 
     def get_queryset(self):
         pr_permissions = Prefetch(
@@ -67,6 +89,8 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
             queryset=guardian.models.UserObjectPermission.objects.filter(
                 user=self.request.user,
                 object_pk=self.kwargs['series_pk'],
+                content_type__model=archives.models.TvSeriesModel.__name__.lower(),
+                content_type__app_label=archives.models.TvSeriesModel._meta.app_label.lower(),
             ))
         self.queryset = archives.models.TvSeriesModel.objects.all().\
             select_related('entry_author').prefetch_related(pr_permissions)
@@ -108,7 +132,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         #  Delete image_has stored in view class.
         for pk in images_pks:
             try:
-                del archives.models.ImageModel.stored_image_hash[pk]
+                del self.model.stored_image_hash[pk]
             except(AttributeError, KeyError, ):
                 pass
 

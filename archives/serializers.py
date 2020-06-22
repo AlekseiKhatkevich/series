@@ -1,8 +1,12 @@
-from django.db import transaction
+import guardian.models
 from django.conf import settings
+from django.db import transaction
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 from rest_framework import serializers
 
 import archives.models
+from series import constants
 from series.helpers import serializer_mixins
 
 
@@ -119,6 +123,40 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         return series
 
 
+class TvSeriesDetailSerializer(TvSeriesSerializer):
+    """
+    Serializer for retrieve, update and delete actions on Tv series.
+    """
+    allowed_redactors = serializers.SerializerMethodField()
+
+    class Meta(TvSeriesSerializer.Meta):
+        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', )
+        none_if_empty = TvSeriesSerializer.Meta.none_if_empty + ('allowed_redactors', )
+
+    @staticmethod
+    def get_allowed_redactors(obj):
+        # Entry creator master if exists.
+        try:
+            master = dict(
+                pk=obj.entry_author.master_id,
+                name=obj.entry_author.master.get_full_name(),
+            )
+        except AttributeError:
+            master = None
+        # Users with permissions for this entry.
+        friends = guardian.models.UserObjectPermission.objects.filter(
+            object_pk=obj.pk,
+            content_type__model=obj.__class__.__name__.lower(),
+            content_type__app_label=obj.__class__._meta.app_label.lower(),
+            permission__codename=constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE,
+        ).annotate(
+            friend_full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
+            friend_pk=F('user__pk'),
+        ).values('friend_pk', 'friend_full_name', )
+        # Slaves of the entry author if exists.
+        slaves = {slave.pk: slave.get_full_name() for slave in obj.entry_author.slaves.all()} or None
+        # Admins.
+        return dict(master=master, friends=friends, slaves=slaves)
 
 
 

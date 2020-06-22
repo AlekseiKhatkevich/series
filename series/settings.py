@@ -311,10 +311,22 @@ LOGGING = {
             'filters': ['require_debug_true'],
         },
         'file': {
-            'class': 'logging.FileHandler',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': r'series/logs/logfile.txt',
+            'delay': True,
+            'maxBytes': 10 ** 4,
+            'backupCount': 2,
             'formatter': 'verbose',
             'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
+        },
+        'security_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': r'series/logs/security_logfile.txt',
+            'delay': True,
+            'maxBytes': 10 ** 3,
+            'backupCount': 2,
+            'formatter': 'verbose',
+            'level': 'WARNING',
         },
     },
     'loggers': {
@@ -322,6 +334,11 @@ LOGGING = {
             'handlers': ['file', 'console'],
             'propagate': True,
             'level': 'INFO'
+        },
+        'django.security': {
+            'handlers': ['security_file'],
+            'propagate': True,
+            'level': 'WARNING',
         },
         # 'django.db.backends': {
         #     'handlers': ['console'],
