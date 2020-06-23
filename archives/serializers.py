@@ -74,7 +74,7 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
 
     class Meta:
         model = archives.models.TvSeriesModel
-        none_if_empty = ('interrelationship', 'images', )
+        none_if_empty = ('interrelationship', 'images',)
         fields = (
             'pk',
             'entry_author',
@@ -113,7 +113,7 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
                             from_series=seq[num],
                             to_series=seq[not num],
                             reason_for_interrelationship=i_ship['reason_for_interrelationship']
-                        ),)
+                        ), )
 
             archives.models.GroupingModel.objects.bulk_create(
                 list_of_interrelationships,
@@ -123,18 +123,38 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         return series
 
 
+class SeasonShortSerializer(serializers.ModelSerializer):
+    """
+    Serializer on SeasonModel to use as field in TvSeriesDetailSerializer.
+    """
+
+    class Meta:
+        model = archives.models.SeasonModel
+        fields = ('pk', 'season_number',)
+        read_only_fields = fields
+
+
 class TvSeriesDetailSerializer(TvSeriesSerializer):
     """
     Serializer for retrieve, update and delete actions on Tv series.
     """
-    allowed_redactors = serializers.SerializerMethodField()
+    allowed_redactors = serializers.SerializerMethodField(
+    )
+    seasons = SeasonShortSerializer(
+        many=True,
+        read_only=True,
+    )
 
     class Meta(TvSeriesSerializer.Meta):
-        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', )
-        none_if_empty = TvSeriesSerializer.Meta.none_if_empty + ('allowed_redactors', )
+        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons',)
+        keys_to_swap = ('friends', 'seasons',)
 
     @staticmethod
     def get_allowed_redactors(obj):
+        """
+        Gather information about users who have a rights to change resource.
+        Only shown to object owner or admins.
+        """
         # Entry creator master if exists.
         try:
             master = dict(
@@ -154,12 +174,21 @@ class TvSeriesDetailSerializer(TvSeriesSerializer):
             friend_pk=F('user__pk'),
         ).values('friend_pk', 'friend_full_name', )
         # Slaves of the entry author if exists.
-        slaves = {slave.pk: slave.get_full_name() for slave in obj.entry_author.slaves.all()} or None
-        # Admins.
+        slaves = [
+                     {'pk': slave.pk, 'name': slave.get_full_name()}
+                     for slave in obj.entry_author.slaves.all()
+                 ] or None
         return dict(master=master, friends=friends, slaves=slaves)
 
+    def get_fields(self):
+        """
+        Do not show to anyone except admins and object owner information about allowed object redactors.
+        """
+        fields = super().get_fields()
+        request = self.context['request']
+        entry_author = self.context['view'].obj.entry_author
 
+        if not request.user == entry_author and not request.user.is_staff:
+            fields.pop('allowed_redactors')
 
-
-
-
+        return fields

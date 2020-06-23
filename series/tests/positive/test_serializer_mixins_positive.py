@@ -72,7 +72,7 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
         """
         data = {'field_1': 'test', 'field_2': 1, 'field_3': 'user@imbox.ru'}
 
-        with self.assertRaisesMessage(serializers.ValidationError, error_codes.READ_ONLY.message):
+        with self.assertRaisesMessage(serializers.ValidationError, error_codes.READ_ONLY_FIELD.message):
             self.TestSerializer_2(data=data)
 
     class TestSerializer_3(
@@ -83,19 +83,34 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
             allow_blank=True)
         field_2 = serializers.IntegerField()
         field_3 = serializers.EmailField()
+        field_4 = serializers.DictField()
 
         class Meta:
             none_if_empty = ('field_1', )
+            keys_to_swap = ('key_1', )
+            empty_containers_to_swap = ([],)
 
     def test_NoneInsteadEmptyMixin(self):
         """
         Check that 'NoneInsteadEmptyMixin' in fact changes empty containers to None.
         """
-        data = {'field_1': '', 'field_2': 1, 'field_3': 'user@imbox.ru'}
+        data = {
+            'field_1': '',
+            'field_2': 1,
+            'field_3': 'user@imbox.ru',
+            'field_4': {'key_1': {}, 'key_2': [], 'key_3': 10},
+        }
+
         serializer = self.TestSerializer_3(data=data)
         self.assertTrue(
             serializer.is_valid()
         )
         self.assertIsNone(
             serializer.data['field_1']
+        )
+        self.assertIsNone(
+            serializer.data['field_4']['key_1']
+        )
+        self.assertIsNone(
+            serializer.data['field_4']['key_2']
         )

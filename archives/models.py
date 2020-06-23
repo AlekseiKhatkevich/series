@@ -146,7 +146,7 @@ class TvSeriesModel(models.Model):
             models.CheckConstraint(
                 name='url_to_imdb_check',
                 check=models.Q(imdb_url__icontains='www.imdb.com')
-            ),]
+            ), ]
 
     def __str__(self):
         return f'{self.pk} / {self.name}'

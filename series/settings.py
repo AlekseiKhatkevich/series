@@ -314,7 +314,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': r'series/logs/logfile.txt',
             'delay': True,
-            'maxBytes': 10 ** 4,
+            'maxBytes': 10 ** 5,
             'backupCount': 2,
             'formatter': 'verbose',
             'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),

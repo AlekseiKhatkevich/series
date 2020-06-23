@@ -4,6 +4,16 @@ from rest_framework import permissions
 from series import constants, error_codes
 
 
+class ReadOnlyIfOnlyAuthenticated(permissions.BasePermission):
+    """
+    Permission allows any authenticated user read api but not change it.
+    """
+    message = error_codes.READ_ONLY_ACTION.message
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.method in permissions.SAFE_METHODS
+
+
 class IsObjectOwner(permissions.IsAuthenticated):
     """
     Permission allows to enter only to authors of an entry.

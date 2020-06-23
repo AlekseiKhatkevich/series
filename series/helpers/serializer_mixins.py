@@ -1,7 +1,10 @@
+import collections.abc
+import functools
 from types import MappingProxyType
+from typing import Container, Optional
 
 from rest_framework import serializers
-import collections.abc
+
 from series import error_codes
 
 
@@ -87,8 +90,8 @@ class ReadOnlyRaisesException:
         else:
             if _read_only_fields_in_data:
                 raise serializers.ValidationError(
-                    {field: error_codes.READ_ONLY.message for field in _read_only_fields_in_data},
-                    code=error_codes.READ_ONLY.code
+                    {field: error_codes.READ_ONLY_FIELD.message for field in _read_only_fields_in_data},
+                    code=error_codes.READ_ONLY_FIELD.code
                 )
 
 
@@ -96,56 +99,59 @@ class NoneInsteadEmptyMixin:
     """
     Changes [], {}, (), "" in response data to None.
     Fields for this action should be specified in 'none_if_empty' attribute of nested class Meta.
+    'none_if_empty' - swaps value of the field if value is empty container.
+    'keys_to_swap' - swaps any given key in data if its value is empty.
+    'empty_containers_to_swap' - swaps any empty container in data.
     """
-    swap_empty_container = True
+    swap_on = True
     swap_value = None
+    list_and_dict = (list, dict)
 
-    test_dict = {
-    "pk": 5,
-    "entry_author": "Aleksei Khatkevich",
-    "name": "Akbar",
-    "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164944",
-    "is_finished": False,
-    "rating": 5,
-    "interrelationship": None,
-    "number_of_seasons": 1,
-    "number_of_episodes": 9,
-    "images": None,
-    "allowed_redactors": [{
-        "master": None,
-        "friends": [],
-        "slaves": None,
-        'test': [(), 2, 3, 'fghgh', [], {}]
-    }]
-}
+    @functools.singledispatchmethod
+    def traverse(
+            self,
+            data: dict,
+            keys_to_swap: Optional[Container],
+            empty_containers_to_swap: Optional[Container]
+    ) -> None:
+        """
+        Modifies incoming data recursively by changing:
+        a) Values, which keys indicated in 'keys_to_swap' to swap_value, usually None ,
+         if value is empty container.
+        b) All empty containers, like [], {}, (), etc. if specified in empty_containers_to_swap
+        are subject to change as well.
+        """
+        pass
 
-    def traverse(self, data, keys_to_swap, empty_container_to_swap):
-        list_and_dict = list, dict
-        if isinstance(data, dict):
-            for k, v in data.items():
-                if k in keys_to_swap and isinstance(v, collections.abc.Sized) and not len(v):
-                    data[k] = self.swap_value
-                elif isinstance(v, list_and_dict):
-                    self.traverse(v, keys_to_swap,empty_container_to_swap)
-        elif isinstance(data, list):
-            for num, i in enumerate(data):
-                print('LIST')
-                if i in empty_container_to_swap:
-                    print('Is not None')
-                    data[num] = self.swap_value
-                elif isinstance(i, list_and_dict):
-                    self.traverse(i, keys_to_swap, empty_container_to_swap)
-        return data
+    @traverse.register(dict)
+    def _(self, data, keys_to_swap, empty_containers_to_swap):
+        for key, value in data.items():
+            # If value is an empty container or string for a specific key.
+            if key in keys_to_swap and isinstance(value, collections.abc.Sized) \
+                    and not len(value):
+                data[key] = self.swap_value
+            elif value in empty_containers_to_swap:
+                data[key] = self.swap_value
+            else:
+                self.traverse(value, keys_to_swap, empty_containers_to_swap)
+
+    @traverse.register(list)
+    def _(self, data, keys_to_swap, empty_containers_to_swap):
+        for num, element in enumerate(data):
+            if element in empty_containers_to_swap:
+                data[num] = self.swap_value
+            else:
+                self.traverse(element, keys_to_swap, empty_containers_to_swap)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
         #  Return data if 'none_if_empty' attribute unspecified in Meta.
-        try:
-            fields_to_swap = self.Meta.none_if_empty
-        except AttributeError:
-            return data
 
-        if self.swap_empty_container:
+        fields_to_swap = getattr(self.Meta, 'none_if_empty', ())
+        keys_to_swap = getattr(self.Meta, 'keys_to_swap', ())
+        empty_containers_to_swap = getattr(self.Meta, 'empty_containers_to_swap', ())
+
+        if self.swap_on and any((fields_to_swap, keys_to_swap, empty_containers_to_swap)):
 
             assert not (wrong_fields := set(fields_to_swap).difference(self.fields.keys())), \
                 f'Fields {wrong_fields} do not belong to serializer "{self.__class__.__name__}"'
@@ -153,5 +159,8 @@ class NoneInsteadEmptyMixin:
             for field in fields_to_swap:
                 if not len(data[field]):
                     data[field] = self.swap_value
+
+            if keys_to_swap or empty_containers_to_swap:
+                self.traverse(data, keys_to_swap, empty_containers_to_swap)
 
         return data

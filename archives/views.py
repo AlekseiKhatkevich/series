@@ -1,6 +1,7 @@
 from typing import Sequence
 
 import guardian.models
+from django.utils.functional import cached_property
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
@@ -52,6 +53,7 @@ class TvSeriesBase(generics.GenericAPIView):
 
 class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
     permission_classes = (
+        archives.permissions.ReadOnlyIfOnlyAuthenticated |
         archives.permissions.MasterSlaveRelations |
         archives.permissions.FriendsGuardianPermission,
     )
@@ -60,7 +62,16 @@ class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.select_related('entry_author__master')
+        pr_seasons = Prefetch(
+            'seasons',
+            queryset=archives.models.SeasonModel.objects.all().only('pk', 'season_number', 'series_id',)
+        )
+        return qs.select_related('entry_author__master', ).prefetch_related(pr_seasons, )
+
+    def get_object(self):
+        obj = super().get_object()
+        setattr(self, 'obj', obj)
+        return obj
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):

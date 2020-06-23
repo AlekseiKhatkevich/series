@@ -51,7 +51,7 @@ SUSPICIOUS_REQUEST = exc_msg(
     'Suspicious request from unknown ip.',
     'suspicious_request',
 )
-READ_ONLY = exc_msg(
+READ_ONLY_FIELD = exc_msg(
     'This field is read only.',
     'read_only',
 )
@@ -119,6 +119,10 @@ IMAGE_ALREADY_EXISTS = exc_msg(
 NO_GUARDIAN_PERMISSION = exc_msg(
     'You do not have necessary permission from object creator to modify this object.',
     'no_guardian_permission',
+)
+READ_ONLY_ACTION = exc_msg(
+    'As you dont have all necessary permissions - this endpoint is read only for you.',
+    'read_only_action',
 )
 
 
