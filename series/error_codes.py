@@ -124,5 +124,9 @@ READ_ONLY_ACTION = exc_msg(
     'As you dont have all necessary permissions - this endpoint is read only for you.',
     'read_only_action',
 )
+DEFAULT_403_DRF_ERROR = exc_msg(
+    'Authentication credentials were not provided.',
+    403,
+)
 
 

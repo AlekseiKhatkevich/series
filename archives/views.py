@@ -50,6 +50,11 @@ class TvSeriesBase(generics.GenericAPIView):
             defer(*user_model_deferred_fields).order_by('pk')
         return super().get_queryset()
 
+    def get_object(self):
+        # To use saved in instance 'obj' pointer on object instead of calling function each ad every time.
+        setattr(self, 'obj', super().get_object())
+        return self.obj
+
 
 class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
     permission_classes = (
@@ -67,11 +72,6 @@ class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
             queryset=archives.models.SeasonModel.objects.all().only('pk', 'season_number', 'series_id',)
         )
         return qs.select_related('entry_author__master', ).prefetch_related(pr_seasons, )
-
-    def get_object(self):
-        obj = super().get_object()
-        setattr(self, 'obj', obj)
-        return obj
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
@@ -140,12 +140,9 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         series = self.get_object()
         self.validate_images_to_delete(series, images_pks)
         deleted_amount, _ = series.images.filter(pk__in=images_pks).delete()
-        #  Delete image_has stored in view class.
+        #  Delete image_hash stored in view class.
         for pk in images_pks:
-            try:
-                del self.model.stored_image_hash[pk]
-            except(AttributeError, KeyError, ):
-                pass
+            self.model.delete_stored_image_hash(pk)
 
         return Response(
             data={'Number_of_deleted_images': deleted_amount},

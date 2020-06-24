@@ -202,7 +202,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'series.renderers.JPEGRenderer',
         'series.renderers.GIFRenderer',
-    ]
+    ],
 }
 
 SCOPE_THROTTLE_RATES = {

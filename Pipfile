@@ -28,5 +28,6 @@ imagehash = "*"
 btrees = "*"
 django-guardian = "*"
 
+
 [requires]
 python_version = "3.8"

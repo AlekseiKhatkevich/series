@@ -69,6 +69,19 @@ class GroupingModel(models.Model):
             self.full_clean(validate_unique=True)
         super().save(*args, **kwargs)
 
+    def __hash__(self):
+        id1 = self.from_series_id
+        id2 = self.to_series_id
+        # https://stackoverflow.com/questions/919612/mapping-two-integers-to-one-in-a-unique-and-deterministic-way
+        cantor_pairing = (((id1 + id2) * (id1 + id2 + 1)) * 0.5) + id1
+        return int(round(cantor_pairing))
+
+    def __eq__(self, other):
+        if self.pk is None:
+            return self.__hash__() == other.__hash__()
+        else:
+            super().__eq__(other)
+
 
 class TvSeriesModel(models.Model):
     """
@@ -311,7 +324,19 @@ class SeasonModel(models.Model):
         return now > last_episode_release_date
 
 
-class ImageModel(models.Model):
+class ImageModelMetaClass(type(models.Model)):
+    """
+    Metaclass for ImageModel.
+    """
+    def __getattr__(cls, attrname):
+        if attrname == 'stored_image_hash':
+            setattr(cls, attrname, cls.get_image_hash_from_db())
+            return getattr(cls, attrname)
+        else:
+            return super().__getattr__(attrname)
+
+
+class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     """
     Model represents an image. Can be attached to any model in the project.
     Based on a Generic FK.
@@ -376,11 +401,6 @@ class ImageModel(models.Model):
         #  file stream iterator and validator in 'full_clean' receives empty iterator, which it can not
         #  validate successfully.
 
-        try:
-            self.__class__.stored_image_hash
-        except AttributeError:
-            self.__class__.stored_image_hash = self.get_image_hash_from_db()
-
         if fc:
             self.full_clean(exclude=('image_hash',))
 
@@ -393,13 +413,18 @@ class ImageModel(models.Model):
 
     def delete(self, using=None, keep_parents=False):
         deleted = super().delete(using, keep_parents)
-
-        try:
-            del self.__class__.stored_image_hash[self.pk]
-        except AttributeError:
-            pass
-
+        self.delete_stored_image_hash(pk=self.pk)
         return deleted
+
+    @classmethod
+    def delete_stored_image_hash(cls, pk: int) -> None:
+        """
+        Deletes stored image hash if exists.
+        """
+        try:
+            del cls.stored_image_hash[pk]
+        except (AttributeError, KeyError):
+            pass
 
     @property
     def image_file_name(self):
@@ -422,5 +447,3 @@ class ImageModel(models.Model):
         """
         image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
         return IOBTree(image_hash_from_db)
-
-

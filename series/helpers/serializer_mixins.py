@@ -77,22 +77,25 @@ class ReadOnlyRaisesException:
     attribute set to True are provided in incoming data to opposite behaviour.
     If at leas one of read_only fields in initial data - validation Error is arisen.
     """
+    read_only_raises_exception = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        _fields = MappingProxyType(self.fields)
-        _read_only_fields = frozenset(field_name for field_name, field in _fields.items() if field.read_only)
-        try:
-            _initial_data = MappingProxyType(self.initial_data)
-            _read_only_fields_in_data = _read_only_fields.intersection(_initial_data)
-        except AttributeError:  # if no initial date in serializer...
-            pass
-        else:
-            if _read_only_fields_in_data:
-                raise serializers.ValidationError(
-                    {field: error_codes.READ_ONLY_FIELD.message for field in _read_only_fields_in_data},
-                    code=error_codes.READ_ONLY_FIELD.code
-                )
+
+        if self.read_only_raises_exception:
+            _fields = MappingProxyType(self.fields)
+            _read_only_fields = frozenset(field_name for field_name, field in _fields.items() if field.read_only)
+            try:
+                _initial_data = MappingProxyType(self.initial_data)
+                _read_only_fields_in_data = _read_only_fields.intersection(_initial_data)
+            except AttributeError:  # if no initial date in serializer...
+                pass
+            else:
+                if _read_only_fields_in_data:
+                    raise serializers.ValidationError(
+                        {field: error_codes.READ_ONLY_FIELD.message for field in _read_only_fields_in_data},
+                        code=error_codes.READ_ONLY_FIELD.code
+                    )
 
 
 class NoneInsteadEmptyMixin:

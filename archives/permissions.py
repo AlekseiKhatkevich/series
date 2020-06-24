@@ -11,7 +11,7 @@ class ReadOnlyIfOnlyAuthenticated(permissions.BasePermission):
     message = error_codes.READ_ONLY_ACTION.message
 
     def has_permission(self, request, view):
-        return request.user.is_authenticated and request.method in permissions.SAFE_METHODS
+        return request.user.is_authenticated and (request.method in permissions.SAFE_METHODS)
 
 
 class IsObjectOwner(permissions.IsAuthenticated):

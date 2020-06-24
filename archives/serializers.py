@@ -134,7 +134,7 @@ class SeasonShortSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-class TvSeriesDetailSerializer(TvSeriesSerializer):
+class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeriesSerializer):
     """
     Serializer for retrieve, update and delete actions on Tv series.
     """
@@ -148,6 +148,38 @@ class TvSeriesDetailSerializer(TvSeriesSerializer):
     class Meta(TvSeriesSerializer.Meta):
         fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons',)
         keys_to_swap = ('friends', 'seasons',)
+
+    def update(self, instance, validated_data):
+        interrelationship_data = validated_data.pop('group', None)
+        series = super().update(instance, validated_data)
+
+        if interrelationship_data is not None:
+
+            set_of_interrelationships = set()
+            for i_ship in interrelationship_data:
+                seq = (series, i_ship['to_series'])
+                for num, _ in enumerate(seq):
+                    set_of_interrelationships.add(
+                        archives.models.GroupingModel(
+                            from_series=seq[num],
+                            to_series=seq[not num],
+                            reason_for_interrelationship=i_ship['reason_for_interrelationship']
+                        ), )
+
+        return series
+
+    def get_fields(self):
+        """
+        Do not show to anyone except admins and object owner information about allowed object redactors.
+        """
+        fields = super().get_fields()
+        request = self.context['request']
+        entry_author = self.context['view'].obj.entry_author
+
+        if not request.user == entry_author and not request.user.is_staff:
+            fields.pop('allowed_redactors')
+
+        return fields
 
     @staticmethod
     def get_allowed_redactors(obj):
@@ -180,15 +212,4 @@ class TvSeriesDetailSerializer(TvSeriesSerializer):
                  ] or None
         return dict(master=master, friends=friends, slaves=slaves)
 
-    def get_fields(self):
-        """
-        Do not show to anyone except admins and object owner information about allowed object redactors.
-        """
-        fields = super().get_fields()
-        request = self.context['request']
-        entry_author = self.context['view'].obj.entry_author
 
-        if not request.user == entry_author and not request.user.is_staff:
-            fields.pop('allowed_redactors')
-
-        return fields
