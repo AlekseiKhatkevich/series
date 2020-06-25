@@ -120,6 +120,65 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
                     self.series_1,
                     with_group_users=False,
                     only_with_perms_in=(series.constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE,),
-                )],
+                    )],
             list(response.data['allowed_redactors']['friends'])
         )
+
+    def test_update(self):
+        """
+        Check that model instance can be successfully updated.
+        """
+        data = {
+            'name': 'test_updated',
+            'imdb_url': 'https://www.imdb.com/name/nm3929195/',
+            'is_finished': True,
+            'rating': 7,
+            'interrelationship': [
+                {
+                    'name': self.series_2.name,
+                    'reason_for_interrelationship': 'test_updated',
+                }]}
+        user = self.series_1.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.put(
+            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            data=data,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertNotEqual(
+            self.series_1,
+            self.series_1.refresh_from_db(),
+        )
+        self.assertEqual(
+            self.series_1.group.get(to_series=self.series_2.pk).reason_for_interrelationship,
+            'test_updated',
+        )
+
+    def test_delete_interrelationship(self):
+        """
+        Check that interrelationships can be deleted.
+        """
+        data = {'interrelationship': []}
+        user = self.series_1.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.patch(
+            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            data=data,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertFalse(
+            self.series_1.interrelationship.all().exists()
+        )
+

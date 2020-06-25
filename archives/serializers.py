@@ -1,9 +1,9 @@
 import guardian.models
 from django.conf import settings
 from django.db import transaction
-from django.db.models import F, Value
+from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
-from rest_framework import serializers
+from rest_framework import permissions, serializers
 
 import archives.models
 from series import constants
@@ -106,14 +106,12 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         if interrelationship_data is not None:
             list_of_interrelationships = []
             for i_ship in interrelationship_data:
-                seq = (series, i_ship['to_series'])
-                for num, _ in enumerate(seq):
-                    list_of_interrelationships.append(
-                        archives.models.GroupingModel(
-                            from_series=seq[num],
-                            to_series=seq[not num],
-                            reason_for_interrelationship=i_ship['reason_for_interrelationship']
-                        ), )
+                pair = archives.models.GroupingModel.objects.create_relation_pair(
+                    from_series=series,
+                    to_series=i_ship['to_series'],
+                    reason_for_interrelationship=i_ship['reason_for_interrelationship'],
+                )
+                list_of_interrelationships += pair
 
             archives.models.GroupingModel.objects.bulk_create(
                 list_of_interrelationships,
@@ -149,23 +147,38 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
         fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons',)
         keys_to_swap = ('friends', 'seasons',)
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         interrelationship_data = validated_data.pop('group', None)
         series = super().update(instance, validated_data)
 
         if interrelationship_data is not None:
-
-            set_of_interrelationships = set()
+            #  Create model instances for incoming interrelationships.
+            list_of_interrelationships = []
             for i_ship in interrelationship_data:
-                seq = (series, i_ship['to_series'])
-                for num, _ in enumerate(seq):
-                    set_of_interrelationships.add(
-                        archives.models.GroupingModel(
-                            from_series=seq[num],
-                            to_series=seq[not num],
-                            reason_for_interrelationship=i_ship['reason_for_interrelationship']
-                        ), )
+                pair = archives.models.GroupingModel.objects.create_relation_pair(
+                    from_series=series,
+                    to_series=i_ship['to_series'],
+                    reason_for_interrelationship=i_ship['reason_for_interrelationship'],
+                )
+                list_of_interrelationships += pair
+            # All interrelationships intermediate model instances for series.
+            qs = archives.models.GroupingModel.objects.filter(
+                Q(from_series=series) | Q(to_series=series)
+            )
+            # Interrelationships intermediate model instances that must be deleted.
+            to_delete = set(qs).difference(list_of_interrelationships)
+            # Interrelationships intermediate model instances that must be created.
+            new = set(list_of_interrelationships).difference(qs)
 
+            if to_delete:
+                qs.filter(pk__in=(group.pk for group in to_delete)).delete()
+
+            if new:
+                archives.models.GroupingModel.objects.bulk_create(
+                        list_of_interrelationships,
+                        ignore_conflicts=True,
+                    )
         return series
 
     def get_fields(self):
@@ -176,7 +189,8 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
         request = self.context['request']
         entry_author = self.context['view'].obj.entry_author
 
-        if not request.user == entry_author and not request.user.is_staff:
+        if (not request.user == entry_author and not request.user.is_staff) or \
+                request.method not in permissions.SAFE_METHODS:
             fields.pop('allowed_redactors')
 
         return fields
@@ -211,5 +225,3 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
                      for slave in obj.entry_author.slaves.all()
                  ] or None
         return dict(master=master, friends=friends, slaves=slaves)
-
-

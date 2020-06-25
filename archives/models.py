@@ -26,6 +26,8 @@ class GroupingModel(models.Model):
     """
     Intermediate model for Many-to-Many recursive relationship between series.
     """
+    objects = managers.GroupingManager.from_queryset(managers.GroupingQueryset)()
+
     from_series = models.ForeignKey(
         'TvSeriesModel',
         on_delete=models.CASCADE,
@@ -70,17 +72,19 @@ class GroupingModel(models.Model):
         super().save(*args, **kwargs)
 
     def __hash__(self):
-        id1 = self.from_series_id
-        id2 = self.to_series_id
-        # https://stackoverflow.com/questions/919612/mapping-two-integers-to-one-in-a-unique-and-deterministic-way
-        cantor_pairing = (((id1 + id2) * (id1 + id2 + 1)) * 0.5) + id1
-        return int(round(cantor_pairing))
+        """
+        Make unique hash by combining 3 fields 'from_series_id', 'to_series_id' and 'reason_for_interrelationship'.
+        """
+        return hash(f'{self.from_series_id}{self.from_series_id}{self.reason_for_interrelationship}')
 
     def __eq__(self, other):
-        if self.pk is None:
+        """
+        Compare hashes im at least one of objects does not have pk yet.
+        """
+        if None in (self.pk, other.pk,):
             return self.__hash__() == other.__hash__()
         else:
-            super().__eq__(other)
+            return super().__eq__(other)
 
 
 class TvSeriesModel(models.Model):
@@ -328,6 +332,7 @@ class ImageModelMetaClass(type(models.Model)):
     """
     Metaclass for ImageModel.
     """
+
     def __getattr__(cls, attrname):
         if attrname == 'stored_image_hash':
             setattr(cls, attrname, cls.get_image_hash_from_db())
