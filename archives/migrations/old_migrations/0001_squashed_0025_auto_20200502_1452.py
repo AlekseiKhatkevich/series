@@ -13,7 +13,7 @@ import django.db.models.expressions
 
 class Migration(migrations.Migration):
 
-    replaces = [('archives', '0001_squashed_0010_auto_20200424_1324'), ('archives', '0011_auto_20200424_1418'), ('archives', '0012_auto_20200424_1447'), ('archives', '0013_auto_20200424_1604'), ('archives', '0014_auto_20200426_0954'), ('archives', '0015_auto_20200426_1624'), ('archives', '0016_auto_20200427_0942'), ('archives', '0017_auto_20200427_1046'), ('archives', '0018_auto_20200427_1439'), ('archives', '0019_auto_20200428_1345'), ('archives', '0020_auto_20200501_1230'), ('archives', '0021_auto_20200501_1255'), ('archives', '0022_auto_20200501_1323'), ('archives', '0023_auto_20200501_1332'), ('archives', '0024_auto_20200501_1358'), ('archives', '0025_auto_20200502_1452')]
+    #replaces = [('archives', '0001_squashed_0010_auto_20200424_1324'), ('archives', '0011_auto_20200424_1418'), ('archives', '0012_auto_20200424_1447'), ('archives', '0013_auto_20200424_1604'), ('archives', '0014_auto_20200426_0954'), ('archives', '0015_auto_20200426_1624'), ('archives', '0016_auto_20200427_0942'), ('archives', '0017_auto_20200427_1046'), ('archives', '0018_auto_20200427_1439'), ('archives', '0019_auto_20200428_1345'), ('archives', '0020_auto_20200501_1230'), ('archives', '0021_auto_20200501_1255'), ('archives', '0022_auto_20200501_1323'), ('archives', '0023_auto_20200501_1332'), ('archives', '0024_auto_20200501_1358'), ('archives', '0025_auto_20200502_1452')]
 
     initial = True
 

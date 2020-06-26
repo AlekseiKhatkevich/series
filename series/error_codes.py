@@ -1,6 +1,6 @@
-from collections import namedtuple
+import collections
 
-exc_msg = namedtuple('exception_description', ['message', 'code'])
+exc_msg = collections.namedtuple('exception_description', ['message', 'code'])
 
 
 WRONG_COUNTRY_CODE = exc_msg(
@@ -124,9 +124,13 @@ READ_ONLY_ACTION = exc_msg(
     'As you dont have all necessary permissions - this endpoint is read only for you.',
     'read_only_action',
 )
-DEFAULT_403_DRF_ERROR = exc_msg(
+DRF_NO_AUTH = exc_msg(
     'Authentication credentials were not provided.',
-    403,
+    'no_auth_403',
+)
+DRF_NO_PERMISSIONS = exc_msg(
+    'You do not have permission to perform this action.',
+    'drf_no_permissions',
 )
 
 

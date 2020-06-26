@@ -1,7 +1,9 @@
+from typing import List
+
 from django.db import models
 from django.db.models import FloatField, Max, Min
 from django.db.models.functions import Ceil, Floor
-from typing import List
+
 
 class TvSeriesQueryset(models.QuerySet):
     """

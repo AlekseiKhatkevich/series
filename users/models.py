@@ -140,8 +140,8 @@ class User(AbstractUser):
         Blacklists all user's refresh tokens.
         """
         outstanding_tokens_pks = sjwt_blacklist_models.OutstandingToken.objects.filter(
-                user=self).values_list('pk', flat=True
-                                       )
+            user=self).values_list('pk', flat=True
+                                   )
         blacklist_instances = (
             sjwt_blacklist_models.BlacklistedToken(token_id=pk) for pk in outstanding_tokens_pks
         )
@@ -230,6 +230,7 @@ class UserIP(models.Model):
     def __str__(self):
         return f'# {self.pk} -- Ip address of user {self.user_id} / {self.user.email}.'
 
+    @transaction.atomic
     def ip_deque(self, ip_num: int = 3) -> None:
         """
         Method keeps only 3 last distinct ip address entries.

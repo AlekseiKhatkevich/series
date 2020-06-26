@@ -14,6 +14,7 @@ from django.db.models.functions import Length
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.utils.functional import cached_property
+from rest_framework.reverse import reverse
 
 from archives import managers
 from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
@@ -148,6 +149,9 @@ class TvSeriesModel(models.Model):
                 limit_value=10,
                 message='Maximal value for this field is 10'
             )])
+    translation_years = psgr_fields.DateRangeField(
+        verbose_name='Series years of translation.',
+    )
 
     class Meta:
         verbose_name = 'series'
@@ -177,10 +181,9 @@ class TvSeriesModel(models.Model):
         super().save(*args, **kwargs)
         self._original_model_state = model_to_dict(self, exclude='interrelationship')
 
-    # todo
     @cached_property
     def get_absolute_url(self):
-        raise NotImplementedError
+        return reverse('tvseries-detail', args=(self.pk, ))
 
     @property
     def changed_fields(self) -> KeysView:
@@ -206,7 +209,7 @@ class SeasonModel(models.Model):
 
     series = models.ForeignKey(
         TvSeriesModel,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='seasons',
         verbose_name='Parent TV series'
     )
@@ -232,8 +235,7 @@ class SeasonModel(models.Model):
         validators=[
             custom_validators.validate_dict_key_is_digit,
             custom_validators.validate_timestamp,
-        ],
-    )
+        ],)
 
     class Meta:
         order_with_respect_to = 'series'

@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from rest_framework.reverse import reverse
 
 from users.helpers import create_test_users
 import archives.models as archive_models
@@ -120,5 +121,16 @@ class TvSeriesModelPositiveTest(APITestCase):
         self.assertCountEqual(
             ('name', 'is_finished', 'id'),
             self.series_1.changed_fields
+        )
+
+    def test_get_absolute_url(self):
+        """
+        Check that 'get_absolute_url' method returns correct url.
+        """
+        expected_result = reverse('tvseries-detail', args=(self.series_1.pk, ))
+
+        self.assertEqual(
+            self.series_1.get_absolute_url,
+            expected_result,
         )
 

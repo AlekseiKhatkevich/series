@@ -29,14 +29,14 @@ class TvSeriesDetailUpdateDeleteNegativeTest(TestHelpers, APITestCase):
         Check that only authenticated users are able to get read access to api endpoint.
         """
         response = self.client.get(
-            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            self.series_1.get_absolute_url,
             data=None,
             format='json',
         )
         self.check_status_and_error_message(
             response,
             status_code=status.HTTP_403_FORBIDDEN,
-            error_message=error_codes.DEFAULT_403_DRF_ERROR.message,
+            error_message=error_codes.DRF_NO_AUTH.message,
         )
 
     def test_if_allowed_redactors_hidden_for_random_user(self):
@@ -53,7 +53,7 @@ class TvSeriesDetailUpdateDeleteNegativeTest(TestHelpers, APITestCase):
         self.client.force_authenticate(user=random_user)
 
         response = self.client.get(
-            reverse('tvseries-detail', args=(series.pk,)),
+            self.series_1.get_absolute_url,
             data=None,
             format='json',
         )
@@ -65,4 +65,52 @@ class TvSeriesDetailUpdateDeleteNegativeTest(TestHelpers, APITestCase):
         self.assertNotIn(
             'allowed_redactors',
             response.data,
+        )
+
+    def test_if_allowed_redactors_hidden_during_update(self):
+        """
+        Check that 'allowed_redactors' would not be present in response data after update /
+        partial update operations.
+        """
+        user = self.series_1.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.patch(
+            self.series_1.get_absolute_url,
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertNotIn(
+            'allowed_redactors',
+            response.data,
+        )
+
+    def test_random_user_can_not_update_series(self):
+        """
+        Check that user who is not an author, master, slave of author'sfirnd  - does not have
+        an access to update series api endpoint.
+        """
+
+        random_user = more_itertools.first_true(
+            self.users,
+            pred=lambda user: user != self.series_1.entry_author and not user.is_staff,
+        )
+
+        self.client.force_authenticate(user=random_user)
+
+        response = self.client.patch(
+            self.series_1.get_absolute_url,
+            data=None,
+            format='json',
+        )
+
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_403_FORBIDDEN,
+            error_message=error_codes.DRF_NO_PERMISSIONS.message,
         )

@@ -22,6 +22,8 @@ class TvSeriesBase(generics.GenericAPIView):
     """
     Base view class for TV series views.
     """
+    _obj = None
+
     @property
     def model(self):
         return getattr(self.serializer_class.Meta, 'model')
@@ -51,17 +53,18 @@ class TvSeriesBase(generics.GenericAPIView):
         return super().get_queryset()
 
     def get_object(self):
-        # To use saved in instance 'obj' pointer on object instead of calling function each ad every time.
-        setattr(self, 'obj', super().get_object())
-        return self.obj
+        # To use saved in instance 'obj' object instead of calling function each ad every time.
+        if self._obj is None:
+            self._obj = super().get_object()
+        return self._obj
 
 
 class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
-    permission_classes = (
+    permission_classes = [
         archives.permissions.ReadOnlyIfOnlyAuthenticated |
         archives.permissions.MasterSlaveRelations |
-        archives.permissions.FriendsGuardianPermission,
-    )
+        archives.permissions.FriendsGuardianPermission
+    ]
     lookup_url_kwarg = 'series_pk'
     serializer_class = archives.serializers.TvSeriesDetailSerializer
 

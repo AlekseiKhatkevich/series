@@ -9,6 +9,8 @@ import series.constants
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
 
+import archives.models
+
 
 class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
     """
@@ -43,7 +45,7 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
         self.client.force_authenticate(user=user)
 
         response = self.client.get(
-            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            self.series_1.get_absolute_url,
             data=None,
             format='json',
         )
@@ -97,7 +99,7 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
         self.client.force_authenticate(user=user)
 
         response = self.client.get(
-            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            self.series_1.get_absolute_url,
             data=None,
             format='json',
         )
@@ -143,7 +145,7 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
         self.client.force_authenticate(user=user)
 
         response = self.client.put(
-            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            self.series_1.get_absolute_url,
             data=data,
             format='json',
         )
@@ -170,7 +172,7 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
         self.client.force_authenticate(user=user)
 
         response = self.client.patch(
-            reverse('tvseries-detail', args=(self.series_1.pk,)),
+            self.series_1.get_absolute_url,
             data=data,
             format='json',
         )
@@ -182,3 +184,24 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
             self.series_1.interrelationship.all().exists()
         )
 
+    def test_delete_series(self):
+        """
+        Check that series can be successfully deleted.
+        """
+        user = self.series_1.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.delete(
+            self.series_1.get_absolute_url,
+            data=None,
+            format='json',
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT,
+        )
+        self.assertFalse(
+           archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk).exists()
+        )
