@@ -15,9 +15,10 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.base import File
 from django.utils.deconstruct import deconstructible
+from psycopg2.extras import DateRange
 
 from archives.helpers import custom_functions
-from series import error_codes
+from series import constants, error_codes
 from series.helpers import project_decorators
 
 media_root_full_path_partial = functools.partial(os.path.join, settings.MEDIA_ROOT_FULL_PATH)
@@ -203,3 +204,61 @@ def validate_image_hash(value: imagehash.ImageHash) -> None:
             f'Value {value} is not an ImageHash.',
             'not_an_image_hash',
         )
+
+
+@deconstructible
+class DateRangeValidator:
+    """
+    Validates DateRange prior to DB validation.
+    """
+    def __init__(self, lower_inf_allowed: bool = False, upper_inf_allowed: bool = False) -> None:
+        self.lower_inf_allowed = lower_inf_allowed
+        self.upper_inf_allowed = upper_inf_allowed
+
+    def __call__(self, value: DateRange, *args, **kwargs) -> None:
+        assert isinstance(value, DateRange), f'{type(value)} is not {str(DateRange)}.'
+
+        lower = value.lower# datetime to date
+        upper = value.upper
+
+        current_year = datetime.date.today().year
+
+        allowed_lower_bound = constants.LUMIERE_FIRST_FILM_DATE
+        allowed_upper_bound = datetime.date(current_year + 2, 1, 1)
+
+        errors = []
+
+        # Check whether lower or upper bound is open.
+        if not self.lower_inf_allowed and value.lower_inf:
+            errors.append(ValidationError(*error_codes.LOWER_BOUND))
+        if not self.upper_inf_allowed and value.upper_inf:
+            errors.append(ValidationError(*error_codes.UPPER_BOUND))
+
+        if errors:
+            raise ValidationError(errors)
+
+        # Check that upper bound gte than lower one.
+        try:
+            if lower > upper:
+                errors.append(ValidationError(*error_codes.LOWER_GT_UPPER))
+        except TypeError:  # In case one bound is None.
+            pass
+
+        #  Check that dates range is reasonable historically.
+        try:
+            if lower < allowed_lower_bound:
+                errors.append(ValidationError(*error_codes.WAY_TO_OLD))
+        except TypeError:  # In case one bound is None.
+            pass
+
+        try:
+            if upper > allowed_upper_bound:
+                errors.append(ValidationError(*error_codes.NO_FUTURE))
+        except TypeError:  # In case one bound is None.
+            pass
+
+        if errors:
+            raise ValidationError(errors)
+
+
+

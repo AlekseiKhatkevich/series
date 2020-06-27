@@ -1,10 +1,13 @@
+import datetime
 import json
 
 from django.core.exceptions import ValidationError
+from psycopg2.extras import DateRange
 from rest_framework.test import APISimpleTestCase
-from series import error_codes
+
 from archives.helpers import validators
 from archives.tests.data import initial_data
+from series import error_codes
 
 
 class validatorsNegativeTest(APISimpleTestCase):
@@ -89,4 +92,76 @@ class validatorsNegativeTest(APISimpleTestCase):
 
         with self.assertRaisesMessage(ValidationError, expected_error_message):
             validator(image_file)
+
+    def test_DateRangeValidator_with_wrong_value(self):
+        """
+        Check that if 'DateRangeValidator' receives wrong value type, than assertion error
+        would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        value = 10
+        expected_error_message = f'{type(value)} is not {str(DateRange)}.'
+
+        with self.assertRaisesMessage(AssertionError, expected_error_message):
+            validator(value)
+
+    def test_DateRangeValidator_lower_inf_forbidden(self):
+        """
+        Check that if 'DateRangeValidator' doe not allow lower bound to be infinite, then if lower
+        infinite value is provided, then validation error would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        expected_error_message = error_codes.LOWER_BOUND.message
+        range_with_lower_inf = DateRange(None, datetime.date.today())
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            validator(range_with_lower_inf)
+
+    def test_DateRangeValidator_upper_inf_forbidden(self):
+        """
+        Check that if 'DateRangeValidator' doe not allow upper bound to be infinite, than if upper
+        infinite value is provided, then validation error would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        expected_error_message = error_codes.UPPER_BOUND.message
+        range_with_upper_inf = DateRange(datetime.date.today(), None)
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            validator(range_with_upper_inf)
+
+    def test_DateRangeValidator_lower_gt_upper(self):
+        """
+        Check that if 'DateRangeValidator' receives daterange where lower > upper,
+        than validation error would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        expected_error_message = error_codes.LOWER_GT_UPPER.message
+        range_with_lower_gt_upper = DateRange(datetime.date(2020, 1, 1), datetime.date(2019, 1, 1))
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            validator(range_with_lower_gt_upper)
+
+    def test_DateRangeValidator_lower_under_allowed_lower_bound(self):
+        """
+        Check that if 'DateRangeValidator' receives daterange where lower > date of the first
+        Lumiere brothers movie, than validation error would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        expected_error_message = error_codes.WAY_TO_OLD.message
+        range_with_caveman_cinema = DateRange(datetime.date(1820, 1, 1), datetime.date(2019, 1, 1))
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            validator(range_with_caveman_cinema)
+
+    def test_DateRangeValidator_upper_is_above_allowed_upper_bound(self):
+        """
+        Check that if 'DateRangeValidator' receives daterange where upper > 1 january of the
+        next year after following year, than validation error would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        expected_error_message = error_codes.NO_FUTURE.message
+        range_with_future = DateRange(datetime.date(2019, 1, 1), datetime.date(3000, 1, 1))
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            validator(range_with_future)
 

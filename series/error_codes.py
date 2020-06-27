@@ -1,4 +1,5 @@
 import collections
+import datetime
 
 exc_msg = collections.namedtuple('exception_description', ['message', 'code'])
 
@@ -132,5 +133,24 @@ DRF_NO_PERMISSIONS = exc_msg(
     'You do not have permission to perform this action.',
     'drf_no_permissions',
 )
-
+LOWER_BOUND = exc_msg(
+    'Range should have lower bound.',
+    'lower_bound',
+)
+UPPER_BOUND = exc_msg(
+    'Range should have upper bound.',
+    'upper_bound',
+)
+LOWER_GT_UPPER = exc_msg(
+    'Upper bound should be gte. than lower one.',
+    'lower_gt_upper',
+)
+WAY_TO_OLD = exc_msg(
+    'This date is older then first Lumiere brothers film. Can not be true.',
+    'way_to_old',
+)
+NO_FUTURE = exc_msg(
+    f'Maximal future allowed year is {datetime.datetime.now().year + 1}',
+    'no_future',
+)
 

@@ -1,9 +1,11 @@
-from rest_framework.test import APITestCase
-from rest_framework.reverse import reverse
+import datetime
 
-from users.helpers import create_test_users
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
+
 import archives.models as archive_models
 from archives.tests.data import initial_data
+from users.helpers import create_test_users
 
 
 class TvSeriesModelPositiveTest(APITestCase):
@@ -18,8 +20,11 @@ class TvSeriesModelPositiveTest(APITestCase):
 
         cls.series_initial_data = {'entry_author': cls.user_1,
                                    'name': 'Fargo',
-                                   'imdb_url': 'https://www.imdb.com/title/tt12162902/?ref_=hm_hp_cap_pri_5'
-                                   }
+                                   'imdb_url': 'https://www.imdb.com/title/tt12162902/?ref_=hm_hp_cap_pri_5',
+                                   'translation_years': (
+                                       datetime.date(year=2015, month=1, day=1),
+                                       datetime.date(year=2019, month=1, day=1),
+                                   )}
 
     def setUp(self) -> None:
         self.series_1, self.series_2 = initial_data.create_tvseries(users=self.users)

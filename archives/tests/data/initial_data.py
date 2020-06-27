@@ -1,3 +1,4 @@
+import datetime
 import itertools
 import random
 from io import BytesIO
@@ -28,14 +29,17 @@ def create_tvseries(users: users_instances) -> series_instances:
         'series_1':
             {'entry_author': users[0],
              'name': 'Django unleashed',
-             'imdb_url': 'https://www.imdb.com'
-             },
+             'imdb_url': 'https://www.imdb.com',
+             'translation_years': (
+                 datetime.date(year=2012, month=1, day=1), datetime.date(year=2014, month=1, day=1)
+             )},
         'series_2':
             {'entry_author': users[1],
              'name': 'Shameless',
-             'imdb_url': 'https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649'
-             }
-    }
+             'imdb_url': 'https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649',
+             'translation_years': (
+                 datetime.date(year=2015, month=1, day=1), datetime.date(year=2019, month=1, day=1)
+             )}}
 
     series = archives.models.TvSeriesModel.objects.bulk_create(
         [archives.models.TvSeriesModel(**fields) for fields in tv_series_data.values()]

@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import unittest
@@ -5,6 +6,7 @@ import unittest
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from psycopg2.extras import DateRange
 from rest_framework.test import APISimpleTestCase
 
 from archives.helpers import validators
@@ -84,3 +86,35 @@ class validatorsPositiveTest(APISimpleTestCase):
                     with self.assertRaises(ValidationError):
                         validator(value)
 
+    @unittest.expectedFailure
+    def test_DateRangeValidator(self):
+        """
+        Check that if correct input data is provided, then exception would not be raised.
+        """
+        validator = validators.DateRangeValidator()
+        correct_range = DateRange(datetime.date(2011, 4, 5), datetime.date.today())
+
+        with self.assertRaises(ValidationError):
+            validator(correct_range)
+
+    @unittest.expectedFailure
+    def test_DateRangeValidator_lower_infinite_bound(self):
+        """
+        Check that in case lower infinite bound is allowed -then validator would nor raise error.
+        """
+        validator = validators.DateRangeValidator(lower_inf_allowed=True)
+        range_with_low_inf = DateRange(None, datetime.date.today())
+
+        with self.assertRaises(ValidationError):
+            validator(range_with_low_inf)
+
+    @unittest.expectedFailure
+    def test_DateRangeValidator_upper_infinite_bound(self):
+        """
+        Check that in case lower infinite bound is allowed -then validator would nor raise error.
+        """
+        validator = validators.DateRangeValidator(upper_inf_allowed=True)
+        range_with_upper_inf = DateRange(datetime.date(2011, 4, 5), None)
+
+        with self.assertRaises(ValidationError):
+            validator(range_with_upper_inf)
