@@ -206,11 +206,30 @@ def validate_image_hash(value: imagehash.ImageHash) -> None:
         )
 
 
+class DateRangeValidatorDescriptor:
+    """
+    Descriptor class for 'DateRangeValidator'. Converts datetime to date.
+    """
+    def __init__(self, storage_name: str):
+        self.storage_name = storage_name
+
+    def __set__(self, instance, value):
+        assert isinstance(value, datetime.date) or value is None, error_codes.NOT_DATETIME.message
+
+        try:
+            instance.__dict__[self.storage_name] = value.date()  # Convert datetime object to date object.
+        except AttributeError:
+            instance.__dict__[self.storage_name] = value  # Already date object or None, all good.
+
+
 @deconstructible
 class DateRangeValidator:
     """
     Validates DateRange prior to DB validation.
     """
+    lower = DateRangeValidatorDescriptor('lower')
+    upper = DateRangeValidatorDescriptor('upper')
+
     def __init__(self, lower_inf_allowed: bool = False, upper_inf_allowed: bool = False) -> None:
         self.lower_inf_allowed = lower_inf_allowed
         self.upper_inf_allowed = upper_inf_allowed
@@ -218,8 +237,8 @@ class DateRangeValidator:
     def __call__(self, value: DateRange, *args, **kwargs) -> None:
         assert isinstance(value, DateRange), f'{type(value)} is not {str(DateRange)}.'
 
-        lower = value.lower# datetime to date
-        upper = value.upper
+        self.lower = value.lower
+        self.upper = value.upper
 
         current_year = datetime.date.today().year
 
@@ -238,24 +257,15 @@ class DateRangeValidator:
             raise ValidationError(errors)
 
         # Check that upper bound gte than lower one.
-        try:
-            if lower > upper:
-                errors.append(ValidationError(*error_codes.LOWER_GT_UPPER))
-        except TypeError:  # In case one bound is None.
-            pass
+        if None not in (self.lower, self.upper) and self.lower > self.upper:
+            errors.append(ValidationError(*error_codes.LOWER_GT_UPPER))
 
         #  Check that dates range is reasonable historically.
-        try:
-            if lower < allowed_lower_bound:
-                errors.append(ValidationError(*error_codes.WAY_TO_OLD))
-        except TypeError:  # In case one bound is None.
-            pass
+        if self.lower is not None and self.lower < allowed_lower_bound:
+            errors.append(ValidationError(*error_codes.WAY_TO_OLD))
 
-        try:
-            if upper > allowed_upper_bound:
-                errors.append(ValidationError(*error_codes.NO_FUTURE))
-        except TypeError:  # In case one bound is None.
-            pass
+        if self.upper is not None and self.upper > allowed_upper_bound:
+            errors.append(ValidationError(*error_codes.NO_FUTURE))
 
         if errors:
             raise ValidationError(errors)

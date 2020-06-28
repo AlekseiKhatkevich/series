@@ -165,3 +165,15 @@ class validatorsNegativeTest(APISimpleTestCase):
         with self.assertRaisesMessage(ValidationError, expected_error_message):
             validator(range_with_future)
 
+    def test_DateRangeValidator_set_bounds_with_wrong_type(self):
+        """
+        Check that if 'DateRangeValidator' bound(s) of type not datetime.date or None, then validation error
+        would be raised.
+        """
+        validator = validators.DateRangeValidator()
+        expected_error_message = error_codes.NOT_DATETIME.message
+        range_with_wrong_value = DateRange(datetime.date(2019, 1, 1), 228)
+
+        with self.assertRaisesMessage(AssertionError, expected_error_message):
+            validator(range_with_wrong_value)
+

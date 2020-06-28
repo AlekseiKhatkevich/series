@@ -1,11 +1,13 @@
-from rest_framework.test import APITestCase
+import datetime
 
 from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
 from django.db import transaction
+from django.db.utils import IntegrityError
+from psycopg2.extras import DateRange
+from rest_framework.test import APITestCase
 
+from archives.tests.data import initial_data
 from users.helpers import create_test_users
-from ..data import initial_data
 
 
 class TvSeriesModelNegativeTest(APITestCase):
@@ -82,5 +84,15 @@ class TvSeriesModelNegativeTest(APITestCase):
         self.series_1.refresh_from_db()
 
         self.assertURLEqual(self.series_1.imdb_url, original_url)
+
+    def test_translation_years_validator(self):
+        """
+        Check that translation_years is involved in full_clean.
+        """
+        translation_years = DateRange(None, datetime.date(2015, 1, 1))
+        self.series_1.translation_years = translation_years
+
+        with self.assertRaises(ValidationError):
+            self.series_1.save()
 
 

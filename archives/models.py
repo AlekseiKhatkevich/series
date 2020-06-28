@@ -14,11 +14,12 @@ from django.db.models.functions import Length
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.utils.functional import cached_property
+from psycopg2.extras import DateRange
 from rest_framework.reverse import reverse
 
 from archives import managers
 from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
-from series import error_codes
+from series import error_codes, constants
 
 models.CharField.register_lookup(Length)
 
@@ -42,7 +43,7 @@ class GroupingModel(models.Model):
         verbose_name='relationship with series.'
     )
     reason_for_interrelationship = models.TextField(
-        verbose_name='Reason for relationship to an another series.'
+        verbose_name='Reason for relationship to an another series.',
     )
 
     class Meta:
@@ -151,6 +152,7 @@ class TvSeriesModel(models.Model):
             )])
     translation_years = psgr_fields.DateRangeField(
         verbose_name='Series years of translation.',
+        validators=[custom_validators.DateRangeValidator(upper_inf_allowed=True)]
     )
 
     class Meta:
@@ -167,7 +169,19 @@ class TvSeriesModel(models.Model):
             models.CheckConstraint(
                 name='url_to_imdb_check',
                 check=models.Q(imdb_url__icontains='www.imdb.com')
-            ), ]
+            ),
+            models.CheckConstraint(
+                name='no_medieval_cinema_check',
+                check=models.Q(
+                    translation_years__fully_gt=DateRange(None, constants.LUMIERE_FIRST_FILM_DATE, '()')
+                )),
+            #  This constraint is a fake constraint used in state_operations in migration
+            #  0045_defend_future_constraint
+            models.CheckConstraint(
+                name='defend_future_check',
+                check=models.Q(
+                    translation_years__fully_lt=DateRange(timezone.datetime(2030, 1, 1).date(), None, '()')
+                ))]
 
     def __str__(self):
         return f'{self.pk} / {self.name}'
@@ -183,7 +197,7 @@ class TvSeriesModel(models.Model):
 
     @cached_property
     def get_absolute_url(self):
-        return reverse('tvseries-detail', args=(self.pk, ))
+        return reverse('tvseries-detail', args=(self.pk,))
 
     @property
     def changed_fields(self) -> KeysView:
@@ -235,7 +249,7 @@ class SeasonModel(models.Model):
         validators=[
             custom_validators.validate_dict_key_is_digit,
             custom_validators.validate_timestamp,
-        ],)
+        ], )
 
     class Meta:
         order_with_respect_to = 'series'

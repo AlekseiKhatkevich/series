@@ -153,4 +153,8 @@ NO_FUTURE = exc_msg(
     f'Maximal future allowed year is {datetime.datetime.now().year + 1}',
     'no_future',
 )
+NOT_DATETIME = exc_msg(
+    "Value should be datetime or date type or it's subclass or None.",
+    'no_datetime',
+)
 
