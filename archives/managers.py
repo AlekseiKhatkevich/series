@@ -82,7 +82,6 @@ class ImageManager(models.Manager):
 
 # -----------------------------------------------------------------------------------
 
-
 class GroupingManager(models.Manager):
     """
     GroupingModel custom manager.

@@ -2,6 +2,7 @@ import os
 
 import imagehash
 from django.conf import settings
+from psycopg2.extras import DateRange
 from rest_framework.test import APISimpleTestCase
 
 from archives.helpers import custom_functions
@@ -50,5 +51,14 @@ class CustomFunctionsPositiveTest(APISimpleTestCase):
         self.assertIsInstance(
             image_hash,
             imagehash.ImageHash
+        )
+
+    def test_daterange(self):
+        """
+        Check that 'daterange' function actually creates DateRange instance.
+        """
+        self.assertIsInstance(
+            custom_functions.daterange((2012, 4, 5), (2014, 6, 1)),
+            DateRange,
         )
 

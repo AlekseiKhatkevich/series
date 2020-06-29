@@ -30,3 +30,13 @@ class CustomFunctionsNegativeTest(APISimpleTestCase):
         self.assertIsNone(
             image_hash
         )
+
+    def test_daterange(self):
+        """
+        Check that 'daterange' function would throw error in case time format in input arguments
+        is wrong.
+        """
+        expected_error_message = 'Year, month and data should be provided mandatory.'
+
+        with self.assertRaisesMessage(AssertionError, expected_error_message):
+            custom_functions.daterange((2012, 4, 5), (2014, 6))

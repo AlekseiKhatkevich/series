@@ -132,7 +132,6 @@ class ValidateIfUrlIsAlive:
         self._timeout = timeout
 
     def __call__(self, value: str, *args, **kwargs) -> None:
-
         request = urllib.request.Request(value, method='HEAD')
 
         try:

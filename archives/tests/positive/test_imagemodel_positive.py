@@ -27,6 +27,7 @@ class ImageModelPositiveTest(APITestCase):
         cls.test_image_instance = cls.series_1.images.create(
             image=cls.raw_image,
             fc=False,
+            image_hash=1111111111111111,
         )
 
     def test_file_upload_function_tvseriesmodel(self):

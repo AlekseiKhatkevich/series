@@ -1,8 +1,10 @@
+import datetime
 import itertools
-from typing import BinaryIO, Iterable, Iterator, Union, Optional
-import archives.models
+from typing import BinaryIO, Iterable, Iterator, Optional, Sequence, Union
+
 import PIL
 import imagehash
+from psycopg2.extras import DateRange
 
 test_list = ['a', 1, 2, 99, -8, 2.2, 'sfsdfdf', '6', '88', '5.6', '-67']
 
@@ -50,3 +52,15 @@ def create_image_hash(image: BinaryIO, raise_errors: bool = False) -> Optional[i
     return image_hash
 
 
+def daterange(lower_bound: Optional[Sequence[int]], upper_bound: Optional[Sequence[int]]) -> DateRange:
+    """
+    Constructs DateRange objects from tuples like (2012, 6, 7) or None.
+    """
+    for bound in (lower_bound, upper_bound):
+        if bound is not None:
+            assert len(bound) == 3, 'Year, month and data should be provided mandatory.'
+
+    lower = datetime.date(*lower_bound) if lower_bound is not None else None
+    upper = datetime.date(*upper_bound) if upper_bound is not None else None
+
+    return DateRange(lower, upper)

@@ -17,9 +17,9 @@ from django.utils.functional import cached_property
 from psycopg2.extras import DateRange
 from rest_framework.reverse import reverse
 
-from archives import managers
+import archives.managers
 from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
-from series import error_codes, constants
+from series import constants, error_codes
 
 models.CharField.register_lookup(Length)
 
@@ -28,7 +28,7 @@ class GroupingModel(models.Model):
     """
     Intermediate model for Many-to-Many recursive relationship between series.
     """
-    objects = managers.GroupingManager.from_queryset(managers.GroupingQueryset)()
+    objects = archives.managers.GroupingManager.from_queryset(archives.managers.GroupingQueryset)()
 
     from_series = models.ForeignKey(
         'TvSeriesModel',
@@ -77,7 +77,8 @@ class GroupingModel(models.Model):
         """
         Make unique hash by combining 3 fields 'from_series_id', 'to_series_id' and 'reason_for_interrelationship'.
         """
-        return hash(f'{self.from_series_id}{self.from_series_id}{self.reason_for_interrelationship}')
+        # return hash(f'{self.from_series_id}{self.from_series_id}{self.reason_for_interrelationship}')
+        return hash((self.from_series_id, self.from_series_id, self.reason_for_interrelationship))
 
     def __eq__(self, other):
         """
@@ -98,7 +99,7 @@ class TvSeriesModel(models.Model):
         super().__init__(*args, **kwargs)
         self._original_model_state = model_to_dict(self, exclude='interrelationship')
 
-    objects = managers.TvSeriesManager.from_queryset(managers.TvSeriesQueryset)()
+    objects = archives.managers.TvSeriesManager.from_queryset(archives.managers.TvSeriesQueryset)()
 
     #  Reverse manager for generic FK relation
     #  https://docs.djangoproject.com/en/3.0/ref/contrib/contenttypes/#reverse-generic-relations
@@ -133,10 +134,6 @@ class TvSeriesModel(models.Model):
             custom_validators.ValidateUrlDomain('www.imdb.com'),
             custom_validators.ValidateIfUrlIsAlive(3, ),
         ])
-    is_finished = models.BooleanField(
-        default=False,
-        verbose_name='Whether series finished or not'
-    )
     rating = models.PositiveSmallIntegerField(
         null=True,
         blank=True,
@@ -179,17 +176,20 @@ class TvSeriesModel(models.Model):
             #  0045_defend_future_constraint
             models.CheckConstraint(
                 name='defend_future_check',
-                check=models.Q(
-                    translation_years__fully_lt=DateRange(timezone.datetime(2030, 1, 1).date(), None, '()')
-                ))]
+                check=~models.Q(translation_years__contained_by=
+                                DateRange(timezone.datetime(2030, 1, 1).date(), None, '()')
+                                ))]
 
     def __str__(self):
         return f'{self.pk} / {self.name}'
 
     def save(self, fc=True, *args, **kwargs):
-        # Exclude 'url_to_imdb' from field validation if field hasn't changed or model instance is not just created.
+        # Exclude 'url_to_imdb' from field validation if field hasn't changed or
+        # model instance is not just created.
         if fc:
-            exclude = ('url_to_imdb',) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) else ()
+            exclude = \
+                ('imdb_url',) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) \
+                    else ()
             self.full_clean(exclude=exclude, validate_unique=True)
 
         super().save(*args, **kwargs)
@@ -208,13 +208,26 @@ class TvSeriesModel(models.Model):
         changed_fields = dict(current_model_state.items() - self._original_model_state.items()).keys()
         return changed_fields
 
+    @property
+    def is_finished(self) -> bool:
+        """
+        Returns whether current series is finished or not.
+        """
+        now = timezone.now().date
+        infinity = timezone.datetime.max.date()
+
+        if now < (self.translation_years.upper or infinity):
+            return False
+        else:
+            return True
+
 
 class SeasonModel(models.Model):
     """
     Model represents one singular season of a series.
     """
 
-    objects = managers.SeasonManager.from_queryset(managers.SeasonQueryset)()
+    objects = archives.managers.SeasonManager.from_queryset(archives.managers.SeasonQueryset)()
 
     non_zero_validator = validators.MinValueValidator(
         limit_value=1,
@@ -362,7 +375,7 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     Model represents an image. Can be attached to any model in the project.
     Based on a Generic FK.
     """
-    objects = managers.ImageManager.from_queryset(managers.ImageQueryset)()
+    objects = archives.managers.ImageManager.from_queryset(archives.managers.ImageQueryset)()
 
     image = models.ImageField(
         upload_to=file_uploads.save_image_path,
@@ -374,6 +387,7 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         null=True,
         blank=True,
         verbose_name='Image hash.',
+        unique=True,
     )
     content_type = models.ForeignKey(
         ContentType,

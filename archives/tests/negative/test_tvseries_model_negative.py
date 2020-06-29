@@ -95,4 +95,39 @@ class TvSeriesModelNegativeTest(APITestCase):
         with self.assertRaises(ValidationError):
             self.series_1.save()
 
+    def test_no_medieval_cinema_check(self):
+        """
+        Check that 'no_medieval_cinema_check' would not allow to save in DB date ranges with:
+        a) open lower bound.
+        b) lower bound with date earlier then first Lumiere brothers movie.
+        """
+        expected_error_message = 'no_medieval_cinema_check'
+        translation_years_1 = DateRange(None, datetime.date(2015, 1, 1))
+        translation_years_2 = DateRange(datetime.date(1815, 1, 1), datetime.date(2015, 1, 1))
+
+        with transaction.atomic():
+            with self.assertRaisesMessage(IntegrityError, expected_error_message):
+                self.series_1.translation_years = translation_years_1
+                self.series_1.save(fc=False)
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.series_1.translation_years = translation_years_2
+            self.series_1.save(fc=False)
+
+    def test_defend_future_check(self):
+        """
+        Check that 'defend_future_check' would not allow to save in DB date ranges with
+        upper bound data further in future than 1 of January of the year after following year.
+        """
+        expected_error_message = 'defend_future_check'
+        current_year = datetime.date.today().year
+        allowed_upper_bound = datetime.date(current_year + 2, 1, 1)
+        translation_years = DateRange(
+            datetime.date(2015, 1, 1),
+            allowed_upper_bound + datetime.timedelta(days=365)
+        )
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.series_1.translation_years = translation_years
+            self.series_1.save(fc=False)
 

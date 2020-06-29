@@ -12,6 +12,7 @@ class Migration(migrations.Migration):
     db_table_name = archives.models.TvSeriesModel._meta.db_table
     model_name = archives.models.TvSeriesModel._meta.model_name
     constraint_name = 'defend_future_check'
+    field_name = 'translation_years'
 
     dependencies = [
         ('archives', '0044_auto_20200627_2050'),
@@ -20,20 +21,22 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunSQL(sql=
                           f"""
+                          alter table {db_table_name}
+                            drop  CONSTRAINT if exists {constraint_name}
+                            ;
                                   alter table {db_table_name}
-                                    drop CONSTRAINT if exists {constraint_name}
-                                    ;
-                                    alter table {db_table_name}
-                                      add CONSTRAINT  {constraint_name}
-                                        check (
-                                          translation_years <<
-                                            daterange(
-                                              (date_trunc('year', current_date) + interval '2 years')::date,
-                                              NULL::date,
-                                              '()'::text
-                                            )
-                                        )
-                                    ;
+                          add CONSTRAINT {constraint_name}
+                            check (not {field_name} &&
+                                daterange(
+                                  (date_trunc('year', current_date) + interval '2 years')::date,
+                                  NULL::date,
+                                  '()'::text
+                                ) or {field_name} @>
+                                daterange(
+                                  (date_trunc('year', current_date) + interval '2 years')::date,
+                                  NULL::date,
+                                  '()'::text))
+                        ;
                             """
                           ,
                           reverse_sql=
@@ -44,11 +47,12 @@ class Migration(migrations.Migration):
                             """,
                           state_operations=[
                               migrations.AddConstraint(
-                                  model_name=f'{model_name}',
+                                  model_name=model_name,
                                   constraint=models.CheckConstraint(
                                       check=models.Q(
-                                          translation_years__fully_lt=psycopg2.extras.DateRange(
-                                              datetime.date(2030, 1, 1),
-                                              None, '()')),
+                                          _negated=True,
+                                          translation_years__contained_by=
+                                          psycopg2.extras.DateRange(datetime.date(2030, 1, 1), None, '()')),
                                       name=f'{constraint_name}'),
+
                               ), ])]
