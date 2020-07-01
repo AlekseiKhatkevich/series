@@ -6,7 +6,6 @@
         "entry_author": 2,
         "name": "test",
         "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164",
-        "is_finished": true,
         "rating": 2,
         "translation_years": "{\"bounds\": \"[)\", \"lower\": \"2012-01-01\", \"upper\": \"2019-01-01\"}"
     }
@@ -18,7 +17,6 @@
         "entry_author": 1,
         "name": "Akbar",
         "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164944",
-        "is_finished": false,
         "rating": 5,
         "translation_years": "{\"bounds\": \"[)\", \"lower\": \"2012-01-01\", \"upper\": \"2019-01-01\"}"
     }
@@ -30,7 +28,6 @@
         "entry_author": 2,
         "name": "Series1",
         "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164933",
-        "is_finished": false,
         "rating": 10,
         "translation_years": "{\"bounds\": \"[)\", \"lower\": \"2012-01-01\", \"upper\": \"2019-01-01\"}"
     }
@@ -42,7 +39,6 @@
         "entry_author": 2,
         "name": "Series2",
         "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls05318164911",
-        "is_finished": false,
         "rating": 6,
         "translation_years": "{\"bounds\": \"[)\", \"lower\": \"2012-01-01\", \"upper\": \"2019-01-01\"}"
     }
@@ -54,7 +50,6 @@
         "entry_author": 2,
         "name": "Friends_super",
         "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls0531816490",
-        "is_finished": false,
         "rating": 7,
         "translation_years": "{\"bounds\": \"[)\", \"lower\": \"2012-01-01\", \"upper\": \"2019-01-01\"}"
     }
@@ -66,7 +61,6 @@
         "entry_author": 1,
         "name": "Fargo",
         "imdb_url": "https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649",
-        "is_finished": false,
         "rating": 4,
         "translation_years": "{\"bounds\": \"[)\", \"lower\": \"2012-01-01\", \"upper\": \"2019-01-01\"}"
     }

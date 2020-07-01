@@ -1,11 +1,12 @@
+from drf_extra_fields.fields import DateRangeField
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
-from archives.tests.data import initial_data
 import archives.models
-from users.helpers import create_test_users
+from archives.tests.data import initial_data
 from series.helpers import custom_functions
+from users.helpers import create_test_users
 
 
 class TvSeriesListCreatePositiveTest(APITestCase):
@@ -28,8 +29,9 @@ class TvSeriesListCreatePositiveTest(APITestCase):
         self.overall_number_of_episodes = sum((season.number_of_episodes for season in self.seasons))
 
         self.data = {
+            'translation_years': {'lower': '2020-01-01'},
             'name': 'test-test',
-            'imdb_url': 'https://www.imdb.com/video/vi2805579289?ref_=hp_hp_e_2&listId=ls025720609',
+            'imdb_url': 'https://www.imdb.com/',
             'interrelationship': [
                 {
                     'name': self.series_1.name,
@@ -80,6 +82,10 @@ class TvSeriesListCreatePositiveTest(APITestCase):
         self.assertEqual(
             len(self.seasons),
             sum((season['number_of_seasons'] for season in response_data.values()))
+        )
+        self.assertEqual(
+            DateRangeField().to_representation(self.series_1.translation_years),
+            response_data[self.series_1.pk]['translation_years']
         )
 
     def test_nullif(self):

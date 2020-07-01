@@ -1,8 +1,9 @@
 from rest_framework.test import APITestCase
 
 from django.db.models.functions import Floor, Ceil
-
+import datetime
 import archives.models
+from psycopg2.extras import DateRange
 
 
 class ManagersPositiveTest(APITestCase):
@@ -35,18 +36,20 @@ class ManagersPositiveTest(APITestCase):
         """
         Check that only series that have not finished yet are present in queryset.
         """
-        full_queryset = archives.models.TvSeriesModel.objects.all()
-        running_series = full_queryset.running_series()
-        difference = full_queryset.difference(running_series)
+        running_series = archives.models.TvSeriesModel.objects.running_series()
+
+        self.assertFalse(
+            any([series.is_finished for series in running_series])
+        )
+
+    def test_finished_series(self):
+        """
+        Check that only series that have been finished already are present in queryset.
+        """
+        finished_series = archives.models.TvSeriesModel.objects.finished_series()
 
         self.assertTrue(
-            difference
-        )
-        self.assertTrue(
-            difference.first().is_finished
-        )
-        self.assertFalse(
-            any(running_series.values_list('is_finished', flat=True))
+            all([series.is_finished for series in finished_series])
         )
 
     def test_create_relation_pair(self):

@@ -1,5 +1,6 @@
 import datetime
 
+from psycopg2.extras import DateRange
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
@@ -21,7 +22,7 @@ class TvSeriesModelPositiveTest(APITestCase):
         cls.series_initial_data = {'entry_author': cls.user_1,
                                    'name': 'Fargo',
                                    'imdb_url': 'https://www.imdb.com/title/tt12162902/?ref_=hm_hp_cap_pri_5',
-                                   'translation_years': (
+                                   'translation_years': DateRange(
                                        datetime.date(year=2015, month=1, day=1),
                                        datetime.date(year=2019, month=1, day=1),
                                    )}
@@ -121,10 +122,10 @@ class TvSeriesModelPositiveTest(APITestCase):
         Check whether 'changed_fields' property returns names of the changed fields.
         """
         self.series_1.name = 'updated_name'
-        self.series_1.is_finished = True
+        self.series_1.rating = 5
 
         self.assertCountEqual(
-            ('name', 'is_finished', 'id'),
+            ('name', 'rating', 'id'),
             self.series_1.changed_fields
         )
 
@@ -138,4 +139,41 @@ class TvSeriesModelPositiveTest(APITestCase):
             self.series_1.get_absolute_url,
             expected_result,
         )
+
+    def test_is_finished_property(self):
+        """
+        Check that 'is_finished' works correctly and returns True is series is finished an other way
+        around.
+        """
+        now = datetime.date.today()
+
+        self.assertTrue(
+            self.series_1.is_finished
+        )
+
+        self.series_1.translation_years = DateRange(now, None)
+
+        self.assertFalse(
+            self.series_1.is_finished
+        )
+
+        self.series_1.translation_years = DateRange(now, now + datetime.timedelta(days=365))
+
+        self.assertFalse(
+            self.series_1.is_finished
+        )
+
+    def test_is_empty_property(self):
+        """
+        Check 'is_empty' property correct work.
+        """
+        initial_data.create_seasons(series=(self.series_2,))
+
+        self.assertTrue(
+            self.series_1.is_empty
+        )
+        self.assertFalse(
+            self.series_2.is_empty
+        )
+
 

@@ -145,13 +145,14 @@ LOWER_GT_UPPER = exc_msg(
     'Upper bound should be gte. than lower one.',
     'lower_gt_upper',
 )
-WAY_TO_OLD = exc_msg(
-    'This date is older then first Lumiere brothers film. Can not be true.',
-    'way_to_old',
+INCORRECT_LOWER_BOUND = exc_msg(
+    f'Lower bound should be greater than Lumiere brothers film release date and lower then '
+    f'{datetime.datetime.now().year + 1}, December 31, inclusive.',
+    'incorrect_lower_bound',
 )
-NO_FUTURE = exc_msg(
-    f'Maximal future allowed year is {datetime.datetime.now().year + 1}',
-    'no_future',
+INCORRECT_UPPER_BOUND = exc_msg(
+    f'Maximal future allowed year is {datetime.datetime.now().year + 1}, December 31, inclusive.',
+    'incorrect_upper_bound',
 )
 NOT_DATETIME = exc_msg(
     "Value should be datetime or date type or it's subclass or None.",

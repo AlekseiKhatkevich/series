@@ -4,7 +4,7 @@ from django.db import transaction
 from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
 from rest_framework import permissions, serializers
-
+from drf_extra_fields.fields import DateRangeField
 import archives.models
 from series import constants
 from series.helpers import serializer_mixins
@@ -71,6 +71,8 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
         many=True,
         read_only=True,
     )
+    translation_years = DateRangeField(
+    )
 
     class Meta:
         model = archives.models.TvSeriesModel
@@ -81,8 +83,8 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
             'name',
             'imdb_url',
             'is_finished',
+            'translation_years',
             'rating',
-            'entry_author',
             'request_user',
             'interrelationship',
             'number_of_seasons',

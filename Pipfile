@@ -27,7 +27,8 @@ future = "*"
 imagehash = "*"
 btrees = "*"
 django-guardian = "*"
-
+django-extra-fields = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"

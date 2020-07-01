@@ -2,14 +2,12 @@ import operator
 
 from guardian.shortcuts import assign_perm, get_users_with_perms
 from rest_framework import status
-from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
+import archives.models
 import series.constants
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
-
-import archives.models
 
 
 class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
@@ -131,9 +129,9 @@ class TvSeriesDetailUpdateDeletePositiveTest(APITestCase):
         Check that model instance can be successfully updated.
         """
         data = {
+            'translation_years': {'lower': '2012-01-01'},
             'name': 'test_updated',
             'imdb_url': 'https://www.imdb.com/name/nm3929195/',
-            'is_finished': True,
             'rating': 7,
             'interrelationship': [
                 {

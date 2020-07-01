@@ -248,24 +248,30 @@ class DateRangeValidator:
 
         # Check whether lower or upper bound is open.
         if not self.lower_inf_allowed and value.lower_inf:
-            errors.append(ValidationError(*error_codes.LOWER_BOUND))
+            errors.append(
+                ValidationError(*error_codes.LOWER_BOUND)
+            )
         if not self.upper_inf_allowed and value.upper_inf:
-            errors.append(ValidationError(*error_codes.UPPER_BOUND))
-
+            errors.append(
+                ValidationError(*error_codes.UPPER_BOUND)
+            )
         if errors:
             raise ValidationError(errors)
 
         # Check that upper bound gte than lower one.
         if None not in (self.lower, self.upper) and self.lower > self.upper:
-            errors.append(ValidationError(*error_codes.LOWER_GT_UPPER))
-
+            errors.append(
+                ValidationError(*error_codes.LOWER_GT_UPPER)
+            )
         #  Check that dates range is reasonable historically.
-        if self.lower is not None and self.lower < allowed_lower_bound:
-            errors.append(ValidationError(*error_codes.WAY_TO_OLD))
-
+        if self.lower is not None and not (allowed_lower_bound < self.lower < allowed_upper_bound):
+            errors.append(
+                ValidationError(*error_codes.INCORRECT_LOWER_BOUND)
+            )
         if self.upper is not None and self.upper > allowed_upper_bound:
-            errors.append(ValidationError(*error_codes.NO_FUTURE))
-
+            errors.append(
+                ValidationError(*error_codes.INCORRECT_UPPER_BOUND)
+            )
         if errors:
             raise ValidationError(errors)
 

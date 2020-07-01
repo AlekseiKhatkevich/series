@@ -105,14 +105,14 @@ class TvSeriesModel(models.Model):
     #  https://docs.djangoproject.com/en/3.0/ref/contrib/contenttypes/#reverse-generic-relations
     images = GenericRelation(
         'ImageModel',
-        related_query_name='series'
+        related_query_name='series',
     )
 
     entry_author = models.ForeignKey(
         get_user_model(),
         on_delete=models.PROTECT,
         related_name='series',
-        verbose_name='Author of the series entry'
+        verbose_name='Author of the series entry',
     )
     interrelationship = models.ManyToManyField(
         'self',
@@ -124,7 +124,7 @@ class TvSeriesModel(models.Model):
     name = models.CharField(
         max_length=50,
         verbose_name='Name of the series',
-        unique=True
+        unique=True,
     )
     imdb_url = models.URLField(
         verbose_name='IMDB page for the series',
@@ -145,11 +145,11 @@ class TvSeriesModel(models.Model):
                 message=error_codes.ZERO_IS_NOT_VALID, ),
             validators.MaxValueValidator(
                 limit_value=10,
-                message='Maximal value for this field is 10'
+                message='Maximal value for this field is 10',
             )])
     translation_years = psgr_fields.DateRangeField(
         verbose_name='Series years of translation.',
-        validators=[custom_validators.DateRangeValidator(upper_inf_allowed=True)]
+        validators=[custom_validators.DateRangeValidator(upper_inf_allowed=True)],
     )
 
     class Meta:
@@ -187,9 +187,11 @@ class TvSeriesModel(models.Model):
         # Exclude 'url_to_imdb' from field validation if field hasn't changed or
         # model instance is not just created.
         if fc:
-            exclude = \
-                ('imdb_url',) if self.pk is not None and ('url_to_imdb' not in self.changed_fields) \
-                    else ()
+            if self.pk is not None and ('url_to_imdb' not in self.changed_fields):
+                exclude = ('imdb_url',)
+            else:
+                exclude = ()
+
             self.full_clean(exclude=exclude, validate_unique=True)
 
         super().save(*args, **kwargs)
@@ -213,13 +215,18 @@ class TvSeriesModel(models.Model):
         """
         Returns whether current series is finished or not.
         """
-        now = timezone.now().date
+        now = timezone.now().date()
         infinity = timezone.datetime.max.date()
+        upper_bound = self.translation_years.upper
 
-        if now < (self.translation_years.upper or infinity):
-            return False
-        else:
-            return True
+        return now > (upper_bound or infinity)
+
+    @property
+    def is_empty(self):
+        """
+        Returns True if series does not have any season associated with it.
+        """
+        return not self.seasons.exists()
 
 
 class SeasonModel(models.Model):

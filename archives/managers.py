@@ -1,8 +1,10 @@
+import datetime
 from typing import List
 
 from django.db import models
 from django.db.models import FloatField, Max, Min
 from django.db.models.functions import Ceil, Floor
+from psycopg2.extras import DateRange
 
 
 class TvSeriesQueryset(models.QuerySet):
@@ -29,7 +31,13 @@ class TvSeriesQueryset(models.QuerySet):
         """
         Returns only not finished series.
         """
-        return self.exclude(is_finished=True)
+        return self.exclude(translation_years__fully_lt=DateRange(datetime.date.today(), None))
+
+    def finished_series(self) -> models.QuerySet:
+        """
+        Returns only finished series.
+        """
+        return self.filter(translation_years__fully_lt=DateRange(datetime.date.today(), None))
 
 
 class TvSeriesManager(models.Manager):

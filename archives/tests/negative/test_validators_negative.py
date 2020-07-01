@@ -144,14 +144,21 @@ class validatorsNegativeTest(APISimpleTestCase):
     def test_DateRangeValidator_lower_under_allowed_lower_bound(self):
         """
         Check that if 'DateRangeValidator' receives daterange where lower > date of the first
-        Lumiere brothers movie, than validation error would be raised.
+        Lumiere brothers movie, than validation error would be raised. Same if lower is above
+        allowed upper range.
         """
         validator = validators.DateRangeValidator()
-        expected_error_message = error_codes.WAY_TO_OLD.message
+        expected_error_message = error_codes.INCORRECT_LOWER_BOUND.message
         range_with_caveman_cinema = DateRange(datetime.date(1820, 1, 1), datetime.date(2019, 1, 1))
+        range_with_lower_gt_allowed_upper = DateRange(
+            datetime.date.today() + datetime.timedelta(days=1000),
+            datetime.date.today() + datetime.timedelta(days=1001))
 
         with self.assertRaisesMessage(ValidationError, expected_error_message):
             validator(range_with_caveman_cinema)
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            validator(range_with_lower_gt_allowed_upper)
 
     def test_DateRangeValidator_upper_is_above_allowed_upper_bound(self):
         """
@@ -159,7 +166,7 @@ class validatorsNegativeTest(APISimpleTestCase):
         next year after following year, than validation error would be raised.
         """
         validator = validators.DateRangeValidator()
-        expected_error_message = error_codes.NO_FUTURE.message
+        expected_error_message = error_codes.INCORRECT_UPPER_BOUND.message
         range_with_future = DateRange(datetime.date(2019, 1, 1), datetime.date(3000, 1, 1))
 
         with self.assertRaisesMessage(ValidationError, expected_error_message):

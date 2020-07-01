@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'corsheaders',
     'guardian',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -182,6 +183,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
         'series.permissions.SoftDeletedUsersDenied',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     ],
     'EXCEPTION_HANDLER': 'series.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,

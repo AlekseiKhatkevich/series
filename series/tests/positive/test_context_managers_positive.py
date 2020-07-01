@@ -18,15 +18,15 @@ class OverrideModelAttributesContextManagerPositiveTest(APITestCase):
         """
         with OverrideModelAttributes(
             model=models.TvSeriesModel,
-            field='is_finished',
-            default='test',
+            field='name',
+            max_length=5,
         ):
             self.assertEqual(
-                models.TvSeriesModel._meta.get_field('is_finished').default,
-                'test',
+                models.TvSeriesModel._meta.get_field('name').max_length,
+                5,
             )
         self.assertEqual(
-            models.TvSeriesModel._meta.get_field('is_finished').default,
-            False,
+            models.TvSeriesModel._meta.get_field('name').max_length,
+            50,
         )
 

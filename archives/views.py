@@ -1,7 +1,6 @@
 from typing import Sequence
 
 import guardian.models
-from django.utils.functional import cached_property
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
@@ -11,6 +10,7 @@ from rest_framework import exceptions, generics, mixins, parsers, permissions, s
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+import archives.filters
 import archives.models
 import archives.permissions
 import archives.serializers
@@ -49,7 +49,7 @@ class TvSeriesBase(generics.GenericAPIView):
             annotate(**annotations).\
             select_related('entry_author', ).\
             prefetch_related('images', pr_groups, ).\
-            defer(*user_model_deferred_fields).order_by('pk')
+            defer(*user_model_deferred_fields)
         return super().get_queryset()
 
     def get_object(self):
@@ -81,6 +81,14 @@ class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
     pagination_class = pagination.FasterLimitOffsetPagination
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
     serializer_class = archives.serializers.TvSeriesSerializer
+    filterset_class = archives.filters.TvSeriesListCreateViewFilter
+    ordering = ('pk', )
+    ordering_fields = (
+        'name',
+        'rating',
+        'translation_years',
+    )
+    search_fields = ('name', )
 
 
 class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
