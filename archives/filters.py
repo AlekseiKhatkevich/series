@@ -1,9 +1,11 @@
 import datetime
 
-from django_filters import rest_framework as rest_framework_filters, widgets, fields
+from django_filters import fields, rest_framework as rest_framework_filters, widgets
 from psycopg2.extras import DateRange
 
 import archives.models
+
+queryset_instance = archives.models.models.QuerySet
 
 
 class DateExactRangeWidget(widgets.DateRangeWidget):
@@ -80,7 +82,7 @@ class TvSeriesListCreateViewFilter(rest_framework_filters.FilterSet):
         }
 
     @staticmethod
-    def finished(queryset, field_name, value):
+    def finished(queryset: queryset_instance, field_name: str, value: DateRange) -> queryset_instance:
         """
         Returns finished series if value=True and running series if value=False.
         """

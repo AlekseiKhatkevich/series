@@ -18,6 +18,7 @@ from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 
 import users.models
+import users.filters
 from series import error_codes
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
@@ -27,6 +28,21 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
     """
     Custom viewset based on Djoser viewset.
     """
+    filterset_class = users.filters.UsersListFilter
+    ordering = ('last_name',)
+    ordering_fields = (
+        'email',
+        'last_login',
+        'date_joined',
+        'last_name',
+        'first_name',
+        'user_country',
+    )
+    search_fields = (
+        '^email', '=email',
+        '^first_name', '=first_name',
+        '^last_name', '=last_name',
+    )
 
     @cached_property
     def get_child_extra_actions(self):

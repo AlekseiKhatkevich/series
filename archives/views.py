@@ -87,6 +87,7 @@ class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
         'name',
         'rating',
         'translation_years',
+        'entry_author__last_name',
     )
     search_fields = ('name', )
 
