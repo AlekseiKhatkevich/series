@@ -9,6 +9,7 @@ import urllib.request
 from types import MappingProxyType
 from typing import Optional
 
+import cerberus
 import imagehash
 import rest_framework.status as status_codes
 from django.conf import settings
@@ -27,6 +28,38 @@ test_dict = {'a': 1587902034.039742, 1: 1587902034.039742, 2: 1587902034.039742,
              99: 1587902034.039742, -8: 1587902034.039742, 2.2: 1587902034.039742,
              'sfsdfdf': 1587902034.039742, '6': 1587902034.039742, '88': 1587902034.039742,
              '5.6': 1587902034.039742, '-67': 1587902034.039742}
+
+
+episode_date_schema = {
+    'episode_number': {
+        'type': 'integer',
+        'min': 1,
+        'max': 30,
+    },
+    'release_date': {
+        'type': 'date',
+    },
+}
+
+
+@deconstructible
+class ValidateDict:
+    """
+    Validates dictionaries according the schema.
+    """
+    def __init__(self, schema: dict) -> None:
+        super().__init__()
+        self.validator = cerberus.Validator(schema, require_all=True)
+
+    def __call__(self, value: dict, *args, **kwargs) -> None:
+        _value = tuple({'episode_number': k, 'release_date': v} for k, v in value.items())
+
+        for element in _value:
+            is_valid = self.validator.validate(element)
+            if not is_valid:
+                raise ValidationError(
+                    f'value -- {element}, error -- {self.validator.errors}'
+                )
 
 
 def skip_if_none_none_zero_positive_validator(value: Optional[int]) -> None:
@@ -161,6 +194,7 @@ class IsImageValidator:
     Validates whether image file is actually an image file and not just a random file with image-like
     file extension.
     """
+
     @staticmethod
     @project_decorators.allow_disable_in_tests
     def raise_exception(is_image_file: bool) -> None:
@@ -209,6 +243,7 @@ class DateRangeValidatorDescriptor:
     """
     Descriptor class for 'DateRangeValidator'. Converts datetime to date.
     """
+
     def __init__(self, storage_name: str):
         self.storage_name = storage_name
 
@@ -274,6 +309,3 @@ class DateRangeValidator:
             )
         if errors:
             raise ValidationError(errors)
-
-
-

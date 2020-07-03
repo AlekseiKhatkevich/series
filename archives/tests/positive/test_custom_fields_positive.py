@@ -3,7 +3,7 @@ import unittest
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from rest_framework.test import APISimpleTestCase
-
+import datetime
 from archives.helpers import custom_fields
 
 import imagehash
@@ -89,4 +89,25 @@ class CustomFieldsPositiveTest(APISimpleTestCase):
         self.assertEqual(
             original_image_hash,
             output_image_hash
+        )
+
+    def test_CustomHStoreField(self):
+        """
+        Check that 'CustomHStoreField' converts all string numeric keys to integers on deserialization
+        and iso-dates to datetime objects.
+        """
+        field_class = custom_fields.CustomHStoreField
+        stored_dict = {'1': '2020-07-02', '2': '2020-07-02'}
+
+        result = field_class().from_db_value(stored_dict, expression=None, connection=None)
+
+        self.assertTrue(
+            all(isinstance(key, int) for key in result.keys())
+        )
+        self.assertTrue(
+            all(isinstance(value, datetime.date) for value in result.values())
+        )
+        self.assertEqual(
+            len(stored_dict),
+            len(result)
         )

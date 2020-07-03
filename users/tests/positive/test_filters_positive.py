@@ -46,7 +46,7 @@ class UsersFiltersPositiveTest(APITestCase):
         self.client.force_authenticate(user=self.superuser)
 
         for dictionary, field in zip(
-                (self.query_dict, self.query_dict_2),
+                (self.query_dict, self.query_dict_2,),
                 ('slave_accounts_ids', 'master',)
         ):
             with self.subTest(dictionary=dictionary, field=field):

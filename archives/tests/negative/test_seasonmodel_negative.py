@@ -1,11 +1,10 @@
+from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.db.utils import IntegrityError
 from rest_framework.test import APITestCase
 
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
-
-from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
-from django.db import transaction
 
 
 class SeasonModelNegativeTest(APITestCase):
@@ -54,11 +53,11 @@ class SeasonModelNegativeTest(APITestCase):
         with self.assertRaises(ValidationError):
             self.season_1_1.full_clean()
 
-    def test_episodes_timestamp_validation(self):
+    def test_episodes_date_validation(self):
         """
-        Check whether or not it is possible to save incorrect timestamp via field 'episodes'.
+        Check whether or not it is possible to save incorrect date via field 'episodes'.
         """
-        self.season_1_1.episodes = {"1": 'not-a-timestamp'}
+        self.season_1_1.episodes = {1: 'not-a-date'}
 
         with self.assertRaises(ValidationError):
             self.season_1_1.full_clean()
@@ -81,7 +80,7 @@ class SeasonModelNegativeTest(APITestCase):
                 with transaction.atomic():
                     with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
                         setattr(self.season_1_1, field, 0)
-                        self.season_1_1.save()
+                        self.season_1_1.save(fc=False)
 
                 self.season_1_1.refresh_from_db()
 
@@ -100,7 +99,7 @@ class SeasonModelNegativeTest(APITestCase):
 
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
-                self.season_1_1.save()
+                self.season_1_1.save(fc=False)
 
         self.season_1_1.refresh_from_db()
 
@@ -118,7 +117,7 @@ class SeasonModelNegativeTest(APITestCase):
 
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
-                self.season_1_1.save()
+                self.season_1_1.save(fc=False)
 
         self.season_1_1.refresh_from_db()
 

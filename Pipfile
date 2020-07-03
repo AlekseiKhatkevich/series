@@ -29,6 +29,7 @@ btrees = "*"
 django-guardian = "*"
 django-extra-fields = "*"
 django-filter = "*"
+cerberus = "*"
 
 [requires]
 python_version = "3.8"

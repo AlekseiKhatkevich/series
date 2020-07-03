@@ -262,14 +262,14 @@ class SeasonModel(models.Model):
         verbose_name='Number of episodes in the current season',
         validators=[non_zero_validator, ],
     )
-    episodes = psgr_fields.JSONField(
+    episodes = custom_fields.CustomHStoreField(
         null=True,
         blank=True,
         verbose_name='Episode number and issue date',
         validators=[
-            custom_validators.validate_dict_key_is_digit,
-            custom_validators.validate_timestamp,
-        ], )
+            custom_validators.ValidateDict(schema=custom_validators.episode_date_schema),
+        ],
+    )
 
     class Meta:
         order_with_respect_to = 'series'
@@ -336,6 +336,11 @@ class SeasonModel(models.Model):
                 )
         if errors:
             raise exceptions.ValidationError(errors)
+
+    def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
+        if fc:
+            self.full_clean()
+        super().save(force_insert, force_update, using, update_fields)
 
     @property
     def is_fully_watched(self) -> bool:

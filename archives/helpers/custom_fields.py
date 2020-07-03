@@ -1,6 +1,7 @@
 from collections.abc import Iterable
+import datetime
+from django.core import exceptions
 import imagehash
-from archives.helpers import validators as custom_validators
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 
@@ -87,5 +88,27 @@ class ImageHashField(models.CharField):
         Converts hash array to string.
         """
         return str(value) if value is not None else value
+
+
+class CustomHStoreField(postgres_fields.HStoreField):
+    """
+    HStoreField that converts integer keys stored as string to actual integers on deserialization.
+    """
+    def from_db_value(self, value, expression, connection):
+        if value is None:
+            return None
+
+        return {int(k): datetime.date.fromisoformat(v) if v is not None else v for k, v in value.items()}
+
+    def validate(self, value, model_instance):
+        for key, val in value.items():
+            if not isinstance(val, (str, datetime.date)) and val is not None:
+                raise exceptions.ValidationError(
+                    self.error_messages['not_a_string'],
+                    code='not_a_string',
+                    params={'key': key},
+                )
+
+
 
 

@@ -16,6 +16,7 @@ class validatorsPositiveTest(APISimpleTestCase):
     """
     Positive test on 'archives' app custom validators.
     """
+    maxDiff = None
 
     @unittest.expectedFailure
     def test_skip_if_none_none_zero_positive_validator(self):

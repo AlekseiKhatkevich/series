@@ -55,21 +55,20 @@ class SeasonModelPositiveTest(APITestCase):
             self.season_1.full_clean()
             self.season_1.save()
 
-    def test_save_correct_JSON_in_episodes(self):
+    def test_save_correct_dict_in_episodes(self):
         """
         Check whether or not it is possible to save correct data in 'episodes'field.
         """
         data = {
-            2: timezone.now().timestamp(),
-            3: timezone.now().timestamp(),
+            2: timezone.now().date(),
+            3: timezone.now().date(),
         }
         self.season_1.episodes = data
-        self.season_1.full_clean()
         self.season_1.save()
         self.season_1.refresh_from_db()
 
-        self.assertJSONEqual(
-            json.dumps(data),
+        self.assertDictEqual(
+            data,
             self.season_1.episodes
         )
 
