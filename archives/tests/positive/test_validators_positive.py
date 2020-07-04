@@ -119,3 +119,14 @@ class validatorsPositiveTest(APISimpleTestCase):
 
         with self.assertRaises(ValidationError):
             validator(range_with_upper_inf)
+
+    @unittest.expectedFailure
+    def test_ValidateDict(self):
+        """
+        Check that 'ValidateDict' positively validates data in correct format.
+        """
+        validator = validators.ValidateDict(schema=validators.episode_date_schema)
+        correct_data = {1: datetime.date.today(), 2: datetime.date.today()}
+
+        with self.assertRaises(ValidationError):
+            validator(correct_data)

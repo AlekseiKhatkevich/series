@@ -96,7 +96,7 @@ class CustomHStoreField(postgres_fields.HStoreField):
     """
     def from_db_value(self, value, expression, connection):
         if value is None:
-            return None
+            return value
 
         return {int(k): datetime.date.fromisoformat(v) if v is not None else v for k, v in value.items()}
 

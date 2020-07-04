@@ -15,6 +15,8 @@ class validatorsNegativeTest(APISimpleTestCase):
     Negative test on 'archives' app custom validators.
     """
 
+    maxDiff = None
+
     def test_skip_if_none_none_zero_positive_validator(self):
         """
         Check that validator raises error on values < 1 but skips None.
@@ -184,3 +186,18 @@ class validatorsNegativeTest(APISimpleTestCase):
         with self.assertRaisesMessage(AssertionError, expected_error_message):
             validator(range_with_wrong_value)
 
+    def test_ValidateDict(self):
+        """
+        Check that 'ValidateDict' negatively validates data in incorrect format.
+        """
+        validator = validators.ValidateDict(schema=validators.episode_date_schema)
+        incorrect_data_1 = {1: 'a', }
+        incorrect_data_2 = {'a': datetime.date.today(), }
+        incorrect_data_3 = {0: datetime.date.today(), }
+        incorrect_data_4 = {999: datetime.date.today(), }
+        incorrect_data = (incorrect_data_1, incorrect_data_2, incorrect_data_3, incorrect_data_4)
+
+        for data in incorrect_data:
+            with self.subTest(data=data):
+                with self.assertRaises(ValidationError):
+                    validator(data)

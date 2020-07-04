@@ -6,3 +6,4 @@ class ArchivesConfig(AppConfig):
 
     def ready(self):
         import archives.tasks
+

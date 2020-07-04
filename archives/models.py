@@ -1,8 +1,7 @@
-import heapq
 import os
-from types import MappingProxyType
 from typing import KeysView
 
+import more_itertools
 from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
@@ -266,9 +265,10 @@ class SeasonModel(models.Model):
         null=True,
         blank=True,
         verbose_name='Episode number and issue date',
-        validators=[
-            custom_validators.ValidateDict(schema=custom_validators.episode_date_schema),
-        ],
+    )
+    translation_years = psgr_fields.DateRangeField(
+        verbose_name='Season years of translation.',
+        validators=[custom_validators.DateRangeValidator()],
     )
 
     class Meta:
@@ -291,11 +291,16 @@ class SeasonModel(models.Model):
                 name='mutual_watched_episode_and_number_of_episodes_check',
                 check=(models.Q(number_of_episodes__gte=models.F('last_watched_episode')))
             ),
-            #  season_number >= 1
+            #  Season_number >= 1
             models.CheckConstraint(
                 name='season_number_gte_1_check',
                 check=models.Q(season_number__gte=1),
-            )
+            ),
+            # Translation years should be within translation years of series.
+            # models.CheckConstraint(
+            #     name='translation_time_within_season_check',
+            #     check=models.Q(translation_years__contained_by=models.F('series__translation_years')),
+            # )
         ]
 
     def __str__(self):
@@ -307,39 +312,38 @@ class SeasonModel(models.Model):
         raise NotImplementedError
 
     def clean(self):
-        errors = {}
 
+        errors = []
         #  Check if last_watched_episode number is bigger then number of episodes in season.
         if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
-            errors.update(
-                {'last_watched_episode': exceptions.ValidationError(
-                    f'Last watched episode number {self.last_watched_episode}'
-                    f' is greater then number of episodes {self.number_of_episodes}'
-                    f' in the whole season!!!', code='mutual_validation_out_of_range')}
-            )
-        # if we have a key in JSON data in episodes field with number greater then number of episodes in season.
-        # 1) Filter only positive digits from JSON keys()
-        if self.episodes:
-            _episodes = MappingProxyType(self.episodes or {})
-            list_of_legit_episodes_keys = custom_functions.filter_positive_int_or_digit(_episodes.keys())
-            # 2) Get key with max. value from all present keys. If it is empty we use zero as zero is always smaller
-            # then any legit number of episodes.
-            max_key = heapq.nlargest(1, list_of_legit_episodes_keys)
-            # 3) Needles to explain further...
-            if max_key and (max_key[0] > self.number_of_episodes):
-                errors.update(
-                    {'episodes': exceptions.ValidationError(
-                        f'Episode number {max_key[0]} in "episodes" '
-                        f' field is greater then number of episodes '
-                        f'{self.number_of_episodes}',
-                        code='mutual_validation_out_of_range')}
-                )
+            errors.append(exceptions.ValidationError(
+                   *error_codes.LAST_WATCHED_GTE_NUM_EPISODES
+                ))
+        if self.episodes is not None:
+            # If schema is incorrect we need to stop it right now without proceeding further.
+            custom_validators.ValidateDict(schema=custom_validators.episode_date_schema)(self.episodes)
+
+            # Maximal number of episode in episodes should be lte than number of episodes.
+            max_key = max(self.episodes.keys())
+            if max_key > self.number_of_episodes:
+                errors.append(exceptions.ValidationError(
+                        *error_codes.MAX_KEY_GT_NUM_EPISODES
+                    ))
+            # Dates in episodes should be gte each other in succession.
+            # We sort dict by keys and then check whether dates are sorted (prev. <= lat.)
+            sorted_by_episodes_numbers = dict(sorted(self.episodes.items()))
+            are_dates_sorted = more_itertools.is_sorted(sorted_by_episodes_numbers.values())
+            if not are_dates_sorted:
+                errors.append(exceptions.ValidationError(
+                    *error_codes.EPISODES_DATES_NOT_SORTED
+                ))
+
         if errors:
             raise exceptions.ValidationError(errors)
 
     def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
         if fc:
-            self.full_clean()
+            self.full_clean(validate_unique=True)
         super().save(force_insert, force_update, using, update_fields)
 
     @property
@@ -449,7 +453,7 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         #  validate successfully.
 
         if fc:
-            self.full_clean(exclude=('image_hash',))
+            self.full_clean(exclude=('image_hash',), validate_unique=True)
 
         if not self.image_hash:
             self.image_hash = self.make_image_hash()

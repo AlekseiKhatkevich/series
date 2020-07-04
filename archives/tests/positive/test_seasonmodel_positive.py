@@ -1,13 +1,13 @@
-from rest_framework.test import APITestCase
+import datetime
+import unittest
 
 from django.utils import timezone
+from psycopg2.extras import DateRange
+from rest_framework.test import APITestCase
 
-from users.helpers import create_test_users
-from archives.tests.data import initial_data
 import archives.models
-
-import unittest
-import json
+from archives.tests.data import initial_data
+from users.helpers import create_test_users
 
 
 class SeasonModelPositiveTest(APITestCase):
@@ -25,8 +25,11 @@ class SeasonModelPositiveTest(APITestCase):
         cls.new_season_data = dict(
             series=cls.series_1,
             season_number=10,
-            number_of_episodes=5
-        )
+            number_of_episodes=5,
+            translation_years=DateRange(
+                cls.series_1.translation_years.lower + datetime.timedelta(days=1),
+                cls.series_1.translation_years.upper - datetime.timedelta(days=1),
+            ))
 
     def setUp(self) -> None:
         self.seasons = initial_data.create_seasons(series=self.series)

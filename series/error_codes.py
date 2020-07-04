@@ -3,7 +3,6 @@ import datetime
 
 exc_msg = collections.namedtuple('exception_description', ['message', 'code'])
 
-
 WRONG_COUNTRY_CODE = exc_msg(
     'Wrong country code. Country code should consist of 2 uppercase letters according ISO 3166',
     'wrong_country_code',
@@ -158,4 +157,15 @@ NOT_DATETIME = exc_msg(
     "Value should be datetime or date type or it's subclass or None.",
     'no_datetime',
 )
-
+LAST_WATCHED_GTE_NUM_EPISODES = exc_msg(
+    'Last watched episode number is greater then number of episodes.',
+    'last_watched_gte_num_episodes',
+)
+MAX_KEY_GT_NUM_EPISODES = exc_msg(
+    'Episode with maximal number in "episodes field is greater then number of episodes.',
+    'max_key_gt_num_episodes',
+)
+EPISODES_DATES_NOT_SORTED = exc_msg(
+    'Episodes dates should be gte each other in succession.',
+    'episodes_dates_not_sorted',
+)

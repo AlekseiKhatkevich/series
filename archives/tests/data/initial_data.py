@@ -66,7 +66,11 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
                     'season_number': season_number + 1,
                     'number_of_episodes': random.randint(7, 10),
                     '_order': next(order),
-                }}
+                    'translation_years': DateRange(
+                        single_series.translation_years.lower + datetime.timedelta(days=1),
+                        single_series.translation_years.upper - datetime.timedelta(days=1),
+                    )
+                }, }
             seasons.update(new_season_data)
 
     seasons = archives.models.SeasonModel.objects.bulk_create(

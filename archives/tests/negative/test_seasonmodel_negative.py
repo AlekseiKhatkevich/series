@@ -2,8 +2,9 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
 from rest_framework.test import APITestCase
-
+import datetime
 from archives.tests.data import initial_data
+from series import error_codes
 from users.helpers import create_test_users
 
 
@@ -42,12 +43,8 @@ class SeasonModelNegativeTest(APITestCase):
 
     def test_episodes_key_validation(self):
         """
-        Check whether on not it is possible  to save None via 'episodes' field
-        without raising exception and in case of real value validate it.
+        Check whether random data can be cleaned.
         """
-        self.season_1_1.full_clean()
-        self.season_1_1.save()
-
         self.season_1_1.episodes = {'1': 555, 2: 666, 'XXX': 777, -8: 888}
 
         with self.assertRaises(ValidationError):
@@ -133,22 +130,34 @@ class SeasonModelNegativeTest(APITestCase):
         """
 
         self.season_1_1.last_watched_episode = 99
-        expected_exception_message = f'Last watched episode number {self.season_1_1.last_watched_episode}' \
-                                     f' is greater then number of episodes {self.season_1_1.number_of_episodes}' \
-                                     f' in the whole season!!!'
+        expected_exception_message = error_codes.LAST_WATCHED_GTE_NUM_EPISODES.message
 
         with self.assertRaisesMessage(ValidationError, expected_exception_message):
             self.season_1_1.full_clean()
 
-    def test_key_in_json_gte_num_episodes(self):
+    def test_key_in_dict_gte_num_episodes(self):
         """
         Check whether or not model 'clean' method raises exception if
-        we have a key in JSON data in episodes field with number greater
+        we have a key in dict data in episodes field with number greater
         then number of episodes in season.
         """
-        self.season_1_1.episodes = {99: 1588596739.336106}
-        expected_exception_message = f'Episode number 99 in "episodes"  field is greater then' \
-                                     f' number of episodes {self.season_1_1.number_of_episodes}'
+        self.season_1_1.episodes = {self.season_1_1.number_of_episodes + 1: datetime.date.today()}
+        expected_exception_message = error_codes.MAX_KEY_GT_NUM_EPISODES.message
 
+        with self.assertRaisesMessage(ValidationError, expected_exception_message):
+            self.season_1_1.full_clean()
+
+    def test_dates_in_episodes_not_sorted(self):
+        """
+        Check that if dates in 'episodes' field sorted according the keys number are not gte each
+        other in succession, then validation error would be raised.
+        """
+        expected_exception_message = error_codes.EPISODES_DATES_NOT_SORTED.message
+        now = datetime.date.today()
+        self.season_1_1.episodes = {
+            3: now - datetime.timedelta(days=1),
+            1: now,
+            6: now + - datetime.timedelta(days=1)
+        }
         with self.assertRaisesMessage(ValidationError, expected_exception_message):
             self.season_1_1.full_clean()
