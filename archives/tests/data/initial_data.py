@@ -55,27 +55,40 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
     :param series: TvSeriesModel instances.
     :return: SeasonModel instances.
     """
+    one_day = datetime.timedelta(days=1)
     order = itertools.count(0)
     seasons = {}
 
     for single_series in series:
+
+        lower_bound = single_series.translation_years.lower
+        upper_bound = single_series.translation_years.upper
+        delta = upper_bound - lower_bound
+        chunk = delta / (num_episodes + 1)
+
+        global_start = lower_bound
+
         for season_number in range(num_episodes):
+
             new_season_data = {
                 f'{single_series.name} season {season_number + 1}': {
                     'series': single_series,
                     'season_number': season_number + 1,
                     'number_of_episodes': random.randint(7, 10),
-                    '_order': next(order),
+                    '_order':  next(order),
                     'translation_years': DateRange(
-                        single_series.translation_years.lower + datetime.timedelta(days=1),
-                        single_series.translation_years.upper - datetime.timedelta(days=1),
-                    )
-                }, }
+                        (local_start := global_start + one_day),
+                        (local_stop := local_start + chunk),
+                    )}, }
+
             seasons.update(new_season_data)
+
+            global_start = local_stop
 
     seasons = archives.models.SeasonModel.objects.bulk_create(
         [archives.models.SeasonModel(**fields) for fields in seasons.values()]
     )
+
     return seasons
 
 

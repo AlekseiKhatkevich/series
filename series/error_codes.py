@@ -169,3 +169,11 @@ EPISODES_DATES_NOT_SORTED = exc_msg(
     'Episodes dates should be gte each other in succession.',
     'episodes_dates_not_sorted',
 )
+SEASON_NOT_IN_SERIES = exc_msg(
+    'Season translation years should be within series translation years.',
+    'season_not_in_series',
+)
+SEASONS_OVERLAP = exc_msg(
+    'Translation years of seasons within same series can not overlap each other.',
+    'seasons_overlap',
+)

@@ -1,8 +1,12 @@
+import datetime
+
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
+from psycopg2.extras import DateRange
 from rest_framework.test import APITestCase
-import datetime
+
+from archives.helpers import custom_functions
 from archives.tests.data import initial_data
 from series import error_codes
 from users.helpers import create_test_users
@@ -25,15 +29,8 @@ class SeasonModelNegativeTest(APITestCase):
 
     def test_last_watched_episode_validation(self):
         """
-        Check whether on not it is possible  to save None via 'last_watched_episode' field
-        without raising exception and in case of real value validate, that it would be gte. 1.
+        Check whether on not it is possible  to save last watched episode less then 1.
         """
-        self.season_1_1.full_clean()
-
-        self.assertIsNone(
-            self.season_1_1.last_watched_episode
-        )
-
         self.season_1_1.last_watched_episode = -5
         expected_exception_message = \
             f'value={self.season_1_1.last_watched_episode} must be greater or equal 1'
@@ -65,9 +62,6 @@ class SeasonModelNegativeTest(APITestCase):
         'number_of_episodes' < 1
         """
         expected_constraint_code = 'last_watched_episode_and_number_of_episodes_are_gte_one'
-
-        # Constraint should allow to save none to 'last_watched_episode'
-        self.season_1_1.save()
 
         # 1)When 'last_watched_episode' < 1 constraint should raise exception.
         # 2)When 'number_of_episodes' < 1 constraint should raise exception
@@ -161,3 +155,35 @@ class SeasonModelNegativeTest(APITestCase):
         }
         with self.assertRaisesMessage(ValidationError, expected_exception_message):
             self.season_1_1.full_clean()
+
+    def test_exclude_overlapping_seasons_translation_time_check(self):
+        """
+        Check that in case translation years of seasons in series overlap, then Integrity error
+        would be arisen.
+        """
+        expected_error_message = 'exclude_overlapping_seasons_translation_time_check'
+        date_range_1 = custom_functions.daterange((2015, 3, 1), (2015, 7, 1))
+        date_range_2 = custom_functions.daterange((2015, 6, 1), (2016, 1, 1))
+
+        self.season_2_1.translation_years = date_range_1
+        self.season_2_1.save(fc=False)
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.season_2_2.translation_years = date_range_2
+            self.season_2_2.save(fc=False)
+
+    def test_translation_years_within_series(self):
+        """
+        Check that if translation years of the season are not contained_by translation years
+        of the series, then validation error would be arisen.
+        """
+        expected_error_message = error_codes.SEASON_NOT_IN_SERIES.message
+        self.season_1_1.translation_years = DateRange(
+            self.season_1_1.series.translation_years.lower - datetime.timedelta(days=10),
+            self.season_1_1.series.translation_years.upper,
+        )
+
+        with self.assertRaisesMessage(ValidationError,expected_error_message):
+            self.season_1_1.save()
+
+

@@ -27,8 +27,8 @@ class SeasonModelPositiveTest(APITestCase):
             season_number=10,
             number_of_episodes=5,
             translation_years=DateRange(
-                cls.series_1.translation_years.lower + datetime.timedelta(days=1),
-                cls.series_1.translation_years.upper - datetime.timedelta(days=1),
+                cls.series_1.translation_years.upper - datetime.timedelta(days=10),
+                cls.series_1.translation_years.upper - datetime.timedelta(days=5),
             ))
 
     def setUp(self) -> None:
@@ -39,8 +39,8 @@ class SeasonModelPositiveTest(APITestCase):
         """
         Check successful model instance creation. All nullable fields are Null.
         """
-        season = archives.models.SeasonModel.objects.create(**self.new_season_data)
-        season.full_clean()
+        season = archives.models.SeasonModel(**self.new_season_data)
+        season.save()
 
         self.assertTrue(
             archives.models.SeasonModel.objects.filter(**self.new_season_data).exists()
@@ -102,22 +102,26 @@ class SeasonModelPositiveTest(APITestCase):
         """
         Check whether or not 'is_finished' property works correctly.
         """
-        # Situation where we dont have information about last episode release datetime.
-        self.assertIsNone(
-            self.season_1.is_finished
+        now = datetime.date.today()
+        dater_range_finished = DateRange(
+            datetime.date(1999, 9, 1),
+            now - datetime.timedelta(days=10)
         )
-        # Situation when last episode release date had happened in the past and this season is finished.
-        a_month_ago = (timezone.now() - timezone.timedelta(days=30)).timestamp()
-        self.season_1.episodes = {self.season_1.number_of_episodes: a_month_ago}
+        dater_range_not_finished = DateRange(
+            now - datetime.timedelta(days=10),
+            now + datetime.timedelta(days=10)
+        )
+
+        self.season_1.translation_years = dater_range_finished
 
         self.assertTrue(
             self.season_1.is_finished
         )
 
-        # Situation when last season episode haven't been released yet.
-        a_month_ahead = (timezone.now() + timezone.timedelta(days=30)).timestamp()
-        self.season_1.episodes = {self.season_1.number_of_episodes: a_month_ahead}
+        self.season_1.translation_years = dater_range_not_finished
 
         self.assertFalse(
             self.season_1.is_finished
         )
+
+

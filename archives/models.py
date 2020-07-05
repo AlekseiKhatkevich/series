@@ -6,7 +6,7 @@ from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres import fields as psgr_fields
+from django.contrib.postgres import fields as psgr_fields, constraints as psgr_constraints
 from django.core import exceptions, validators
 from django.db import models
 from django.db.models.functions import Length
@@ -296,11 +296,12 @@ class SeasonModel(models.Model):
                 name='season_number_gte_1_check',
                 check=models.Q(season_number__gte=1),
             ),
-            # Translation years should be within translation years of series.
-            # models.CheckConstraint(
-            #     name='translation_time_within_season_check',
-            #     check=models.Q(translation_years__contained_by=models.F('series__translation_years')),
-            # )
+            psgr_constraints.ExclusionConstraint(
+                name='exclude_overlapping_seasons_translation_time_check',
+                expressions=[
+                    ('translation_years', psgr_fields.RangeOperators.OVERLAPS),
+                    ('series', psgr_fields.RangeOperators.EQUAL),
+                ], ),
         ]
 
     def __str__(self):
@@ -312,13 +313,30 @@ class SeasonModel(models.Model):
         raise NotImplementedError
 
     def clean(self):
-
         errors = []
+
         #  Check if last_watched_episode number is bigger then number of episodes in season.
         if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
             errors.append(exceptions.ValidationError(
-                   *error_codes.LAST_WATCHED_GTE_NUM_EPISODES
-                ))
+                *error_codes.LAST_WATCHED_GTE_NUM_EPISODES
+            ))
+
+        #  Check that season translation years should be within series range.
+        if not ((self.translation_years.lower in self.series.translation_years) and
+                (self.translation_years.upper in self.series.translation_years)):
+            errors.append(exceptions.ValidationError(
+                *error_codes.SEASON_NOT_IN_SERIES
+            ))
+
+        # Check if translation years of season within series are not overlap each other.
+        if self._meta.model.objects.filter(
+            series=self.series,
+            translation_years__overlap=self.translation_years,
+        ).exclude(pk=self.pk).exists():
+            errors.append(exceptions.ValidationError(
+                *error_codes.SEASONS_OVERLAP,
+            ))
+
         if self.episodes is not None:
             # If schema is incorrect we need to stop it right now without proceeding further.
             custom_validators.ValidateDict(schema=custom_validators.episode_date_schema)(self.episodes)
@@ -327,8 +345,8 @@ class SeasonModel(models.Model):
             max_key = max(self.episodes.keys())
             if max_key > self.number_of_episodes:
                 errors.append(exceptions.ValidationError(
-                        *error_codes.MAX_KEY_GT_NUM_EPISODES
-                    ))
+                    *error_codes.MAX_KEY_GT_NUM_EPISODES
+                ))
             # Dates in episodes should be gte each other in succession.
             # We sort dict by keys and then check whether dates are sorted (prev. <= lat.)
             sorted_by_episodes_numbers = dict(sorted(self.episodes.items()))
@@ -351,26 +369,14 @@ class SeasonModel(models.Model):
         """
         Is current season are fully watched by user?
         """
-        return self.last_watched_episode == self.number_of_episodes
+        return self.last_watched_episode >= self.number_of_episodes
 
     @property
-    def is_finished(self) -> bool or None:
+    def is_finished(self) -> bool:
         """
-        Whether or not last episode of the season has already been released?
-        Returns None if impossible to establish this information from self.episodes.
+        Returns whether current season is finished or not.
         """
-        try:
-            # episode number key might be in str or int format. We trying to get it as a str and then as a int.
-            try:
-                last_episode_release_date = self.episodes[str(self.number_of_episodes)]
-            except KeyError:
-                last_episode_release_date = self.episodes[self.number_of_episodes]
-        # if 'episodes' field is None or there are no key == 'number_of_episodes'.
-        except (KeyError, TypeError):
-            return None
-
-        now = timezone.now().timestamp()
-        return now > last_episode_release_date
+        return TvSeriesModel.is_finished.fget(self)
 
 
 class ImageModelMetaClass(type(models.Model)):
