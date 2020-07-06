@@ -59,12 +59,13 @@ class SeasonModelNegativeTest(APITestCase):
     def test_last_watched_episode_and_number_of_episodes_are_gte_one_constraint(self):
         """
         Check that DB constrain resists against saving in DB 'last_watched_episode' < 1 if not None and
-        'number_of_episodes' < 1
+        30 > 'number_of_episodes' < 1
         """
         expected_constraint_code = 'last_watched_episode_and_number_of_episodes_are_gte_one'
 
-        # 1)When 'last_watched_episode' < 1 constraint should raise exception.
-        # 2)When 'number_of_episodes' < 1 constraint should raise exception
+        # 1) When 'last_watched_episode' < 1 constraint should raise exception.
+        # 2) When 'number_of_episodes' < 1 constraint should raise exception.
+        # 3) When  'number_of_episodes' > 30 constraint should raise exception.
 
         for field in ('last_watched_episode', 'number_of_episodes'):
             with self.subTest(field=field):
@@ -80,13 +81,17 @@ class SeasonModelNegativeTest(APITestCase):
                     0
                 )
 
+        with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
+            self.season_1_1.number_of_episodes = 31
+            self.season_1_1.save(fc=False)
+
     def test_mutual_watched_episode_and_number_of_episodes_check_constraint(self):
         """
         Check whether or not  models entries where last watched episode > number of episodes
         can be saved in DB. Constraint should resist against this configuration.
         """
         expected_constraint_code = 'mutual_watched_episode_and_number_of_episodes_check'
-        self.season_1_1.last_watched_episode = 99
+        self.season_1_1.last_watched_episode = 29
 
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
@@ -101,21 +106,18 @@ class SeasonModelNegativeTest(APITestCase):
 
     def test_season_number_gte_1_check_constraint(self):
         """
-        Check that constraint doesnt allow to save season number < 1.
+        Check that constraint doesnt allow to save season number < 1 and > 30.
         """
         expected_constraint_code = 'season_number_gte_1_check'
-        self.season_1_1.season_number = 0
 
         with transaction.atomic():
             with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
+                self.season_1_1.season_number = 0
                 self.season_1_1.save(fc=False)
 
-        self.season_1_1.refresh_from_db()
-
-        self.assertNotEqual(
-            self.season_1_1.last_watched_episode,
-            0
-        )
+        with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
+            self.season_1_1.season_number = 31
+            self.season_1_1.save(fc=False)
 
     def test_last_watched_episode_number_is_bigger_then_number_of_episodes_in_season(self):
         """
@@ -183,7 +185,46 @@ class SeasonModelNegativeTest(APITestCase):
             self.season_1_1.series.translation_years.upper,
         )
 
-        with self.assertRaisesMessage(ValidationError,expected_error_message):
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
             self.season_1_1.save()
 
+    def test_seasons_translation_years_overlap(self):
+        """
+        Check that if translation year of season overlaps with translation year of another season from
+        a same series, then validation error would be arisen.
+        """
+        expected_error_message = error_codes.SEASONS_OVERLAP.message
+        self.season_1_2.translation_years = self.season_1_1.translation_years
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            self.season_1_2.save()
+
+    def test_season_translation_years_not_arranged(self):
+        """
+        Check that if translation years of season with season number 1 fully greater than
+         translation years of season 2, then validation error would be arisen.
+        """
+        expected_error_message = error_codes.TRANSLATION_YEARS_NOT_ARRANGED.message
+        # Season number 1 should have daterange lower then season 2.
+        # We construct other way around.
+        self.season_1_1.translation_years = custom_functions.daterange((2013, 12, 1), (2013, 12, 30))
+        self.season_1_2.translation_years = custom_functions.daterange((2013, 1, 1), (2013, 2, 1))
+        self.season_1_1.save()
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            self.season_1_2.save()
+
+    def test_episodes_not_in_season_range(self):
+        """
+        Check that all 'episodes' dates  should be within 'translation_years' daterange.
+        """
+        expected_error_message = error_codes.EPISODES_NOT_IN_RANGE.message
+        episodes = {
+            1: self.season_2_2.translation_years.lower - datetime.timedelta(days=10),
+            2: self.season_2_2.translation_years.lower + datetime.timedelta(days=1)
+        }
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            self.season_2_2.episodes = episodes
+            self.season_2_2.save()
 

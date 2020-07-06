@@ -1,16 +1,18 @@
 import datetime
 import unittest
 
+from django.test import tag
 from django.utils import timezone
 from psycopg2.extras import DateRange
 from rest_framework.test import APITestCase
 
 import archives.models
 from archives.tests.data import initial_data
+from series.helpers import test_helpers
 from users.helpers import create_test_users
 
 
-class SeasonModelPositiveTest(APITestCase):
+class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
     """
     Test whether or not it is possible to successfully create 'SeasonModel' instance providing that
     proper set of data is supplied.
@@ -32,9 +34,13 @@ class SeasonModelPositiveTest(APITestCase):
             ))
 
     def setUp(self) -> None:
-        self.seasons = initial_data.create_seasons(series=self.series)
-        self.season_1, *tail = self.seasons
+        need_to_skip = self.skip_setup_if_tagged()
 
+        if not need_to_skip:
+            self.seasons = initial_data.create_seasons(series=self.series)
+            self.season_1, *tail = self.seasons
+
+    @tag('skip_setup')
     def test_create_new_season(self):
         """
         Check successful model instance creation. All nullable fields are Null.
@@ -63,8 +69,8 @@ class SeasonModelPositiveTest(APITestCase):
         Check whether or not it is possible to save correct data in 'episodes'field.
         """
         data = {
-            2: timezone.now().date(),
-            3: timezone.now().date(),
+            2: self.season_1.translation_years.lower + datetime.timedelta(days=1),
+            3: self.season_1.translation_years.lower + datetime.timedelta(days=3),
         }
         self.season_1.episodes = data
         self.season_1.save()
@@ -79,7 +85,8 @@ class SeasonModelPositiveTest(APITestCase):
         """
         Check correct string representation of the model instance.
         """
-        expected_str = f'season number - {self.season_1.season_number},' \
+        expected_str = f'pk - {self.season_1.pk},' \
+                       f' season number - {self.season_1.season_number},' \
                        f' series name - {self.season_1.series.name}'
 
         self.assertEqual(

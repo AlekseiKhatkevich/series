@@ -38,8 +38,7 @@ episode_date_schema = {
     },
     'release_date': {
         'type': 'date',
-    },
-}
+    }, }
 
 
 @deconstructible

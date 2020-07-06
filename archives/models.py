@@ -148,8 +148,9 @@ class TvSeriesModel(models.Model):
             )])
     translation_years = psgr_fields.DateRangeField(
         verbose_name='Series years of translation.',
-        validators=[custom_validators.DateRangeValidator(upper_inf_allowed=True)],
-    )
+        validators=[
+            custom_validators.DateRangeValidator(upper_inf_allowed=True)
+        ], )
 
     class Meta:
         verbose_name = 'series'
@@ -248,28 +249,36 @@ class SeasonModel(models.Model):
     )
     season_number = models.PositiveSmallIntegerField(
         verbose_name='Number of the current season',
-        validators=[non_zero_validator, ],
+        validators=[
+            non_zero_validator,
+            validators.MaxValueValidator(30),
+        ],
         default=1,
     )
     last_watched_episode = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
         verbose_name='Last watched episode of a current season',
-        validators=[custom_validators.skip_if_none_none_zero_positive_validator, ],
-    )
+        validators=[
+            custom_validators.skip_if_none_none_zero_positive_validator,
+        ], )
     number_of_episodes = models.PositiveSmallIntegerField(
         verbose_name='Number of episodes in the current season',
-        validators=[non_zero_validator, ],
-    )
+        validators=[
+            non_zero_validator,
+            validators.MaxValueValidator(30),
+        ], )
     episodes = custom_fields.CustomHStoreField(
         null=True,
         blank=True,
         verbose_name='Episode number and issue date',
+        # Validator has moved to clean(). Do not move it back!
     )
     translation_years = psgr_fields.DateRangeField(
         verbose_name='Season years of translation.',
-        validators=[custom_validators.DateRangeValidator()],
-    )
+        validators=[
+            custom_validators.DateRangeValidator()
+        ], )
 
     class Meta:
         order_with_respect_to = 'series'
@@ -280,11 +289,11 @@ class SeasonModel(models.Model):
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'
         constraints = [
-            # (Last_watched_episodes >= 1 or None)  and  number_of_episodes >= 1.
+            # (Last_watched_episodes >= 1 or None) and number_of_episodes in range(1, 30).
             models.CheckConstraint(
                 name='last_watched_episode_and_number_of_episodes_are_gte_one',
                 check=(models.Q(last_watched_episode__gte=1) | models.Q(last_watched_episode__isnull=True))
-                      & models.Q(number_of_episodes__gte=1)
+                      & models.Q(number_of_episodes__range=(1, 30))
             ),
             #  Number_of_episodes >= last_watched_episode
             models.CheckConstraint(
@@ -294,26 +303,26 @@ class SeasonModel(models.Model):
             #  Season_number >= 1
             models.CheckConstraint(
                 name='season_number_gte_1_check',
-                check=models.Q(season_number__gte=1),
+                check=models.Q(season_number__range=(1, 30)),
             ),
             psgr_constraints.ExclusionConstraint(
                 name='exclude_overlapping_seasons_translation_time_check',
                 expressions=[
                     ('translation_years', psgr_fields.RangeOperators.OVERLAPS),
                     ('series', psgr_fields.RangeOperators.EQUAL),
-                ], ),
-        ]
+                ], ), ]
 
     def __str__(self):
-        return f'season number - {self.season_number}, series name - {self.series.name}'
+        return f'pk - {self.pk}, season number - {self.season_number}, series name - {self.series.name}'
 
     # todo
     @cached_property
     def get_absolute_url(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def clean(self):
         errors = []
+        current_series = self.series
 
         #  Check if last_watched_episode number is bigger then number of episodes in season.
         if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
@@ -322,22 +331,36 @@ class SeasonModel(models.Model):
             ))
 
         #  Check that season translation years should be within series range.
-        if not ((self.translation_years.lower in self.series.translation_years) and
-                (self.translation_years.upper in self.series.translation_years)):
+        if not ((self.translation_years.lower in current_series.translation_years) and
+                (self.translation_years.upper in current_series.translation_years)):
             errors.append(exceptions.ValidationError(
                 *error_codes.SEASON_NOT_IN_SERIES
             ))
 
         # Check if translation years of season within series are not overlap each other.
         if self._meta.model.objects.filter(
-            series=self.series,
-            translation_years__overlap=self.translation_years,
+                series=current_series,
+                translation_years__overlap=self.translation_years,
         ).exclude(pk=self.pk).exists():
             errors.append(exceptions.ValidationError(
                 *error_codes.SEASONS_OVERLAP,
             ))
 
+        # Check that translation years date ranges of season in series are greater one another
+        # successively.
+        if self._meta.model.objects.filter(
+                models.Exists(
+                    self._meta.model.objects.filter(
+                        translation_years__gt=models.OuterRef('translation_years'),
+                        season_number__lt=models.OuterRef('season_number'),
+                        series=current_series,
+                    ),),).exists():
+            errors.append(exceptions.ValidationError(
+                *error_codes.TRANSLATION_YEARS_NOT_ARRANGED
+            ))
+
         if self.episodes is not None:
+
             # If schema is incorrect we need to stop it right now without proceeding further.
             custom_validators.ValidateDict(schema=custom_validators.episode_date_schema)(self.episodes)
 
@@ -347,6 +370,7 @@ class SeasonModel(models.Model):
                 errors.append(exceptions.ValidationError(
                     *error_codes.MAX_KEY_GT_NUM_EPISODES
                 ))
+
             # Dates in episodes should be gte each other in succession.
             # We sort dict by keys and then check whether dates are sorted (prev. <= lat.)
             sorted_by_episodes_numbers = dict(sorted(self.episodes.items()))
@@ -354,6 +378,13 @@ class SeasonModel(models.Model):
             if not are_dates_sorted:
                 errors.append(exceptions.ValidationError(
                     *error_codes.EPISODES_DATES_NOT_SORTED
+                ))
+
+            # Max and Min dates in episodes should lay within season translation years daterange.
+            min_date, max_date = min(self.episodes.values()), max(self.episodes.values())
+            if (min_date not in self.translation_years) or (max_date not in self.translation_years):
+                errors.append(exceptions.ValidationError(
+                    *error_codes.EPISODES_NOT_IN_RANGE
                 ))
 
         if errors:
@@ -402,8 +433,9 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     image = models.ImageField(
         upload_to=file_uploads.save_image_path,
         verbose_name='An image',
-        validators=[custom_validators.IsImageValidator(), ],
-    )
+        validators=[
+            custom_validators.IsImageValidator(),
+        ], )
     image_hash = custom_fields.ImageHashField(
         max_length=16,
         null=True,
@@ -434,13 +466,16 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         return f'image - {self.image.name}, model - {self.content_type} - pk={self.object_id}'
 
     def clean(self):
+
         #  I instance has not image hash yet - try to generate and set hash to it.
         if self.image_hash is None:
             self.image_hash = self.make_image_hash()
+
         # If hash is still None or this instance has already it image_hash stored in class attribute -
         # - skip validation then.
         if self.image_hash is None or (self.pk in self.__class__.stored_image_hash.keys()):
             return None
+
         # If image hash has Hamming difference les then X - raise validation error as this or closer
         # to this image already exists in DB.
         for img_hash in self.__class__.stored_image_hash.values():

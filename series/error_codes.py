@@ -177,3 +177,12 @@ SEASONS_OVERLAP = exc_msg(
     'Translation years of seasons within same series can not overlap each other.',
     'seasons_overlap',
 )
+TRANSLATION_YEARS_NOT_ARRANGED = exc_msg(
+    'Translation years os seasons in each series should be arranged by season number and by range '
+    'successively.',
+    'translation_years_not_arranged',
+)
+EPISODES_NOT_IN_RANGE = exc_msg(
+    'Minimal and maximal episodes date should be located within season translation years',
+    'episodes_not_in_range',
+)

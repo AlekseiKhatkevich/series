@@ -105,3 +105,17 @@ class TestHelpers(test.APISimpleTestCase):
 
         caches[cache_name].clear()
 
+    def skip_setup_if_tagged(self) -> bool:
+        """
+         Skips SetUp method for fixtures tagged with @tag('skip_setup') decorator.
+         Method should be in invoked in the first place in SetUp method:
+            def setUp(self) -> None:
+                need_to_skip = self.skip_setup_if_tagged()
+                if not need_to_skip:
+                    do something...
+        """
+        method = getattr(self, self._testMethodName)
+        tags = getattr(method, 'tags', {})
+        if 'skip_setup' in tags:
+            return True
+
