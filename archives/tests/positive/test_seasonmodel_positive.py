@@ -131,4 +131,23 @@ class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
             self.season_1.is_finished
         )
 
+    @tag('skip_setup')
+    def test_season_available_range(self):
+        """
+        Check 'season_available_range' returns available free range for a season.
+        """
+        initial_data.create_seasons(series=self.series, num_episodes=6)
+        adjacent_seasons = archives.models.SeasonModel.objects.filter(
+            season_number__in=(3, 4, 5),
+        ).order_by('season_number').distinct('season_number')
+        previous_season, target_season, next_season = adjacent_seasons
+
+        free_range = target_season.season_available_range
+
+        self.assertTrue(
+            previous_season.translation_years < free_range < next_season.translation_years
+        )
+
+
+
 

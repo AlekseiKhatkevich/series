@@ -1,3 +1,4 @@
+import datetime
 import os
 from typing import KeysView
 
@@ -6,7 +7,7 @@ from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres import fields as psgr_fields, constraints as psgr_constraints
+from django.contrib.postgres import constraints as psgr_constraints, fields as psgr_fields
 from django.core import exceptions, validators
 from django.db import models
 from django.db.models.functions import Length
@@ -19,6 +20,7 @@ from rest_framework.reverse import reverse
 import archives.managers
 from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
 from series import constants, error_codes
+from series.helpers.custom_functions import available_range
 
 models.CharField.register_lookup(Length)
 
@@ -408,6 +410,44 @@ class SeasonModel(models.Model):
         Returns whether current season is finished or not.
         """
         return TvSeriesModel.is_finished.fget(self)
+
+    @property
+    def season_available_range(self):
+        """
+        Returns daterange available by all validators for the season.
+        """
+        cls = self.__class__
+        series_range = self.series.translation_years
+        # Seasons with next and previous numbers.
+        next_gt_season = cls.objects.filter(
+            series=self.series,
+            season_number__gt=self.season_number
+        ).order_by('season_number')[:1]
+        next_lt_season = cls.objects.filter(
+            series=self.series,
+            season_number__lt=self.season_number
+        ).order_by('-season_number')[:1]
+        # date ranges of 2 seasons together.
+        two_adjacent_seasons = next_gt_season.union(next_lt_season).values_list(
+            'season_number',
+            'translation_years',
+            named=True
+        )
+        inner_ranges = []
+        effective_infinity = datetime.date(datetime.date.today().year + 2, 1, 1)
+        #  Extend date ranges of 2 adjacent seasons to low and upper of series range.
+        for date_range in two_adjacent_seasons:
+            if date_range.season_number < self.season_number:
+                inner_ranges.append(DateRange(
+                    self.series.translation_years.lower,
+                    date_range.translation_years.upper
+                ))
+            else:
+                inner_ranges.append(DateRange(
+                    date_range.translation_years.lower,
+                    self.series.translation_years.upper or effective_infinity
+                ))
+        return available_range(series_range, *inner_ranges)[0]
 
 
 class ImageModelMetaClass(type(models.Model)):

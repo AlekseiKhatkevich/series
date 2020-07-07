@@ -1,11 +1,14 @@
 import functools
 import inspect
 import os
-from typing import Callable, Container, Iterable, Optional, Union
+from typing import Callable, Container, Iterable, Optional, Tuple, Union
 
+import more_itertools
+import numpy
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.base import ModelBase
+from psycopg2.extras import DateRange
 from rest_framework.response import Response
 
 import archives.models
@@ -181,3 +184,42 @@ def clean_garbage_in_folder(path: str = settings.MEDIA_ROOT_FULL_PATH) -> None:
         f' Filenames are --{errors_in_delete}',
         sep='\n'
     )
+
+
+def available_range(
+        outer_range: DateRange,
+        *inner_ranges: DateRange,
+        delta: int = 1,
+) -> Tuple[DateRange]:
+    """
+    Returns outer range minus all inner ranges .
+    ooooooooooooooooooooooooooooo   outer range
+      xxxx   xxxxxxxxxx     xx      inner ranges
+    yy    yy           yyyyy   yy   result (4 individual ranges)
+    """
+    #  Construct outer range sequence.
+    overall_range = set(
+        numpy.arange(
+            outer_range.lower,
+            outer_range.upper,
+            dtype='datetime64[D]')
+    )
+    #  Construct inner sequences and deduct each from outer range sequence.
+    for date_range in inner_ranges:
+        overall_range.difference_update(
+            set(
+                numpy.arange(
+                    date_range.lower,
+                    date_range.upper,
+                    dtype='datetime64[D]'
+                )))
+    #  Split final dates sequence into individual sequences.
+    available_dates_list = more_itertools.split_when(
+        sorted(overall_range),
+        lambda x, y: abs(x - y) > numpy.timedelta64(delta, 'D')
+    )
+    #  Convert final date sequences to DateRanges.
+    available_ranges = tuple(
+        DateRange(min(sequence), max(sequence), '(]') for sequence in available_dates_list
+    )
+    return available_ranges
