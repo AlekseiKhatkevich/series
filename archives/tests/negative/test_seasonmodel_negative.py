@@ -22,6 +22,7 @@ class SeasonModelNegativeTest(APITestCase):
         cls.users = create_test_users.create_users()
         cls.series = initial_data.create_tvseries(users=cls.users)
         cls.series_1, cls.series_2 = cls.series
+        cls.series_1, cls.series_2 = cls.series
 
     def setUp(self) -> None:
         self.seasons = initial_data.create_seasons(series=self.series)
@@ -228,3 +229,33 @@ class SeasonModelNegativeTest(APITestCase):
             self.season_2_2.episodes = episodes
             self.season_2_2.save()
 
+    def test_max_range_one_year_constraint(self):
+        """
+        Check that 'max_range_one_year'constraint does not allow to save seasons with translation
+        years range greater than one year.
+        """
+        expected_error_message = 'max_range_one_year'
+        date_range = self.season_1_1.translation_years
+        self.season_1_1.translation_years = DateRange(
+            date_range.lower,
+            date_range.lower + datetime.timedelta(days=400),
+        )
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.season_1_1.save(fc=False)
+
+    def test_ty_gt_one_year(self):
+        """
+        Check that clean() method in model would not allow to save season with translation
+        years datetime range greater the one year.
+        """
+        expected_error_message = error_codes.SEASON_TY_GT_YEAR.message
+        self.season_1_2.delete()
+        date_range = self.season_1_1.translation_years
+        self.season_1_1.translation_years = DateRange(
+            date_range.lower,
+            date_range.lower + datetime.timedelta(days=400),
+        )
+
+        with self.assertRaisesMessage(ValidationError, expected_error_message):
+            self.season_1_1.save()

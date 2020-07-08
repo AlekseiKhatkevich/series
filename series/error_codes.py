@@ -186,3 +186,7 @@ EPISODES_NOT_IN_RANGE = exc_msg(
     'Minimal and maximal episodes date should be located within season translation years',
     'episodes_not_in_range',
 )
+SEASON_TY_GT_YEAR = exc_msg(
+    'Season translation years range is greater than one year.',
+    'season_ty_gt_year',
+)

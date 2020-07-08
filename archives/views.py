@@ -6,7 +6,7 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
-from rest_framework import exceptions, generics, mixins, parsers, permissions, status
+from rest_framework import exceptions, generics, mixins, parsers, permissions, status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -178,6 +178,13 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
             raise exceptions.ValidationError(
                 f'Images with pk {" ,".join(map(str, wrong_image_pks))} does not exist in the database.'
             )
+
+
+class SeasonsViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for SeasonModel.
+    """
+    queryset = archives.models.SeasonModel.objects.all()
 
 
 

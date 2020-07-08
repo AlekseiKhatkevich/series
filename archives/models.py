@@ -1,5 +1,6 @@
 import datetime
 import os
+from collections import defaultdict
 from typing import KeysView
 
 import more_itertools
@@ -7,7 +8,8 @@ from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres import constraints as psgr_constraints, fields as psgr_fields
+from django.contrib.postgres import constraints as psgr_constraints, fields as psgr_fields, \
+    indexes as psgr_indexes
 from django.core import exceptions, validators
 from django.db import models
 from django.db.models.functions import Length
@@ -160,6 +162,9 @@ class TvSeriesModel(models.Model):
         permissions = (
             ('permissiveness', 'Allow any action',),
         )
+        indexes = [
+            psgr_indexes.GistIndex(fields=('translation_years',), ),
+        ]
         constraints = [
             models.CheckConstraint(
                 name='rating_from_1_to_10',
@@ -290,6 +295,9 @@ class SeasonModel(models.Model):
         index_together = unique_together
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'
+        indexes = [
+            psgr_indexes.GistIndex(fields=('translation_years',), ),
+            ]
         constraints = [
             # (Last_watched_episodes >= 1 or None) and number_of_episodes in range(1, 30).
             models.CheckConstraint(
@@ -307,12 +315,24 @@ class SeasonModel(models.Model):
                 name='season_number_gte_1_check',
                 check=models.Q(season_number__range=(1, 30)),
             ),
+            # Season translation years can not overlap each other.
             psgr_constraints.ExclusionConstraint(
                 name='exclude_overlapping_seasons_translation_time_check',
                 expressions=[
                     ('translation_years', psgr_fields.RangeOperators.OVERLAPS),
                     ('series', psgr_fields.RangeOperators.EQUAL),
-                ], ), ]
+                ], ),
+            # Season maximal range is one year. Fake constraint. Real one in migration file 0053.
+            models.CheckConstraint(
+                name='max_range_one_year',
+                check=models.Q(translation_years__contained_by=datetime.timedelta(days=366))
+            ),
+            #  Maximal key in episodes should be lte than 'number_of_episodes'. Fake constraint.
+            #  Real constraint in migration file 0055_hstore_constraint.
+            models.CheckConstraint(
+                name='max_key_lte_number_of_episodes',
+                check=models.Q(episodes__has_any_keys__gt=models.F('number_of_episodes'))
+            ), ]
 
     def __str__(self):
         return f'pk - {self.pk}, season number - {self.season_number}, series name - {self.series.name}'
@@ -323,19 +343,19 @@ class SeasonModel(models.Model):
         raise NotImplementedError()
 
     def clean(self):
-        errors = []
+        errors = defaultdict(list)
         current_series = self.series
 
         #  Check if last_watched_episode number is bigger then number of episodes in season.
         if self.last_watched_episode and (self.last_watched_episode > self.number_of_episodes):
-            errors.append(exceptions.ValidationError(
+            errors['last_watched_episode'].append(exceptions.ValidationError(
                 *error_codes.LAST_WATCHED_GTE_NUM_EPISODES
             ))
 
         #  Check that season translation years should be within series range.
         if not ((self.translation_years.lower in current_series.translation_years) and
                 (self.translation_years.upper in current_series.translation_years)):
-            errors.append(exceptions.ValidationError(
+            errors['translation_years'].append(exceptions.ValidationError(
                 *error_codes.SEASON_NOT_IN_SERIES
             ))
 
@@ -344,7 +364,7 @@ class SeasonModel(models.Model):
                 series=current_series,
                 translation_years__overlap=self.translation_years,
         ).exclude(pk=self.pk).exists():
-            errors.append(exceptions.ValidationError(
+            errors['translation_years'].append(exceptions.ValidationError(
                 *error_codes.SEASONS_OVERLAP,
             ))
 
@@ -357,8 +377,14 @@ class SeasonModel(models.Model):
                         season_number__lt=models.OuterRef('season_number'),
                         series=current_series,
                     ),),).exists():
-            errors.append(exceptions.ValidationError(
+            errors['translation_years'].append(exceptions.ValidationError(
                 *error_codes.TRANSLATION_YEARS_NOT_ARRANGED
+            ))
+
+        #  Check that season translation years range less then one year.
+        if (self.translation_years.upper - self.translation_years.lower).days > 365:
+            errors['translation_years'].append(exceptions.ValidationError(
+                *error_codes.SEASON_TY_GT_YEAR
             ))
 
         if self.episodes is not None:
@@ -366,10 +392,10 @@ class SeasonModel(models.Model):
             # If schema is incorrect we need to stop it right now without proceeding further.
             custom_validators.ValidateDict(schema=custom_validators.episode_date_schema)(self.episodes)
 
-            # Maximal number of episode in episodes should be lte than number of episodes.
+            # Maximal number of episodes in episodes should be lte than number of episodes.
             max_key = max(self.episodes.keys())
             if max_key > self.number_of_episodes:
-                errors.append(exceptions.ValidationError(
+                errors['episodes'].append(exceptions.ValidationError(
                     *error_codes.MAX_KEY_GT_NUM_EPISODES
                 ))
 
@@ -378,14 +404,14 @@ class SeasonModel(models.Model):
             sorted_by_episodes_numbers = dict(sorted(self.episodes.items()))
             are_dates_sorted = more_itertools.is_sorted(sorted_by_episodes_numbers.values())
             if not are_dates_sorted:
-                errors.append(exceptions.ValidationError(
+                errors['episodes'].append(exceptions.ValidationError(
                     *error_codes.EPISODES_DATES_NOT_SORTED
                 ))
 
             # Max and Min dates in episodes should lay within season translation years daterange.
             min_date, max_date = min(self.episodes.values()), max(self.episodes.values())
             if (min_date not in self.translation_years) or (max_date not in self.translation_years):
-                errors.append(exceptions.ValidationError(
+                errors['episodes'].append(exceptions.ValidationError(
                     *error_codes.EPISODES_NOT_IN_RANGE
                 ))
 
@@ -431,7 +457,7 @@ class SeasonModel(models.Model):
         two_adjacent_seasons = next_gt_season.union(next_lt_season).values_list(
             'season_number',
             'translation_years',
-            named=True
+            named=True,
         )
         inner_ranges = []
         effective_infinity = datetime.date(datetime.date.today().year + 2, 1, 1)
@@ -439,13 +465,13 @@ class SeasonModel(models.Model):
         for date_range in two_adjacent_seasons:
             if date_range.season_number < self.season_number:
                 inner_ranges.append(DateRange(
-                    self.series.translation_years.lower,
+                    series_range.lower,
                     date_range.translation_years.upper
                 ))
             else:
                 inner_ranges.append(DateRange(
                     date_range.translation_years.lower,
-                    self.series.translation_years.upper or effective_infinity
+                    series_range.upper or effective_infinity
                 ))
         return available_range(series_range, *inner_ranges)[0]
 
@@ -579,3 +605,5 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         """
         image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
         return IOBTree(image_hash_from_db)
+
+

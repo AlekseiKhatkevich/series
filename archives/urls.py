@@ -1,5 +1,5 @@
 from django.urls import include, path, register_converter
-
+from rest_framework import routers
 import archives.converters
 import archives.views
 
@@ -7,6 +7,10 @@ register_converter(
     archives.converters.CommaSeparatedIntegersPathConverter,
     'int_list',
 )
+
+router = routers.SimpleRouter()
+router.register(r'seasons/', archives.views.SeasonsViewSet)
+
 
 urlpatterns = [
     path(
@@ -25,10 +29,14 @@ urlpatterns = [
                     '',
                     archives.views.TvSeriesDetailView.as_view(),
                     name='tvseries-detail',
-                )])),
+                ),
+        ]
+        )
+    ),
     path(
         'tvseries/',
         archives.views.TvSeriesListCreateView.as_view(),
         name='tvseries',
     ),
 ]
+

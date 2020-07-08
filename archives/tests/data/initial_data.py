@@ -64,11 +64,19 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
         lower_bound = single_series.translation_years.lower
         upper_bound = single_series.translation_years.upper
         delta = upper_bound - lower_bound
-        chunk = delta / (num_episodes + 1)
+        chunk = min(delta / (num_episodes + 1), datetime.timedelta(days=364))
 
         global_start = lower_bound
 
         for season_number in range(num_episodes):
+            local_start = global_start + one_day
+            local_stop = local_start + chunk
+
+            translation_years = DateRange(
+                local_start,
+                local_stop,
+            )
+            global_start = local_stop
 
             new_season_data = {
                 f'{single_series.name} season {season_number + 1}': {
@@ -76,14 +84,10 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
                     'season_number': season_number + 1,
                     'number_of_episodes': random.randint(7, 10),
                     '_order':  next(order),
-                    'translation_years': DateRange(
-                        (local_start := global_start + one_day),
-                        (local_stop := local_start + chunk),
-                    )}, }
+                    'translation_years': translation_years
+                    }, }
 
             seasons.update(new_season_data)
-
-            global_start = local_stop
 
     seasons = archives.models.SeasonModel.objects.bulk_create(
         [archives.models.SeasonModel(**fields) for fields in seasons.values()]
