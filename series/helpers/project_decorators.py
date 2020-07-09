@@ -69,7 +69,9 @@ def allow_disable_in_tests(func):
         except AttributeError:
             version = func.__qualname__.split('.')[0]  # bound methods, static methods and plain functions.
 
-        need_to_switch_off_in_tests = cache.get('switch_off_in_tests', False, version=version)
+        key = dict(key='switch_off_in_tests', version=version)
+        need_to_switch_off_in_tests = cache.get(**key, default=False)
+        cache.delete(**key)
 
         if settings.IM_IN_TEST_MODE and need_to_switch_off_in_tests:
             return None

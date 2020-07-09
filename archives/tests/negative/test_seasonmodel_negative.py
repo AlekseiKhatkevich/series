@@ -1,5 +1,5 @@
 import datetime
-
+import numpy
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -259,3 +259,32 @@ class SeasonModelNegativeTest(APITestCase):
 
         with self.assertRaisesMessage(ValidationError, expected_error_message):
             self.season_1_1.save()
+
+    def test_max_key_lte_number_of_episodes_constraint(self):
+        """
+        Check that 'max_key_lte_number_of_episodes' would not allow to save 'episodes' field
+        with key greater than 'number_of_episodes.
+        """
+        expected_error_message = 'max_key_lte_number_of_episodes'
+        self.season_1_2.episodes = {
+            self.season_1_2.number_of_episodes + 1:
+                self.season_1_2.season_available_range.lower + datetime.timedelta(days=1)
+        }
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.season_1_2.save(fc=False)
+
+    def test_episodes_within_season_check(self):
+        """
+        Check that 'episodes_within_season_check' constraint would not allow to save 'episodes'
+        with date out of 'translation-years' range.
+        """
+        expected_error_message = 'episodes_within_season_check'
+        self.season_2_1.episodes = {
+            1:
+                self.season_2_1.translation_years.upper + datetime.timedelta(days=10)
+        }
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.season_2_1.save(fc=False)
+

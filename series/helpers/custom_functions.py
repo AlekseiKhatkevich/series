@@ -1,3 +1,4 @@
+import datetime
 import functools
 import inspect
 import os
@@ -220,6 +221,9 @@ def available_range(
     )
     #  Convert final date sequences to DateRanges.
     available_ranges = tuple(
-        DateRange(min(sequence), max(sequence), '(]') for sequence in available_dates_list
+        DateRange(
+            min(sequence).astype(datetime.date),
+            max(sequence).astype(datetime.date),
+            '(]') for sequence in available_dates_list
     )
     return available_ranges

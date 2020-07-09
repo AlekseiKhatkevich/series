@@ -1,6 +1,6 @@
 import datetime
 import unittest
-
+from unittest.mock import patch, Mock
 from django.test import tag
 from django.utils import timezone
 from psycopg2.extras import DateRange
@@ -148,6 +148,19 @@ class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
             previous_season.translation_years < free_range < next_season.translation_years
         )
 
+    def test_new_episode_this_week_property(self):
+        """
+        Check that 'new_episode_this_week' returns date of the episode if it takes place this week.
+        """
+        fake_now = datetime.date.fromisocalendar(2020, 28, 3)
+        fake_episode_date = fake_now + datetime.timedelta(days=1)
+        self.season_1.episodes = {1: fake_episode_date}
 
+        date_mock = Mock(wraps=datetime.date)
+        date_mock.today.return_value = fake_now
 
-
+        with patch('datetime.date', new=date_mock):
+            self.assertEqual(
+                self.season_1.new_episode_this_week[0],
+                fake_episode_date
+            )

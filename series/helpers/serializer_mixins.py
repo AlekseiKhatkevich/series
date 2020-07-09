@@ -167,3 +167,5 @@ class NoneInsteadEmptyMixin:
                 self.traverse(data, keys_to_swap, empty_containers_to_swap)
 
         return data
+
+

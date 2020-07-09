@@ -3,8 +3,9 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
-from rest_framework import permissions, serializers
 from drf_extra_fields.fields import DateRangeField
+from rest_framework import permissions, serializers
+
 import archives.models
 from series import constants
 from series.helpers import serializer_mixins
@@ -178,9 +179,9 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
 
             if new:
                 archives.models.GroupingModel.objects.bulk_create(
-                        list_of_interrelationships,
-                        ignore_conflicts=True,
-                    )
+                    list_of_interrelationships,
+                    ignore_conflicts=True,
+                )
         return series
 
     def get_fields(self):
@@ -227,3 +228,29 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
                      for slave in obj.entry_author.slaves.all()
                  ] or None
         return dict(master=master, friends=friends, slaves=slaves)
+
+
+class SeasonsSerializer(serializers.ModelSerializer):
+    """
+    Serializer for SeasonModel list/create action.
+    """
+    translation_years = DateRangeField(
+    )
+
+    class Meta:
+        model = archives.models.SeasonModel
+        fields = (
+            'pk',
+            'season_number',
+            'last_watched_episode',
+            'number_of_episodes',
+            'episodes',
+            'translation_years',
+            'is_fully_watched',
+            'is_finished',
+            'new_episode_this_week',
+        )
+        extra_kwargs = {
+            'season_number': {
+                'required': True,
+            }, }

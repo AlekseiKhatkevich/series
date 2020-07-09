@@ -296,8 +296,8 @@ class SeasonModel(models.Model):
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'
         indexes = [
-            psgr_indexes.GistIndex(fields=('translation_years',), ),
-            ]
+            psgr_indexes.GistIndex(fields=('translation_years', ), ),
+        ]
         constraints = [
             # (Last_watched_episodes >= 1 or None) and number_of_episodes in range(1, 30).
             models.CheckConstraint(
@@ -332,7 +332,21 @@ class SeasonModel(models.Model):
             models.CheckConstraint(
                 name='max_key_lte_number_of_episodes',
                 check=models.Q(episodes__has_any_keys__gt=models.F('number_of_episodes'))
-            ), ]
+            ),
+            #  Episodes dates should be within series translation_years. fake constraint. Real one
+            #  in migration file 0056_episodes_in_season_constraint.
+            models.CheckConstraint(
+                name='episodes_within_season_check',
+                check=models.Q(
+                    episodes__values__gte=models.Func(
+                        models.Min(models.F('translation_years')),
+                        function='LOWER'
+                    )) &
+                      models.Q(
+                          episodes__values__lte=models.Func(
+                              models.Max(models.F('translation_years')),
+                              function='UPPER'
+                          )))]
 
     def __str__(self):
         return f'pk - {self.pk}, season number - {self.season_number}, series name - {self.series.name}'
@@ -376,7 +390,7 @@ class SeasonModel(models.Model):
                         translation_years__gt=models.OuterRef('translation_years'),
                         season_number__lt=models.OuterRef('season_number'),
                         series=current_series,
-                    ),),).exists():
+                    ), ), ).exists():
             errors['translation_years'].append(exceptions.ValidationError(
                 *error_codes.TRANSLATION_YEARS_NOT_ARRANGED
             ))
@@ -428,7 +442,7 @@ class SeasonModel(models.Model):
         """
         Is current season are fully watched by user?
         """
-        return self.last_watched_episode >= self.number_of_episodes
+        return self.last_watched_episode == self.number_of_episodes
 
     @property
     def is_finished(self) -> bool:
@@ -436,6 +450,22 @@ class SeasonModel(models.Model):
         Returns whether current season is finished or not.
         """
         return TvSeriesModel.is_finished.fget(self)
+
+    @property
+    def new_episode_this_week(self):
+        """
+        Returns a dates of the episodes if there are one or few this week or False in opposite way.
+        Returns None in case empty 'episodes' field.
+        """
+        if not self.episodes:
+            return None
+
+        first_day_of_week = (dt := datetime.date.today()) - datetime.timedelta(days=dt.weekday())
+        last_day_of_week = first_day_of_week + datetime.timedelta(days=6)
+
+        return tuple(
+            date for date in self.episodes.values() if first_day_of_week <= date <= last_day_of_week
+        ) or False
 
     @property
     def season_available_range(self):
@@ -605,5 +635,3 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         """
         image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
         return IOBTree(image_hash_from_db)
-
-

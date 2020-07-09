@@ -4,6 +4,7 @@ from django.core import exceptions
 import imagehash
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
+from rest_framework import serializers
 
 
 def change_empty_values(kwargs: dict, instance: models.Field) -> None:
@@ -108,7 +109,6 @@ class CustomHStoreField(postgres_fields.HStoreField):
                     code='not_a_string',
                     params={'key': key},
                 )
-
 
 
 

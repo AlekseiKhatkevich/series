@@ -184,7 +184,26 @@ class SeasonsViewSet(viewsets.ModelViewSet):
     """
     ViewSet for SeasonModel.
     """
-    queryset = archives.models.SeasonModel.objects.all()
+    serializer_class = archives.serializers.SeasonsSerializer
+    model = serializer_class.Meta.model
+
+    def get_queryset(self):
+        series_pk = self.kwargs['series_pk']
+        self.queryset = self.model.objects.filter(series_id=series_pk)
+
+        return super().get_queryset()
+
+    def get_permissions(self):
+        if self.action == 'list':
+            pass
+        elif self.action == 'create':
+            pass
+
+        return super().get_permissions()
+
+
+
+
 
 
 
