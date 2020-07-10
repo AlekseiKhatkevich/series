@@ -2,7 +2,7 @@ import datetime
 
 from django_filters import fields, rest_framework as rest_framework_filters, widgets
 from psycopg2.extras import DateRange
-
+from django.db.models import F, Q
 import archives.models
 
 queryset_instance = archives.models.models.QuerySet
@@ -88,5 +88,87 @@ class TvSeriesListCreateViewFilter(rest_framework_filters.FilterSet):
         """
         now = datetime.date.today()
         condition = {f'{field_name}__fully_lt': DateRange(now, None)}
+
+        return queryset.filter(**condition) if value else queryset.exclude(**condition)
+
+
+class SeasonsFilterSet(rest_framework_filters.FilterSet):
+    """
+    Filter for 'SeasonsViewSet' list action.
+    """
+    episodes = rest_framework_filters.BooleanFilter(
+        field_name='episodes',
+        lookup_expr='isnull',
+        label='Are season episodes empty?',
+    )
+    episodes_dates = DateExactRangeFilter(
+        field_name='episodes',
+        label='Episodes dates contains dates within this range.',
+        method='filter_episodes_dates',
+    )
+    translation_years_contained_by = DateExactRangeFilter(
+        field_name='translation_years',
+        lookup_expr='contained_by',
+    )
+    translation_years_overlap = DateExactRangeFilter(
+        field_name='translation_years',
+        lookup_expr='overlap',
+    )
+    filter_by_user = rest_framework_filters.BooleanFilter(
+        field_name='series__entry_author',
+        method='show_only_mine',
+        label='YES - Show only seasons created by you, NO - created by someone else but you.',
+    )
+    # is_fully_watched = rest_framework_filters.BooleanFilter(
+    #     field_name='last_watched_episode',
+    #     method='show_only_mine',
+    #     label='YES - shows only fully watched seasons, NO - shows only not fully watched seasons.',
+    # )
+
+    class Meta:
+        model = archives.models.SeasonModel
+        fields = {
+            'season_number': ['lte', 'gte', ],
+            'number_of_episodes': ['lte', 'gte', ],
+        }
+
+    # @staticmethod
+    # def fully_watched(
+    #         queryset: queryset_instance,
+    #         field_name: str,
+    #         value: bool
+    # ) -> queryset_instance:
+    #     """
+    #     Returns seasons filtered by whether they have been fully watched or not.
+    #     """
+    #     #condition = {field_name: F('number_of_episodes')}
+    #
+    #     return queryset.filter(Q(last_watched_episode__gte=F('number_of_episodes'))) #if value else queryset.exclude(**condition)
+
+    @staticmethod
+    def filter_episodes_dates(
+            queryset: queryset_instance,
+            field_name: str,
+            value: DateRange
+    ) -> queryset_instance:
+        """
+        Returns seasons that have episodes dates in the chosen range.
+        """
+        lower = f"'{value.lower}'" if value.lower else 'null'
+        upper = f"'{value.upper}'" if value.upper else 'null'
+        return queryset.extra(
+            where=[f"daterange({lower}, {upper}, '[]') @> any(avals({field_name})::date[])"]
+        )
+
+    def show_only_mine(
+            self,
+            queryset: queryset_instance,
+            field_name: str,
+            value: bool
+    ) -> queryset_instance:
+        """
+        Returns qs filtered by whether current user is a creator of a series.
+        """
+        condition = {field_name: self.request.user}
 
         return queryset.filter(**condition) if value else queryset.exclude(**condition)

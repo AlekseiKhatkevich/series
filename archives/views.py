@@ -4,7 +4,7 @@ import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, Prefetch, Sum
+from django.db.models import Count, Prefetch, Sum, F, Q, When, Case, CharField, ExpressionWrapper, BooleanField, IntegerField, Value
 from django.db.models.functions import NullIf
 from rest_framework import exceptions, generics, mixins, parsers, permissions, status, viewsets
 from rest_framework.request import Request
@@ -15,7 +15,7 @@ import archives.models
 import archives.permissions
 import archives.serializers
 from series import error_codes, pagination
-from series.helpers import custom_functions
+from series.helpers import custom_functions, view_mixins
 
 
 class TvSeriesBase(generics.GenericAPIView):
@@ -180,26 +180,39 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
             )
 
 
-class SeasonsViewSet(viewsets.ModelViewSet):
+class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelViewSet):
     """
     ViewSet for SeasonModel.
     """
     serializer_class = archives.serializers.SeasonsSerializer
     model = serializer_class.Meta.model
+    filterset_class = archives.filters.SeasonsFilterSet
+    ordering = ('_order',)
+    # ordering_fields = (
+    #     'name',
+    #     'rating',
+    #     'translation_years',
+    #     'entry_author__last_name',
+    # )
+    # search_fields = ('name',)
+    permission_action_classes = {
+    }
 
     def get_queryset(self):
+        # extra(select={'finished': r'last_watched_episode = number_of_episodes'})
         series_pk = self.kwargs['series_pk']
-        self.queryset = self.model.objects.filter(series_id=series_pk)
+        self.queryset = self.model.objects.filter(series_id=series_pk)\
+            .annotate(
+            finished=
+                Case(
+                    When(last_watched_episode=F('number_of_episodes'), then=True),
+                    default=False,
+                    output_field=BooleanField(),
+                )
+            )
 
         return super().get_queryset()
 
-    def get_permissions(self):
-        if self.action == 'list':
-            pass
-        elif self.action == 'create':
-            pass
-
-        return super().get_permissions()
 
 
 
