@@ -4,7 +4,7 @@ import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, Prefetch, Sum, F, Q, When, Case, CharField, ExpressionWrapper, BooleanField, IntegerField, Value
+from django.db.models import BooleanField, Count, ExpressionWrapper, F, Prefetch, Q, Sum
 from django.db.models.functions import NullIf
 from rest_framework import exceptions, generics, mixins, parsers, permissions, status, viewsets
 from rest_framework.request import Request
@@ -45,10 +45,10 @@ class TvSeriesBase(generics.GenericAPIView):
             seasons_cnt=NullIf(Count('seasons'), 0),
             episodes_cnt=Sum('seasons__number_of_episodes'),
         )
-        self.queryset = self.model.objects.all().\
-            annotate(**annotations).\
-            select_related('entry_author', ).\
-            prefetch_related('images', pr_groups, ).\
+        self.queryset = self.model.objects.all(). \
+            annotate(**annotations). \
+            select_related('entry_author', ). \
+            prefetch_related('images', pr_groups, ). \
             defer(*user_model_deferred_fields)
         return super().get_queryset()
 
@@ -72,24 +72,24 @@ class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
         qs = super().get_queryset()
         pr_seasons = Prefetch(
             'seasons',
-            queryset=archives.models.SeasonModel.objects.all().only('pk', 'season_number', 'series_id',)
+            queryset=archives.models.SeasonModel.objects.all().only('pk', 'season_number', 'series_id', )
         )
         return qs.select_related('entry_author__master', ).prefetch_related(pr_seasons, )
 
 
 class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
     pagination_class = pagination.FasterLimitOffsetPagination
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, )
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = archives.serializers.TvSeriesSerializer
     filterset_class = archives.filters.TvSeriesListCreateViewFilter
-    ordering = ('pk', )
+    ordering = ('pk',)
     ordering_fields = (
         'name',
         'rating',
         'translation_years',
         'entry_author__last_name',
     )
-    search_fields = ('name', )
+    search_fields = ('name',)
 
 
 class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
@@ -97,10 +97,10 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
     Api for uploading and deleting images for TvSeries.
     Filename should be with extension, for example 'picture.jpg'.
     """
-    parser_classes = (parsers.FileUploadParser, )
+    parser_classes = (parsers.FileUploadParser,)
     permission_classes = (
-            archives.permissions.MasterSlaveRelations |
-            archives.permissions.FriendsGuardianPermission,
+        archives.permissions.MasterSlaveRelations |
+        archives.permissions.FriendsGuardianPermission,
     )
     serializer_class = archives.serializers.ImagesSerializer
     lookup_url_kwarg = 'series_pk'
@@ -115,7 +115,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
                 content_type__model=archives.models.TvSeriesModel.__name__.lower(),
                 content_type__app_label=archives.models.TvSeriesModel._meta.app_label.lower(),
             ))
-        self.queryset = archives.models.TvSeriesModel.objects.all().\
+        self.queryset = archives.models.TvSeriesModel.objects.all(). \
             select_related('entry_author').prefetch_related(pr_permissions)
         return super().get_queryset()
 
@@ -188,37 +188,15 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
     model = serializer_class.Meta.model
     filterset_class = archives.filters.SeasonsFilterSet
     ordering = ('_order',)
-    # ordering_fields = (
-    #     'name',
-    #     'rating',
-    #     'translation_years',
-    #     'entry_author__last_name',
-    # )
-    # search_fields = ('name',)
+    ordering_fields = (
+        'season_number',
+        'number_of_episodes',
+    )
     permission_action_classes = {
     }
 
     def get_queryset(self):
-        # extra(select={'finished': r'last_watched_episode = number_of_episodes'})
         series_pk = self.kwargs['series_pk']
-        self.queryset = self.model.objects.filter(series_id=series_pk)\
-            .annotate(
-            finished=
-                Case(
-                    When(last_watched_episode=F('number_of_episodes'), then=True),
-                    default=False,
-                    output_field=BooleanField(),
-                )
-            )
+        self.queryset = self.model.objects.filter(series_id=series_pk)
 
         return super().get_queryset()
-
-
-
-
-
-
-
-
-
-

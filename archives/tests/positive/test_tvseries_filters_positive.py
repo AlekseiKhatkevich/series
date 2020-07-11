@@ -15,7 +15,7 @@ from users.helpers import create_test_users
 
 class FiltersPositiveTest(APITestCase):
     """
-    Positive test on 'archives' app api's filters.
+    Positive test on 'archives' TvseriesModel list view api.
     """
 
     @classmethod
