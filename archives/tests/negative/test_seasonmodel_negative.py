@@ -1,5 +1,5 @@
 import datetime
-import numpy
+
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.utils import IntegrityError
@@ -98,13 +98,6 @@ class SeasonModelNegativeTest(APITestCase):
             with self.assertRaisesMessage(IntegrityError, expected_constraint_code):
                 self.season_1_1.save(fc=False)
 
-        self.season_1_1.refresh_from_db()
-
-        self.assertNotEqual(
-            self.season_1_1.last_watched_episode,
-            6
-        )
-
     def test_season_number_gte_1_check_constraint(self):
         """
         Check that constraint doesnt allow to save season number < 1 and > 30.
@@ -169,10 +162,12 @@ class SeasonModelNegativeTest(APITestCase):
         date_range_2 = custom_functions.daterange((2015, 6, 1), (2016, 1, 1))
 
         self.season_2_1.translation_years = date_range_1
+        self.season_2_1.episodes = None
         self.season_2_1.save(fc=False)
 
         with self.assertRaisesMessage(IntegrityError, expected_error_message):
             self.season_2_2.translation_years = date_range_2
+            self.season_2_2.episodes = None
             self.season_2_2.save(fc=False)
 
     def test_translation_years_within_series(self):
@@ -209,7 +204,9 @@ class SeasonModelNegativeTest(APITestCase):
         # Season number 1 should have daterange lower then season 2.
         # We construct other way around.
         self.season_1_1.translation_years = custom_functions.daterange((2013, 12, 1), (2013, 12, 30))
+        self.season_1_1.episodes = None
         self.season_1_2.translation_years = custom_functions.daterange((2013, 1, 1), (2013, 2, 1))
+        self.season_1_2.episodes = None
         self.season_1_1.save()
 
         with self.assertRaisesMessage(ValidationError, expected_error_message):
@@ -287,4 +284,18 @@ class SeasonModelNegativeTest(APITestCase):
 
         with self.assertRaisesMessage(IntegrityError, expected_error_message):
             self.season_2_1.save(fc=False)
+
+    def test_episodes_sequence_check(self):
+        """
+        Check that 'episodes_sequence_check' constraint would not allow to save episodes
+        where keys order does not coincide to values order.
+        """
+        expected_error_message = 'episodes_sequence_check'
+
+        episodes = self.season_1_1.episodes
+        self.season_1_1.episodes = {1: episodes[2], 2: episodes[1]}
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            self.season_1_1.save(fc=False)
+
 

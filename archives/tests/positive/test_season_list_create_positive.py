@@ -25,7 +25,7 @@ class TvSeriesListCreatePositiveTest(test_helpers.TestHelpers, APITestCase):
         cls.series_1, cls.series_2 = cls.series
 
     def setUp(self) -> None:
-        self.seasons = initial_data.create_seasons(self.series, num_episodes=3)
+        self.seasons = initial_data.create_seasons(self.series, num_seasons=3)
         func = operator.attrgetter('series_id')
         data = sorted(self.seasons, key=func)
         self.seasons_dict = {

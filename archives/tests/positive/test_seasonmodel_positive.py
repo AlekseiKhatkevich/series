@@ -1,6 +1,8 @@
 import datetime
 import unittest
-from unittest.mock import patch, Mock
+from fractions import Fraction
+from unittest.mock import Mock, patch
+
 from django.test import tag
 from django.utils import timezone
 from psycopg2.extras import DateRange
@@ -136,7 +138,7 @@ class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
         """
         Check 'season_available_range' returns available free range for a season.
         """
-        initial_data.create_seasons(series=self.series, num_episodes=6)
+        initial_data.create_seasons(series=self.series, num_seasons=6)
         adjacent_seasons = archives.models.SeasonModel.objects.filter(
             season_number__in=(3, 4, 5),
         ).order_by('season_number').distinct('season_number')
@@ -164,3 +166,22 @@ class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
                 self.season_1.new_episode_this_week[0],
                 fake_episode_date
             )
+
+    def test_progress(self):
+        """
+        Check that 'progress' property returns fraction of 'last_watched_episodes' to
+        'number_of_episodes'.
+        """
+        control_value = Fraction(
+            self.season_1.last_watched_episode,
+            self.season_1.number_of_episodes,
+        )
+
+        self.assertIsInstance(
+            self.season_1.progress,
+            Fraction,
+        )
+        self.assertEqual(
+            self.season_1.progress,
+            control_value,
+        )

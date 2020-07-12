@@ -48,10 +48,15 @@ def create_tvseries(users: users_instances) -> series_instances:
     return series
 
 
-def create_seasons(series: series_instances, num_episodes: int = 2) -> season_instances:
+def create_seasons(
+        series: series_instances,
+        num_seasons: int = 2,
+        num_episodes: int = 6
+) -> season_instances:
     """
     Creates new seasons for tests. 2 episodes for each of 2 series by default.
-    :param num_episodes: Number of episodes to create in each series.
+    :param num_episodes: Number of episodes for each season.
+    :param num_seasons: Number of seasons to create in each series.
     :param series: TvSeriesModel instances.
     :return: SeasonModel instances.
     """
@@ -64,11 +69,11 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
         lower_bound = single_series.translation_years.lower
         upper_bound = single_series.translation_years.upper
         delta = upper_bound - lower_bound
-        chunk = min(delta / (num_episodes + 1), datetime.timedelta(days=364))
+        chunk = min(delta / (num_seasons + 1), datetime.timedelta(days=364))
 
         global_start = lower_bound
 
-        for season_number in range(num_episodes):
+        for season_number in range(num_seasons):
             local_start = global_start + one_day
             local_stop = local_start + chunk
 
@@ -77,14 +82,22 @@ def create_seasons(series: series_instances, num_episodes: int = 2) -> season_in
                 local_stop,
             )
             global_start = local_stop
+    #  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            episodes_step = (local_stop - local_start) / num_episodes
+            episodes = {
+                episode_number + 1: local_start + (episodes_step * episode_number)
+                for episode_number in range(num_episodes)
+            }
 
             new_season_data = {
                 f'{single_series.name} season {season_number + 1}': {
                     'series': single_series,
                     'season_number': season_number + 1,
-                    'number_of_episodes': random.randint(7, 10),
-                    '_order':  next(order),
-                    'translation_years': translation_years
+                    'number_of_episodes': num_episodes,
+                    '_order':  (cnt := next(order)),
+                    'last_watched_episode': num_episodes - (cnt % 2),
+                    'translation_years': translation_years,
+                    'episodes': episodes,
                     }, }
 
             seasons.update(new_season_data)

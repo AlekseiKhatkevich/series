@@ -9,6 +9,7 @@ from rest_framework import permissions, serializers
 import archives.models
 from series import constants
 from series.helpers import serializer_mixins
+from archives.helpers import custom_fields
 
 
 class InterrelationshipSerializer(serializers.ModelSerializer):
@@ -147,7 +148,7 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
     )
 
     class Meta(TvSeriesSerializer.Meta):
-        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons',)
+        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons', )
         keys_to_swap = ('friends', 'seasons',)
 
     @transaction.atomic
@@ -236,6 +237,9 @@ class SeasonsSerializer(serializers.ModelSerializer):
     """
     translation_years = DateRangeField(
     )
+    progress = custom_fields.FractionField(
+        read_only=True,
+    )
 
     class Meta:
         model = archives.models.SeasonModel
@@ -248,6 +252,7 @@ class SeasonsSerializer(serializers.ModelSerializer):
             'translation_years',
             'is_fully_watched',
             'is_finished',
+            'progress',
             'new_episode_this_week',
         )
         extra_kwargs = {

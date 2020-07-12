@@ -1,8 +1,8 @@
 import datetime
 import os
 from collections import defaultdict
-from typing import KeysView
-
+from typing import KeysView, Optional, Tuple, Union
+from fractions import Fraction
 import more_itertools
 from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
@@ -12,7 +12,6 @@ from django.contrib.postgres import constraints as psgr_constraints, fields as p
     indexes as psgr_indexes
 from django.core import exceptions, validators
 from django.db import models
-from django.db.models.functions import Length
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -23,8 +22,6 @@ import archives.managers
 from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
 from series import constants, error_codes
 from series.helpers.custom_functions import available_range
-
-models.CharField.register_lookup(Length)
 
 
 class GroupingModel(models.Model):
@@ -340,13 +337,19 @@ class SeasonModel(models.Model):
                 check=models.Q(
                     episodes__values__gte=models.Func(
                         models.Min(models.F('translation_years')),
-                        function='LOWER'
+                        function='LOWER',
                     )) &
                       models.Q(
                           episodes__values__lte=models.Func(
                               models.Max(models.F('translation_years')),
-                              function='UPPER'
-                          )))]
+                              function='UPPER',
+                          ))),
+            #  Episodes keys and dates should be ordered by both keys and dates. Uses custom transform
+            #  'check_episodes'.
+            models.CheckConstraint(
+                name='episodes_sequence_check',
+                check=models.Q(episodes__check_episodes=True),
+            )]
 
     def __str__(self):
         return f'pk - {self.pk}, season number - {self.season_number}, series name - {self.series.name}'
@@ -452,7 +455,17 @@ class SeasonModel(models.Model):
         return TvSeriesModel.is_finished.fget(self)
 
     @property
-    def new_episode_this_week(self):
+    def progress(self) -> Fraction:
+        """
+        Returns season watch progress as Fraction instance.
+        """
+        return Fraction(
+            self.last_watched_episode or 0,
+            self.number_of_episodes,
+        )
+
+    @property
+    def new_episode_this_week(self) -> Optional[Union[Tuple[datetime.date], bool]]:
         """
         Returns a dates of the episodes if there are one or few this week or False in opposite way.
         Returns None in case empty 'episodes' field.

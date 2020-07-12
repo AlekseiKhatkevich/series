@@ -1,8 +1,10 @@
-from collections.abc import Iterable
 import datetime
-from django.core import exceptions
+from collections.abc import Iterable
+from fractions import Fraction
+
 import imagehash
 from django.contrib.postgres import fields as postgres_fields
+from django.core import exceptions
 from django.db import models
 from rest_framework import serializers
 
@@ -30,9 +32,9 @@ class CustomJSONField(postgres_fields.JSONField):
     default EMPTY_VALUES = (None, '', [], (), {})
     """
 
-    def __init__(self, verbose_name=None, name=None, encoder=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         change_empty_values(kwargs=kwargs, instance=self)
-        super().__init__(verbose_name, name, encoder, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -49,17 +51,9 @@ class ExcludeEmptyValuesMixin:
     'This field cant be blank' and you dont like to use blank=True either
     """
 
-    def __init__(self, verbose_name=None, name=None, primary_key=False, max_length=None, unique=False, blank=False,
-                 null=False, db_index=False, rel=None, default=models.fields.NOT_PROVIDED, editable=True,
-                 serialize=True,
-                 unique_for_date=None, unique_for_month=None, unique_for_year=None, choices=None, help_text='',
-                 db_column=None, db_tablespace=None, auto_created=False, validators=(), error_messages=None, **kwargs):
-
+    def __init__(self, *args, **kwargs):
         change_empty_values(kwargs=kwargs, instance=self)
-
-        super().__init__(verbose_name, name, primary_key, max_length, unique, blank, null, db_index, rel, default,
-                         editable, serialize, unique_for_date, unique_for_month, unique_for_year, choices, help_text,
-                         db_column, db_tablespace, auto_created, validators, error_messages, )
+        super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -109,6 +103,26 @@ class CustomHStoreField(postgres_fields.HStoreField):
                     code='not_a_string',
                     params={'key': key},
                 )
+
+
+class FractionField(serializers.Field):
+    """
+    Field to serialize/deserialize Fraction instances.
+    """
+
+    def to_representation(self, value: Fraction) -> dict:
+        return {
+            'numerator': value.numerator,
+            'denominator': value.denominator,
+        }
+
+    def to_internal_value(self, data: dict) -> Fraction:
+        return Fraction(
+            data['numerator'],
+            data['denominator'],
+        )
+
+
 
 
 
