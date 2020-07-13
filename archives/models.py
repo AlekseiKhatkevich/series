@@ -251,6 +251,12 @@ class SeasonModel(models.Model):
         related_name='seasons',
         verbose_name='Parent TV series'
     )
+    entry_author = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.PROTECT,
+        related_name='seasons',
+        verbose_name='Author of the season.',
+    )
     season_number = models.PositiveSmallIntegerField(
         verbose_name='Number of the current season',
         validators=[
@@ -435,10 +441,10 @@ class SeasonModel(models.Model):
         if errors:
             raise exceptions.ValidationError(errors)
 
-    def save(self, fc=True, force_insert=False, force_update=False, using=None, update_fields=None):
+    def save(self, fc=True, *args, **kwargs):
         if fc:
             self.full_clean(validate_unique=True)
-        super().save(force_insert, force_update, using, update_fields)
+        super().save(*args, **kwargs)
 
     @property
     def is_fully_watched(self) -> bool:

@@ -1,6 +1,4 @@
 import datetime
-import itertools
-import operator
 from unittest.mock import Mock, patch
 
 from django.http import QueryDict
@@ -31,15 +29,11 @@ class TvSeriesListFiltersTest(test_helpers.TestHelpers, APITestCase):
         self.query_dict_1 = QueryDict(mutable=True)
         self.query_dict_2 = QueryDict(mutable=True)
 
-        self.seasons = initial_data.create_seasons(self.series, num_seasons=4)
-        func = operator.attrgetter('series_id')
-        data = sorted(self.seasons, key=func)
-        self.seasons_dict = {
-            key: list(group) for key, group in itertools.groupby(data, func)
-        }
-        for series_id, seasons in self.seasons_dict.items():
-            for season in seasons:
-                setattr(self, f'season_{series_id}_{season.season_number}', season)
+        self.seasons, self.seasons_dict = initial_data.create_seasons(
+            self.series,
+            num_seasons=4,
+            return_sorted=True,
+        )
 
     def test_episodes_dates(self):
         """
@@ -186,5 +180,44 @@ class TvSeriesListFiltersTest(test_helpers.TestHelpers, APITestCase):
             self.assertTrue(
                 all(season.new_episode_this_week for season in response.data['results'])
             )
+
+    def test_filter_by_progress(self):
+        """
+        Check that 'filter_by_progress' returns seasons filtered by last_watched_episode divided
+        by number_of_episodes ratio.
+        """
+        test_series = self.series_1
+
+        ratio = max(
+            season.last_watched_episode/season.number_of_episodes
+            for season in self.seasons_dict[test_series.pk]
+        ) - 0.01
+
+        self.query_dict_1['progress_lte'] = ratio
+
+        self.client.force_authenticate(user=test_series.entry_author)
+
+        response = self.client.get(
+            reverse('seasonmodel-list', args=(test_series.pk,)) +
+            '?' + self.query_dict_1.urlencode(),
+            data=None,
+            format='json',
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertNotEqual(
+            len(response.data['results']),
+            self.seasons_dict[test_series.pk]
+        )
+        self.assertTrue(
+            all(
+                season['last_watched_episode']/season['number_of_episodes'] <= ratio
+                for season in response.data['results']
+            ))
+
+
 
 

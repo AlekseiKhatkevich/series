@@ -1,6 +1,3 @@
-import itertools
-import operator
-
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -25,15 +22,11 @@ class TvSeriesListCreateNegativeTest(test_helpers.TestHelpers, APITestCase):
         cls.series_1, cls.series_2 = cls.series
 
     def setUp(self) -> None:
-        self.seasons = initial_data.create_seasons(self.series, num_seasons=3)
-        func = operator.attrgetter('series_id')
-        data = sorted(self.seasons, key=func)
-        self.seasons_dict = {
-            key: list(group) for key, group in itertools.groupby(data, func)
-        }
-        for series_id, seasons in self.seasons_dict.items():
-            for season in seasons:
-                setattr(self, f'season_{series_id}_{season.season_number}', season)
+        self.seasons, self.seasons_dict = initial_data.create_seasons(
+            self.series,
+            num_seasons=3,
+            return_sorted=True,
+        )
 
     def test_need_authentication(self):
         """

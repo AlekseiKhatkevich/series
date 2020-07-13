@@ -231,7 +231,7 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
         return dict(master=master, friends=friends, slaves=slaves)
 
 
-class SeasonsSerializer(serializers.ModelSerializer):
+class SeasonsSerializer(serializer_mixins.ReadOnlyRaisesException, serializers.ModelSerializer):
     """
     Serializer for SeasonModel list/create action.
     """
@@ -239,6 +239,9 @@ class SeasonsSerializer(serializers.ModelSerializer):
     )
     progress = custom_fields.FractionField(
         read_only=True,
+    )
+    entry_author = serializers.ReadOnlyField(
+        source='entry_author.get_full_name',
     )
 
     class Meta:
@@ -254,8 +257,19 @@ class SeasonsSerializer(serializers.ModelSerializer):
             'is_finished',
             'progress',
             'new_episode_this_week',
+            'entry_author'
         )
         extra_kwargs = {
             'season_number': {
                 'required': True,
             }, }
+
+    def create(self, validated_data):
+        request = self.context['request']
+        view = self.context['view']
+
+        validated_data['entry_author'] = request.user
+        validated_data['series'] = view.series
+
+        return super().create(validated_data)
+

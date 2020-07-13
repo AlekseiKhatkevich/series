@@ -1,4 +1,5 @@
 import datetime
+import numbers
 from collections.abc import Iterable
 from fractions import Fraction
 
@@ -7,6 +8,8 @@ from django.contrib.postgres import fields as postgres_fields
 from django.core import exceptions
 from django.db import models
 from rest_framework import serializers
+
+from series import error_codes
 
 
 def change_empty_values(kwargs: dict, instance: models.Field) -> None:
@@ -90,10 +93,7 @@ class CustomHStoreField(postgres_fields.HStoreField):
     HStoreField that converts integer keys stored as string to actual integers on deserialization.
     """
     def from_db_value(self, value, expression, connection):
-        if value is None:
-            return value
-
-        return {int(k): datetime.date.fromisoformat(v) if v is not None else v for k, v in value.items()}
+        return self.to_python(value)
 
     def validate(self, value, model_instance):
         for key, val in value.items():
@@ -104,6 +104,65 @@ class CustomHStoreField(postgres_fields.HStoreField):
                     params={'key': key},
                 )
 
+    def to_python(self, value):
+        if value is None:
+            return value
+
+        for k, v in value.items():
+            if isinstance(k, str) and isinstance(v, str):
+
+                converted_data = {}
+
+                for number, date in value.items():
+                    try:
+                        number = int(number)
+                    except ValueError:
+                        raise exceptions.ValidationError(
+                            *error_codes.KEY_NOT_AN_INTEGER,
+                        )
+                    try:
+                        date = datetime.date.fromisoformat(date)
+                    except ValueError:
+                        raise exceptions.ValidationError(
+                            *error_codes.NOT_ISO_DATE,
+                        )
+
+                    converted_data.update({int(number): date})
+
+                return converted_data
+
+            return super().to_python(value)
+
+
+# class CustomHstoreSerializerField(serializers.HStoreField):
+#     """
+#     Field converts str keys to int and iso dates in values to datetime.date objects
+#     during deserialization.
+#     """
+#
+#     def to_internal_value(self, data):
+#         data = super().to_internal_value(data)
+#
+#         converted_data = dict()
+#         for number, date in data.items():
+#             try:
+#                 number = int(number)
+#             except ValueError:
+#                 raise serializers.ValidationError(
+#                     *error_codes.KEY_NOT_AN_INTEGER,
+#                 )
+#
+#             try:
+#                 date = datetime.date.fromisoformat(date)
+#             except ValueError:
+#                 raise serializers.ValidationError(
+#                     *error_codes.NOT_ISO_DATE,
+#                 )
+#
+#             converted_data.update({int(number): date})
+#
+#         return converted_data
+
 
 class FractionField(serializers.Field):
     """
@@ -111,6 +170,8 @@ class FractionField(serializers.Field):
     """
 
     def to_representation(self, value: Fraction) -> dict:
+        assert isinstance(value, Fraction), 'Value should be instance of Fraction.'
+
         return {
             'numerator': value.numerator,
             'denominator': value.denominator,
@@ -121,6 +182,38 @@ class FractionField(serializers.Field):
             data['numerator'],
             data['denominator'],
         )
+
+    def run_validation(self, data=serializers.empty):
+        self.error_messages = {
+            err.code: err.message for err in (
+                error_codes.NOT_A_RATIONAL,
+                error_codes.FRACTIONFIELD_WRONG_KEYS,
+            )}
+
+        (is_empty_value, data) = self.validate_empty_values(data)
+        if is_empty_value:
+            return data
+
+        try:
+            numerator = data['numerator']
+            denominator = data['denominator']
+        except (KeyError, TypeError):
+            self.fail(
+                error_codes.FRACTIONFIELD_WRONG_KEYS.code
+            )
+
+        for number in (numerator, denominator):
+            if not isinstance(number, numbers.Rational):
+                self.fail(
+                    error_codes.NOT_A_RATIONAL.code
+                )
+
+        value = self.to_internal_value(data)
+        self.run_validators(value)
+
+        return value
+
+
 
 
 

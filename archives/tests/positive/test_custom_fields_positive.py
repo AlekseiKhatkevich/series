@@ -1,12 +1,12 @@
+import datetime
 import unittest
 
+import imagehash
 from django.contrib.postgres import fields as postgres_fields
 from django.db import models
 from rest_framework.test import APISimpleTestCase
-import datetime
-from archives.helpers import custom_fields
 
-import imagehash
+from archives.helpers import custom_fields
 
 
 class CustomFieldsPositiveTest(APISimpleTestCase):
@@ -111,3 +111,24 @@ class CustomFieldsPositiveTest(APISimpleTestCase):
             len(stored_dict),
             len(result)
         )
+
+    def test_FractionField(self):
+        """
+        Check that 'FractionField' correctly serialize and deserialize Fractions.
+        """
+        field_class = custom_fields.FractionField()
+        non_serialized_data = custom_fields.Fraction(5, 6)
+        serialized_data = {
+                'numerator': 5,
+                'denominator': 6
+            }
+
+        self.assertDictEqual(
+            field_class.to_representation(non_serialized_data),
+            serialized_data,
+        )
+        self.assertEqual(
+            field_class.to_internal_value(serialized_data),
+            non_serialized_data,
+        )
+

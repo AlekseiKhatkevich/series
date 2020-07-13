@@ -27,6 +27,7 @@ class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
         cls.series_1, cls.series_2 = cls.series
 
         cls.new_season_data = dict(
+            entry_author=cls.series_1.entry_author,
             series=cls.series_1,
             season_number=10,
             number_of_episodes=5,

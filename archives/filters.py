@@ -1,6 +1,7 @@
 import datetime
 
-from django.db.models import BooleanField, ExpressionWrapper, F, Q
+from django.db.models import BooleanField, ExpressionWrapper, F, FloatField, Q
+from django.db.models.functions import Cast
 from django_filters import fields, rest_framework as rest_framework_filters, widgets
 from psycopg2.extras import DateRange
 
@@ -116,7 +117,7 @@ class SeasonsFilterSet(rest_framework_filters.FilterSet):
         lookup_expr='overlap',
     )
     filter_by_user = rest_framework_filters.BooleanFilter(
-        field_name='series__entry_author',
+        field_name='entry_author',
         method='show_only_mine',
         label='YES - shows only seasons created by you, NO - created by someone else but you.',
     )
@@ -136,6 +137,16 @@ class SeasonsFilterSet(rest_framework_filters.FilterSet):
         label='Yes - shows only seasons which has episodes this week,'
               ' NO -seasons without episodes this week.'
     )
+    progress_lte = rest_framework_filters.NumberFilter(
+        field_name='progr__lte',
+        method='filter_by_progress',
+        label='Watch progress lte than value.',
+    )
+    progress_gte = rest_framework_filters.NumberFilter(
+        field_name='progr__gte',
+        method='filter_by_progress',
+        label='Watch progress gte than value.',
+    )
 
     class Meta:
         model = archives.models.SeasonModel
@@ -143,6 +154,22 @@ class SeasonsFilterSet(rest_framework_filters.FilterSet):
             'season_number': ['lte', 'gte', ],
             'number_of_episodes': ['lte', 'gte', ],
         }
+
+    @staticmethod
+    def filter_by_progress(
+            queryset: queryset_instance,
+            field_name: str,
+            value: float,
+    ) -> queryset_instance:
+        """
+        Filters by watch progress ('last_watched_episode' / 'number_of_episodes')
+        """
+        return queryset.annotate(
+                progr=(ExpressionWrapper(
+                    Cast('last_watched_episode', output_field=FloatField()) /
+                    Cast('number_of_episodes', output_field=FloatField()),
+                    output_field=FloatField()
+                ))).filter(**{field_name: value})
 
     @staticmethod
     def finished(queryset: queryset_instance, field_name: str, value: bool) -> queryset_instance:

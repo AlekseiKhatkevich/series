@@ -4,8 +4,9 @@ import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import BooleanField, Count, ExpressionWrapper, F, Prefetch, Q, Sum
+from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
+from django.shortcuts import get_object_or_404
 from rest_framework import exceptions, generics, mixins, parsers, permissions, status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -195,8 +196,23 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
     permission_action_classes = {
     }
 
+    def dispatch(self, request, *args, **kwargs):
+        series = get_object_or_404(
+            archives.models.TvSeriesModel,
+            pk=self.kwargs['series_pk'],
+        )
+        setattr(self, 'series', series)
+
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
+        user_model_deferred_fields = custom_functions.get_model_fields_subset(
+            model=get_user_model(),
+            fields_to_remove=('pk', 'first_name', 'last_name',),
+            prefix='entry_author__',
+        )
         series_pk = self.kwargs['series_pk']
-        self.queryset = self.model.objects.filter(series_id=series_pk)
+        self.queryset = self.model.objects.filter(series_id=series_pk).\
+            select_related('entry_author').defer(*user_model_deferred_fields)
 
         return super().get_queryset()

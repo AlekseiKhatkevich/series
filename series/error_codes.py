@@ -190,3 +190,19 @@ SEASON_TY_GT_YEAR = exc_msg(
     'Season translation years range is greater than one year.',
     'season_ty_gt_year',
 )
+NOT_A_RATIONAL = exc_msg(
+    'Numerator and denominator both should be instances of Rational.',
+    'not_a_rational',
+)
+FRACTIONFIELD_WRONG_KEYS = exc_msg(
+    'FractionField input data should be a dict with 2 keys: "numerator" and "denominator".',
+    'fractionfield_wrong_keys',
+)
+KEY_NOT_AN_INTEGER = exc_msg(
+    'Key should be a positive integer.',
+    'key_not_an_integer.',
+)
+NOT_ISO_DATE = exc_msg(
+    'Date should be in ISO 8601 format.',
+    'not_iso_date',
+)

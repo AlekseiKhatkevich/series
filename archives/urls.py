@@ -11,7 +11,6 @@ register_converter(
 
 router = routers.SimpleRouter()
 router.register(
-    #r'tvseries/(?P<series_pk>\d+)/seasons',
     r'',
     archives.views.SeasonsViewSet,
     basename='seasonmodel',

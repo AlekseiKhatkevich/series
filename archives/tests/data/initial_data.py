@@ -1,5 +1,6 @@
 import datetime
 import itertools
+import operator
 import random
 from io import BytesIO
 from typing import Sequence
@@ -32,14 +33,16 @@ def create_tvseries(users: users_instances) -> series_instances:
              'name': 'Django unleashed',
              'imdb_url': 'https://www.imdb.com',
              'translation_years': DateRange(
-                 datetime.date(year=2012, month=1, day=1), datetime.date(year=2014, month=1, day=1)
+                 datetime.date(year=2012, month=1, day=1),
+                 datetime.date(year=2014, month=1, day=1),
              )},
         'series_2':
             {'entry_author': users[1],
              'name': 'Shameless',
              'imdb_url': 'https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649',
              'translation_years': DateRange(
-                 datetime.date(year=2015, month=1, day=1), datetime.date(year=2019, month=1, day=1)
+                 datetime.date(year=2015, month=1, day=1),
+                 datetime.date(year=2019, month=1, day=1),
              )}}
 
     series = archives.models.TvSeriesModel.objects.bulk_create(
@@ -51,10 +54,12 @@ def create_tvseries(users: users_instances) -> series_instances:
 def create_seasons(
         series: series_instances,
         num_seasons: int = 2,
-        num_episodes: int = 6
+        num_episodes: int = 6,
+        return_sorted: bool = False,
 ) -> season_instances:
     """
     Creates new seasons for tests. 2 episodes for each of 2 series by default.
+    :param return_sorted: Return sorted dict of instances according their series {series_id: [instances]}.
     :param num_episodes: Number of episodes for each season.
     :param num_seasons: Number of seasons to create in each series.
     :param series: TvSeriesModel instances.
@@ -91,6 +96,7 @@ def create_seasons(
 
             new_season_data = {
                 f'{single_series.name} season {season_number + 1}': {
+                    'entry_author': single_series.entry_author,
                     'series': single_series,
                     'season_number': season_number + 1,
                     'number_of_episodes': num_episodes,
@@ -105,6 +111,14 @@ def create_seasons(
     seasons = archives.models.SeasonModel.objects.bulk_create(
         [archives.models.SeasonModel(**fields) for fields in seasons.values()]
     )
+
+    if return_sorted:
+        func = operator.attrgetter('series_id')
+        data = sorted(seasons, key=func)
+        seasons_dict = {
+            key: list(group) for key, group in itertools.groupby(data, func)
+        }
+        seasons = (seasons, seasons_dict)
 
     return seasons
 
