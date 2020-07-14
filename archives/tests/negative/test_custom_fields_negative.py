@@ -1,6 +1,6 @@
 from rest_framework.test import APISimpleTestCase
 from rest_framework import exceptions as drf_exceptions
-
+from django.core import exceptions as django_exceptions
 from archives.helpers import custom_fields
 from series import error_codes
 
@@ -57,4 +57,26 @@ class CustomFieldsNegativeTest(APISimpleTestCase):
             with self.subTest(data=data, message=message):
                 with self.assertRaisesMessage(drf_exceptions.ValidationError, message):
                     field_class.run_validation(data)
+
+    def test_CustomHStoreField(self):
+        """
+        Check that 'CustomHStoreField' raises error during deserialization in case wrong data
+        were provided.
+        """
+        field_class = custom_fields.CustomHStoreField()
+
+        wrong_data_1 = {'test': '2020-07-02', '2': '2020-07-02'}
+        wrong_data_2 = {'1': 'test', '2': '2020-07-02'}
+
+        expected_error_message_1 = error_codes.KEY_NOT_AN_INTEGER.message
+        expected_error_message_2 = error_codes.NOT_ISO_DATE.message
+
+        for data, message in zip(
+                (wrong_data_1, wrong_data_2),
+                (expected_error_message_1, expected_error_message_2)
+        ):
+            with self.subTest(data=data, message=message):
+                with self.assertRaisesMessage(django_exceptions.ValidationError, message):
+                    field_class.to_python(data)
+
 

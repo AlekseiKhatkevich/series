@@ -13,6 +13,7 @@ class TvSeriesDetailUpdateDeleteNegativeTest(TestHelpers, APITestCase):
     Negative test on detail/ update/ delete action on TvSeries model instances via API endpoint:
     /archives/tvseries/<series_pk>/ GET, PUT, PATCH.
     """
+    maxDiff = None
 
     def setUp(self) -> None:
         self.users = create_test_users.create_users()

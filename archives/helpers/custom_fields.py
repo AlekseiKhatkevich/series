@@ -91,77 +91,47 @@ class ImageHashField(models.CharField):
 class CustomHStoreField(postgres_fields.HStoreField):
     """
     HStoreField that converts integer keys stored as string to actual integers on deserialization.
+    Converts ISO date to datetime.date.
     """
     def from_db_value(self, value, expression, connection):
         return self.to_python(value)
 
     def validate(self, value, model_instance):
-        for key, val in value.items():
-            if not isinstance(val, (str, datetime.date)) and val is not None:
-                raise exceptions.ValidationError(
-                    self.error_messages['not_a_string'],
-                    code='not_a_string',
-                    params={'key': key},
-                )
+        return models.Field.validate(self, value, model_instance)
+        # for key, val in value.items():
+        #     if not isinstance(key, int) and key is not None:
+        #         raise exceptions.ValidationError(
+        #             *error_codes.KEY_NOT_AN_INTEGER,
+        #         )
+        #     if not isinstance(val, datetime.date) and val is not None:
+        #         raise exceptions.ValidationError(
+        #             *error_codes.NOT_ISO_DATE,
+        #         )
 
     def to_python(self, value):
         if value is None:
             return value
 
-        for k, v in value.items():
-            if isinstance(k, str) and isinstance(v, str):
+        converted_data = {}
 
-                converted_data = {}
+        for number, date in value.items():
+            if isinstance(number, str) and isinstance(date, str):
+                try:
+                    number = int(number)
+                except ValueError:
+                    raise exceptions.ValidationError(
+                        *error_codes.KEY_NOT_AN_INTEGER,
+                    )
+                try:
+                    date = datetime.date.fromisoformat(date)
+                except ValueError:
+                    raise exceptions.ValidationError(
+                        *error_codes.NOT_ISO_DATE,
+                    )
 
-                for number, date in value.items():
-                    try:
-                        number = int(number)
-                    except ValueError:
-                        raise exceptions.ValidationError(
-                            *error_codes.KEY_NOT_AN_INTEGER,
-                        )
-                    try:
-                        date = datetime.date.fromisoformat(date)
-                    except ValueError:
-                        raise exceptions.ValidationError(
-                            *error_codes.NOT_ISO_DATE,
-                        )
+                converted_data.update({int(number): date})
 
-                    converted_data.update({int(number): date})
-
-                return converted_data
-
-            return super().to_python(value)
-
-
-# class CustomHstoreSerializerField(serializers.HStoreField):
-#     """
-#     Field converts str keys to int and iso dates in values to datetime.date objects
-#     during deserialization.
-#     """
-#
-#     def to_internal_value(self, data):
-#         data = super().to_internal_value(data)
-#
-#         converted_data = dict()
-#         for number, date in data.items():
-#             try:
-#                 number = int(number)
-#             except ValueError:
-#                 raise serializers.ValidationError(
-#                     *error_codes.KEY_NOT_AN_INTEGER,
-#                 )
-#
-#             try:
-#                 date = datetime.date.fromisoformat(date)
-#             except ValueError:
-#                 raise serializers.ValidationError(
-#                     *error_codes.NOT_ISO_DATE,
-#                 )
-#
-#             converted_data.update({int(number): date})
-#
-#         return converted_data
+        return converted_data or super().to_python(value)
 
 
 class FractionField(serializers.Field):

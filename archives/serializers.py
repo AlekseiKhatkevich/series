@@ -273,3 +273,4 @@ class SeasonsSerializer(serializer_mixins.ReadOnlyRaisesException, serializers.M
 
         return super().create(validated_data)
 
+

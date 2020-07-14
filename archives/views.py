@@ -193,10 +193,23 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         'season_number',
         'number_of_episodes',
     )
-    permission_action_classes = {
-    }
+    permission_action_classes = dict(
+        create=(archives.permissions.MasterSlaveRelations |
+                archives.permissions.FriendsGuardianPermission,
+                ), )
+
+    def create(self, request, *args, **kwargs):
+        """
+        We call check_object_permissions() here in order to validate permissions of
+        current user to root series object.
+        """
+        self.check_object_permissions(self.request, self.series)
+        return super().create(request, *args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Here we check whether or not series with given 'series_pk' url kwarg exists.
+        """
         series = get_object_or_404(
             archives.models.TvSeriesModel,
             pk=self.kwargs['series_pk'],
@@ -213,6 +226,6 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         )
         series_pk = self.kwargs['series_pk']
         self.queryset = self.model.objects.filter(series_id=series_pk).\
-            select_related('entry_author').defer(*user_model_deferred_fields)
+            select_related('entry_author', ).defer(*user_model_deferred_fields)
 
         return super().get_queryset()

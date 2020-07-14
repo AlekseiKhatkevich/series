@@ -55,6 +55,12 @@ class User(AbstractUser):
         default=False,
         verbose_name='Is user account "deleted".'
     )
+    deleted_time = models.DateTimeField(
+        verbose_name='Time when user got soft-deleted',
+        null=True,
+        blank=True,
+        editable=False,
+    )
 
     USERNAME_FIELD = 'email'
     #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#django.contrib.auth.models.CustomUser.REQUIRED_FIELDS
@@ -118,15 +124,16 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     @transaction.atomic
-    def delete(self, soft_del=True, using=None, keep_parents=False):
+    def delete(self, soft_del=True, *args, **kwargs):
         if soft_del:
             self.blacklist_tokens()  # Blacklist all refresh tokens.
             self.liberate()  # Deallocate all slaves.
             self.deleted = True  # Soft delete self.
-            self.save(update_fields=('deleted',))
+            self.deleted_time = timezone.now()  # Write time of soft-deletion
+            self.save(update_fields=('deleted', 'deleted_time',))
             return f'Account {self.email} is deactivated'
         else:
-            return super().delete(using, keep_parents)
+            return super().delete(*args, **kwargs)
 
     def undelete(self) -> None:
         """
