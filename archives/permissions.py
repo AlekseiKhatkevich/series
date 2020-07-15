@@ -1,4 +1,5 @@
 import guardian.models
+from django.utils import timezone
 from rest_framework import permissions
 
 from series import constants, error_codes
@@ -34,9 +35,12 @@ class MasterSlaveRelations(IsObjectOwner):
     message = error_codes.ONLY_SLAVES_AND_MASTER.message
 
     def has_object_permission(self, request, view, obj):
-        is_master = request.user == obj.entry_author.master
-        is_slave = request.user.master == obj.entry_author
-        return super().has_object_permission(request, view, obj) or is_master or is_slave
+        if super().has_object_permission(request, view, obj):
+            return True
+        else:
+            is_master = request.user == obj.entry_author.master
+            is_slave = request.user.master == obj.entry_author
+            return is_master or is_slave
 
 
 class FriendsGuardianPermission(permissions.IsAuthenticated):
@@ -55,4 +59,26 @@ class FriendsGuardianPermission(permissions.IsAuthenticated):
             user=request.user,
             permission__codename=self.permission_code,
         ).exists()
+
+
+class HandleDeletedUsersEntriesPermission(permissions.BasePermission):
+    """
+    Allows users who have specific group permission work with entries of a soft-deleted users
+    after certain timedelta since they have been soft-deleted.
+    """
+    time_fringe = constants.DAYS_ELAPSED_SOFT_DELETED_USER
+    group_permission_code = constants.HANDLE_DELETED_USERS_GROUP
+    now = timezone.now()
+
+    def has_object_permission(self, request, view, obj):
+        if not obj.entry_author.deleted_time:
+            return False
+
+        #  If user has soft-deleted for more then half-year.
+        if obj.entry_author.deleted and \
+                (self.now - obj.entry_author.deleted_time).days > self.time_fringe:
+            return request.user.is_staff or \
+                   request.user.groups.filter(name=self.group_permission_code).exists()
+
+        return False
 

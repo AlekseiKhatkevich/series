@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 
 from users.helpers import create_test_users
 
+from django.db.models import Q
+
 
 class UserManagerAndQuerysetPositiveTest(APITestCase):
     """
@@ -72,11 +74,12 @@ class UserManagerAndQuerysetPositiveTest(APITestCase):
     def test_queryset_delete_method(self):
         """
         Check that queryset 'delete' method if called with argument 'soft_del=True' soft-deletes
-        models instances in queryset rather then delete them in real. ANd other way around.
+        models instances in queryset rather then delete them in real. And other way around.
         """
         get_user_model().objects.all().delete(soft_del=True)
         self.assertFalse(
-            get_user_model().all_objects.filter(deleted=False).exists()
+            get_user_model().all_objects.filter(
+                Q(deleted_time__isnull=True) | Q(deleted=False)).exists()
         )
 
         get_user_model()._default_manager.all().update(deleted=False)

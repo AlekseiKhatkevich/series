@@ -40,7 +40,7 @@ class CustomFunctionsPositiveTest(APITestCase):
                     prefix=prefix,
                     fields_to_remove=(
                         'password', 'last_login', 'is_superuser', 'is_staff', 'is_active',
-                        'date_joined', 'user_country', 'master', 'deleted'
+                        'date_joined', 'user_country', 'master', 'deleted', 'deleted_time',
                                       ))
                 self.assertSetEqual(
                     expected_result,

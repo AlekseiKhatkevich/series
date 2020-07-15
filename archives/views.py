@@ -193,10 +193,14 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         'season_number',
         'number_of_episodes',
     )
+    non_safe_methods_permissions = (
+        archives.permissions.MasterSlaveRelations |
+        archives.permissions.FriendsGuardianPermission |
+        archives.permissions.HandleDeletedUsersEntriesPermission,
+    )
     permission_action_classes = dict(
-        create=(archives.permissions.MasterSlaveRelations |
-                archives.permissions.FriendsGuardianPermission,
-                ), )
+        create=non_safe_methods_permissions,
+    )
 
     def create(self, request, *args, **kwargs):
         """
@@ -221,11 +225,12 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
     def get_queryset(self):
         user_model_deferred_fields = custom_functions.get_model_fields_subset(
             model=get_user_model(),
-            fields_to_remove=('pk', 'first_name', 'last_name',),
+            fields_to_remove=('pk', 'first_name', 'last_name', 'deleted', 'deleted_time',),
             prefix='entry_author__',
         )
+
         series_pk = self.kwargs['series_pk']
-        self.queryset = self.model.objects.filter(series_id=series_pk).\
+        self.queryset = self.model.objects.filter(series_id=series_pk). \
             select_related('entry_author', ).defer(*user_model_deferred_fields)
 
         return super().get_queryset()

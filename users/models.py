@@ -140,7 +140,8 @@ class User(AbstractUser):
         Undeletes user entry previously being fake-deleted.
         """
         self.deleted = False
-        return self.save(update_fields=('deleted',))
+        self.deleted_time = None
+        return self.save(update_fields=('deleted', 'deleted_time',))
 
     def blacklist_tokens(self):
         """

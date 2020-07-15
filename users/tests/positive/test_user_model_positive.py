@@ -130,14 +130,20 @@ class CreateUserModelPositiveTest(APITestCase):
         """
         self.user_2.master = self.user_1
         self.user_2.save()
+
         self.user_1.delete(soft_del=True)
+
         self.user_2.refresh_from_db()
+        self.user_1.refresh_from_db()
 
         self.assertTrue(
             self.user_1.deleted
         )
         self.assertIsNone(
             self.user_2.master
+        )
+        self.assertIsNotNone(
+            self.user_1.deleted_time
         )
 
         self.user_3.delete(soft_del=False)
@@ -156,6 +162,9 @@ class CreateUserModelPositiveTest(APITestCase):
 
         self.assertFalse(
             self.user_1.deleted
+        )
+        self.assertIsNone(
+            self.user_1.deleted_time
         )
 
     def test_liberate(self):

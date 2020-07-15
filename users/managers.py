@@ -3,7 +3,7 @@ from typing import Any, Optional
 from django.contrib.auth.base_user import BaseUserManager
 from django.core import exceptions
 from django.db import models
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, functions
 
 from series import error_codes
 from series.helpers import project_decorators
@@ -101,7 +101,7 @@ class UserQueryset(models.QuerySet):
     """
     def delete(self, soft_del=True):
         if soft_del:
-            return self.update(deleted=True)
+            return self.update(deleted=True, deleted_time=functions.Now())
         else:
             return super().delete()
 
@@ -109,7 +109,7 @@ class UserQueryset(models.QuerySet):
         """
         Undeletes previously fake-deleted user entries.
         """
-        return self.update(deleted=False)
+        return self.update(deleted=False, deleted_time=None)
 
     def get_available_slaves(self) -> models.QuerySet:
         """
