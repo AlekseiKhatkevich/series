@@ -1,3 +1,4 @@
+import functools
 from typing import Sequence
 
 import guardian.models
@@ -23,8 +24,6 @@ class TvSeriesBase(generics.GenericAPIView):
     """
     Base view class for TV series views.
     """
-    _obj = None
-
     @property
     def model(self):
         return getattr(self.serializer_class.Meta, 'model')
@@ -53,11 +52,9 @@ class TvSeriesBase(generics.GenericAPIView):
             defer(*user_model_deferred_fields)
         return super().get_queryset()
 
+    @functools.lru_cache(maxsize=10)
     def get_object(self):
-        # To use saved in instance 'obj' object instead of calling function each ad every time.
-        if self._obj is None:
-            self._obj = super().get_object()
-        return self._obj
+        return super().get_object()
 
 
 class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
@@ -202,6 +199,11 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         create=non_safe_methods_permissions,
     )
 
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return archives.serializers.DetailSeasonSerializer
+        return super().get_serializer_class()
+
     def create(self, request, *args, **kwargs):
         """
         We call check_object_permissions() here in order to validate permissions of
@@ -234,3 +236,9 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
             select_related('entry_author', ).defer(*user_model_deferred_fields)
 
         return super().get_queryset()
+
+    @functools.lru_cache(maxsize=10)
+    def get_object(self):
+        return super().get_object()
+
+

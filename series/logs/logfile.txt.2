@@ -1,0 +1,571 @@
+ERROR || 2020-07-14 12:57:44,530 || log || Internal Server Error: /archives/tvseries/14/seasons/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 212, in dispatch
+    self.check_object_permissions(self.request, self.series)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 344, in check_object_permissions
+    self.permission_denied(
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 173, in permission_denied
+    if request.authenticators and not request.successful_authenticator:
+AttributeError: 'WSGIRequest' object has no attribute 'authenticators'
+ERROR || 2020-07-14 12:57:44,591 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 500 111621
+WARNING || 2020-07-14 14:19:16,291 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:19:16,292 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 73
+WARNING || 2020-07-14 14:22:55,795 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:22:55,795 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 73
+WARNING || 2020-07-14 14:27:50,316 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:27:50,317 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 73
+WARNING || 2020-07-14 14:37:10,948 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:37:10,949 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 73
+WARNING || 2020-07-14 14:38:09,952 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:38:09,952 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 73
+WARNING || 2020-07-14 14:40:41,367 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:40:41,368 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 115
+WARNING || 2020-07-14 14:41:12,957 || log || Not Found: /favicon.ico
+WARNING || 2020-07-14 14:41:12,957 || basehttp || "GET /favicon.ico HTTP/1.1" 404 12161
+WARNING || 2020-07-14 14:49:58,713 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:49:58,714 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 14:50:34,120 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:50:34,121 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 14:57:08,271 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 14:57:08,272 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 14:58:25,387 || log || Forbidden: /archives/tvseries/69/delete-image/2172,2173/
+WARNING || 2020-07-14 14:58:25,422 || log || Forbidden: /archives/tvseries/69/delete-image/2176,2177/
+WARNING || 2020-07-14 14:58:25,443 || log || Bad Request: /archives/tvseries/69/delete-image/1000,999/
+WARNING || 2020-07-14 14:58:25,513 || log || Bad Request: /archives/tvseries/71/upload-image/small_image.gif/
+WARNING || 2020-07-14 14:58:26,048 || log || Not Found: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 14:58:26,048 || log || Forbidden: /archives/tvseries/75/seasons/
+WARNING || 2020-07-14 14:58:26,126 || log || Forbidden: /archives/tvseries/77/
+WARNING || 2020-07-14 14:58:26,205 || log || Forbidden: /archives/tvseries/83/
+WARNING || 2020-07-14 15:11:40,316 || log || Forbidden: /archives/tvseries/73/delete-image/2221,2222/
+WARNING || 2020-07-14 15:11:40,352 || log || Forbidden: /archives/tvseries/73/delete-image/2225,2226/
+WARNING || 2020-07-14 15:11:40,372 || log || Bad Request: /archives/tvseries/73/delete-image/1000,999/
+WARNING || 2020-07-14 15:11:40,443 || log || Bad Request: /archives/tvseries/75/upload-image/small_image.gif/
+WARNING || 2020-07-14 15:11:40,846 || log || Not Found: /archives/tvseries/8/seasons/
+WARNING || 2020-07-14 15:11:40,859 || log || Forbidden: /archives/tvseries/79/seasons/
+WARNING || 2020-07-14 15:11:41,029 || log || Forbidden: /archives/tvseries/81/
+WARNING || 2020-07-14 15:11:41,117 || log || Forbidden: /archives/tvseries/87/
+WARNING || 2020-07-14 15:12:47,346 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-14 15:16:54,927 || log || Forbidden: /archives/tvseries/67/seasons/
+WARNING || 2020-07-14 15:17:23,444 || log || Forbidden: /archives/tvseries/69/seasons/
+WARNING || 2020-07-14 15:28:13,494 || log || Forbidden: /archives/tvseries/82/seasons/
+WARNING || 2020-07-14 15:52:07,552 || log || Bad Request: /auth/users/confirm_undelete_account/
+WARNING || 2020-07-14 15:52:08,471 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:52:08,478 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:52:08,488 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:52:08,773 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:52:08,784 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:52:09,393 || log || Bad Request: /auth/jwt/create
+WARNING || 2020-07-14 15:52:09,926 || log || Forbidden: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 15:52:11,108 || log || Too Many Requests: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 15:52:11,433 || log || Bad Request: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 15:52:11,637 || log || Bad Request: /auth/jwt/refresh
+WARNING || 2020-07-14 15:52:11,677 || log || Unauthorized: /auth/jwt/refresh
+WARNING || 2020-07-14 15:52:12,521 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 15:52:13,442 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 15:52:14,256 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 15:52:14,356 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 15:52:14,367 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 15:52:14,449 || log || Too Many Requests: /auth/users/resend_activation/
+WARNING || 2020-07-14 15:52:15,206 || log || Too Many Requests: /auth/users/undelete_account/
+WARNING || 2020-07-14 15:52:15,834 || log || Bad Request: /auth/users/undelete_account/
+WARNING || 2020-07-14 15:53:25,289 || log || Bad Request: /auth/users/confirm_undelete_account/
+WARNING || 2020-07-14 15:53:26,021 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:53:26,021 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:53:26,036 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:53:26,372 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:53:26,380 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 15:53:27,121 || log || Bad Request: /auth/jwt/create
+WARNING || 2020-07-14 15:53:27,424 || log || Forbidden: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 15:53:28,538 || log || Too Many Requests: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 15:53:28,809 || log || Bad Request: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 15:53:28,947 || log || Bad Request: /auth/jwt/refresh
+WARNING || 2020-07-14 15:53:28,963 || log || Unauthorized: /auth/jwt/refresh
+WARNING || 2020-07-14 15:53:29,527 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 15:53:30,031 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 15:53:30,486 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 15:53:30,551 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 15:53:30,558 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 15:53:30,609 || log || Too Many Requests: /auth/users/resend_activation/
+WARNING || 2020-07-14 15:53:31,353 || log || Too Many Requests: /auth/users/undelete_account/
+WARNING || 2020-07-14 15:53:31,984 || log || Bad Request: /auth/users/undelete_account/
+WARNING || 2020-07-14 17:15:18,387 || log || Forbidden: /archives/tvseries/87/delete-image/2270,2271/
+WARNING || 2020-07-14 17:15:18,462 || log || Forbidden: /archives/tvseries/87/delete-image/2274,2275/
+WARNING || 2020-07-14 17:15:18,492 || log || Bad Request: /archives/tvseries/87/delete-image/1000,999/
+WARNING || 2020-07-14 17:15:18,585 || log || Bad Request: /archives/tvseries/89/upload-image/small_image.gif/
+WARNING || 2020-07-14 17:15:19,019 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-14 17:15:19,031 || log || Forbidden: /archives/tvseries/93/seasons/
+WARNING || 2020-07-14 17:15:19,052 || log || Forbidden: /archives/tvseries/94/seasons/
+WARNING || 2020-07-14 17:15:19,142 || log || Forbidden: /archives/tvseries/95/
+WARNING || 2020-07-14 17:15:19,231 || log || Forbidden: /archives/tvseries/101/
+WARNING || 2020-07-14 17:15:24,889 || log || Not Found: /archives/tvseries/999/upload-image/test.jpg/
+WARNING || 2020-07-14 17:15:25,605 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:15:25,810 || log || Bad Request: /auth/users/confirm_undelete_account/
+WARNING || 2020-07-14 17:15:26,308 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:15:26,318 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:15:26,328 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:15:26,584 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:15:26,593 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:15:27,226 || log || Bad Request: /auth/jwt/create
+WARNING || 2020-07-14 17:15:27,581 || log || Forbidden: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:15:28,572 || log || Too Many Requests: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:15:28,803 || log || Bad Request: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:15:28,881 || log || Bad Request: /auth/jwt/refresh
+WARNING || 2020-07-14 17:15:28,897 || log || Unauthorized: /auth/jwt/refresh
+WARNING || 2020-07-14 17:15:29,448 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:15:29,898 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:15:30,402 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:15:30,470 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:15:30,478 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:15:30,522 || log || Too Many Requests: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:15:31,024 || log || Too Many Requests: /auth/users/undelete_account/
+WARNING || 2020-07-14 17:15:31,449 || log || Bad Request: /auth/users/undelete_account/
+WARNING || 2020-07-14 17:34:18,534 || log || Bad Request: /auth/users/confirm_undelete_account/
+WARNING || 2020-07-14 17:34:19,159 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:34:19,175 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:34:19,191 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:34:19,503 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:34:19,519 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:34:20,160 || log || Bad Request: /auth/jwt/create
+WARNING || 2020-07-14 17:34:20,514 || log || Forbidden: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:34:21,530 || log || Too Many Requests: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:34:21,760 || log || Bad Request: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:34:21,834 || log || Bad Request: /auth/jwt/refresh
+WARNING || 2020-07-14 17:34:21,850 || log || Unauthorized: /auth/jwt/refresh
+WARNING || 2020-07-14 17:34:22,513 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:34:22,957 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:34:23,435 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:34:23,507 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:34:23,515 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:34:23,568 || log || Too Many Requests: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:34:24,120 || log || Too Many Requests: /auth/users/undelete_account/
+WARNING || 2020-07-14 17:34:24,795 || log || Bad Request: /auth/users/undelete_account/
+WARNING || 2020-07-14 17:59:11,643 || log || Forbidden: /archives/tvseries/21/delete-image/2319,2320/
+WARNING || 2020-07-14 17:59:11,674 || log || Forbidden: /archives/tvseries/21/delete-image/2323,2324/
+WARNING || 2020-07-14 17:59:11,699 || log || Bad Request: /archives/tvseries/21/delete-image/1000,999/
+WARNING || 2020-07-14 17:59:11,772 || log || Bad Request: /archives/tvseries/23/upload-image/small_image.gif/
+WARNING || 2020-07-14 17:59:12,169 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-14 17:59:12,185 || log || Forbidden: /archives/tvseries/27/seasons/
+WARNING || 2020-07-14 17:59:12,201 || log || Forbidden: /archives/tvseries/28/seasons/
+WARNING || 2020-07-14 17:59:12,293 || log || Forbidden: /archives/tvseries/29/
+WARNING || 2020-07-14 17:59:12,388 || log || Forbidden: /archives/tvseries/35/
+WARNING || 2020-07-14 17:59:19,948 || log || Not Found: /archives/tvseries/999/upload-image/test.jpg/
+WARNING || 2020-07-14 17:59:20,648 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:59:21,089 || log || Bad Request: /auth/users/confirm_undelete_account/
+WARNING || 2020-07-14 17:59:21,742 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:59:21,752 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:59:21,764 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:59:22,010 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:59:22,019 || log || Bad Request: /auth/users/
+WARNING || 2020-07-14 17:59:22,568 || log || Bad Request: /auth/jwt/create
+WARNING || 2020-07-14 17:59:22,850 || log || Forbidden: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:59:23,796 || log || Too Many Requests: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:59:24,028 || log || Bad Request: /auth/users/master_slave_interchange/
+WARNING || 2020-07-14 17:59:24,093 || log || Bad Request: /auth/jwt/refresh
+WARNING || 2020-07-14 17:59:24,109 || log || Unauthorized: /auth/jwt/refresh
+WARNING || 2020-07-14 17:59:24,774 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:59:25,219 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:59:25,699 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-14 17:59:25,777 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:59:25,787 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:59:25,838 || log || Too Many Requests: /auth/users/resend_activation/
+WARNING || 2020-07-14 17:59:26,307 || log || Too Many Requests: /auth/users/undelete_account/
+WARNING || 2020-07-14 17:59:26,749 || log || Bad Request: /auth/users/undelete_account/
+WARNING || 2020-07-14 19:13:03,750 || log || Not Found: /favicon.ico
+WARNING || 2020-07-14 19:13:03,751 || basehttp || "GET /favicon.ico HTTP/1.1" 404 12161
+ERROR || 2020-07-14 19:22:29,798 || log || Internal Server Error: /archives/tvseries/9/seasons/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 229, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 493, in dispatch
+    self.initial(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 411, in initial
+    self.check_permissions(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 331, in check_permissions
+    for permission in self.get_permissions():
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\view_mixins.py", line 28, in get_permissions
+    return [
+TypeError: 'OperandHolder' object is not iterable
+ERROR || 2020-07-14 19:22:29,880 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 500 133922
+WARNING || 2020-07-14 19:22:45,904 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:22:45,905 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14977
+WARNING || 2020-07-14 19:35:44,740 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:35:44,741 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14977
+WARNING || 2020-07-14 19:36:13,324 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:36:13,325 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14977
+WARNING || 2020-07-14 19:36:35,598 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:36:35,598 || basehttp || "GET /archives/tvseries/14/seasons/ HTTP/1.1" 403 14934
+WARNING || 2020-07-14 19:36:36,164 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:36:36,165 || basehttp || "GET /archives/tvseries/14/seasons/ HTTP/1.1" 403 14935
+WARNING || 2020-07-14 19:36:54,044 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:36:54,045 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14977
+WARNING || 2020-07-14 19:37:13,008 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:37:13,009 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14927
+WARNING || 2020-07-14 19:37:20,580 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:37:20,580 || basehttp || "GET /archives/tvseries/14/seasons/ HTTP/1.1" 403 14934
+WARNING || 2020-07-14 19:38:01,938 || log || Not Found: /archives/tvseries/19/seasons/
+WARNING || 2020-07-14 19:38:01,939 || basehttp || "GET /archives/tvseries/19/seasons/ HTTP/1.1" 404 10729
+WARNING || 2020-07-14 19:39:18,041 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:39:18,042 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 19:42:30,641 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:42:30,641 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 19:54:36,835 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:54:36,836 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 19:55:55,978 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:55:55,979 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14661
+WARNING || 2020-07-14 19:56:44,946 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:56:44,947 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14403
+WARNING || 2020-07-14 19:56:54,016 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:56:54,016 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14974
+WARNING || 2020-07-14 19:57:20,517 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:57:20,518 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14403
+WARNING || 2020-07-14 19:57:24,243 || log || Forbidden: /archives/tvseries/9/seasons/
+WARNING || 2020-07-14 19:57:24,243 || basehttp || "GET /archives/tvseries/9/seasons/ HTTP/1.1" 403 14699
+WARNING || 2020-07-14 19:57:32,593 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:57:32,593 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-14 19:57:42,251 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:57:42,252 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 19:57:54,417 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:57:54,417 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-14 19:58:18,737 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:58:18,738 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 19:59:18,390 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 19:59:18,391 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 20:16:42,465 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:16:42,466 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-14 20:17:36,358 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:17:36,359 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-14 20:17:50,206 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:17:50,207 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-14 20:17:58,045 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:17:58,046 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 20:18:09,706 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:18:09,707 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-14 20:18:14,999 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:18:15,000 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 20:22:41,377 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:22:41,378 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 20:24:55,228 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-14 20:24:55,229 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-14 20:32:49,374 || log || Forbidden: /archives/tvseries/21/delete-image/2368,2369/
+WARNING || 2020-07-14 20:32:49,401 || log || Forbidden: /archives/tvseries/21/delete-image/2372,2373/
+WARNING || 2020-07-14 20:32:49,418 || log || Bad Request: /archives/tvseries/21/delete-image/1000,999/
+WARNING || 2020-07-14 20:32:49,486 || log || Bad Request: /archives/tvseries/23/upload-image/small_image.gif/
+WARNING || 2020-07-14 20:32:49,844 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-14 20:32:49,859 || log || Forbidden: /archives/tvseries/27/seasons/
+WARNING || 2020-07-14 20:32:49,875 || log || Forbidden: /archives/tvseries/28/seasons/
+WARNING || 2020-07-14 20:32:49,953 || log || Forbidden: /archives/tvseries/29/
+WARNING || 2020-07-14 20:32:50,047 || log || Forbidden: /archives/tvseries/35/
+WARNING || 2020-07-15 12:58:12,476 || log || Forbidden: /archives/tvseries/107/delete-image/2417,2418/
+WARNING || 2020-07-15 12:58:12,507 || log || Forbidden: /archives/tvseries/107/delete-image/2421,2422/
+WARNING || 2020-07-15 12:58:12,523 || log || Bad Request: /archives/tvseries/107/delete-image/1000,999/
+WARNING || 2020-07-15 12:58:12,569 || log || Bad Request: /archives/tvseries/109/upload-image/small_image.gif/
+WARNING || 2020-07-15 12:58:13,023 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-15 12:58:13,038 || log || Forbidden: /archives/tvseries/115/seasons/
+WARNING || 2020-07-15 12:58:13,054 || log || Forbidden: /archives/tvseries/116/seasons/
+WARNING || 2020-07-15 12:58:13,116 || log || Forbidden: /archives/tvseries/117/
+WARNING || 2020-07-15 12:58:13,194 || log || Forbidden: /archives/tvseries/123/
+WARNING || 2020-07-15 12:59:30,865 || log || Forbidden: /archives/tvseries/71/delete-image/2466,2467/
+WARNING || 2020-07-15 12:59:30,880 || log || Forbidden: /archives/tvseries/71/delete-image/2470,2471/
+WARNING || 2020-07-15 12:59:30,912 || log || Bad Request: /archives/tvseries/71/delete-image/1000,999/
+WARNING || 2020-07-15 12:59:30,958 || log || Bad Request: /archives/tvseries/73/upload-image/small_image.gif/
+WARNING || 2020-07-15 12:59:31,368 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-15 12:59:31,384 || log || Forbidden: /archives/tvseries/79/seasons/
+WARNING || 2020-07-15 12:59:31,409 || log || Forbidden: /archives/tvseries/80/seasons/
+WARNING || 2020-07-15 12:59:31,491 || log || Forbidden: /archives/tvseries/81/
+WARNING || 2020-07-15 12:59:31,571 || log || Forbidden: /archives/tvseries/87/
+WARNING || 2020-07-15 14:58:59,950 || log || Forbidden: /archives/tvseries/14/seasons/
+WARNING || 2020-07-15 14:58:59,951 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 403 64
+WARNING || 2020-07-15 14:59:47,762 || log || Bad Request: /archives/tvseries/14/seasons/
+WARNING || 2020-07-15 14:59:47,763 || basehttp || "POST /archives/tvseries/14/seasons/ HTTP/1.1" 400 201
+WARNING || 2020-07-15 17:16:26,992 || log || Forbidden: /archives/tvseries/215/delete-image/2515,2516/
+WARNING || 2020-07-15 17:16:27,022 || log || Forbidden: /archives/tvseries/215/delete-image/2519,2520/
+WARNING || 2020-07-15 17:16:27,040 || log || Bad Request: /archives/tvseries/215/delete-image/1000,999/
+WARNING || 2020-07-15 17:16:27,201 || log || Bad Request: /archives/tvseries/217/upload-image/small_image.gif/
+WARNING || 2020-07-15 17:16:27,679 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-15 17:16:27,690 || log || Forbidden: /archives/tvseries/223/seasons/
+WARNING || 2020-07-15 17:16:27,707 || log || Forbidden: /archives/tvseries/224/seasons/
+WARNING || 2020-07-15 17:16:27,773 || log || Forbidden: /archives/tvseries/225/
+WARNING || 2020-07-15 17:16:27,855 || log || Forbidden: /archives/tvseries/231/
+WARNING || 2020-07-16 12:39:46,483 || log || Forbidden: /archives/tvseries/71/delete-image/2564,2565/
+WARNING || 2020-07-16 12:39:46,512 || log || Forbidden: /archives/tvseries/71/delete-image/2568,2569/
+WARNING || 2020-07-16 12:39:46,530 || log || Bad Request: /archives/tvseries/71/delete-image/1000,999/
+WARNING || 2020-07-16 12:39:46,602 || log || Bad Request: /archives/tvseries/73/upload-image/small_image.gif/
+WARNING || 2020-07-16 12:39:47,135 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-07-16 12:39:47,135 || log || Forbidden: /archives/tvseries/79/seasons/
+WARNING || 2020-07-16 12:39:47,150 || log || Forbidden: /archives/tvseries/80/seasons/
+WARNING || 2020-07-16 12:39:47,228 || log || Forbidden: /archives/tvseries/81/
+WARNING || 2020-07-16 12:39:47,323 || log || Forbidden: /archives/tvseries/87/
+WARNING || 2020-07-16 12:39:53,622 || log || Not Found: /archives/tvseries/999/upload-image/test.jpg/
+WARNING || 2020-07-16 12:39:54,206 || log || Bad Request: /auth/users/
+WARNING || 2020-07-16 12:39:54,486 || log || Bad Request: /auth/users/confirm_undelete_account/
+WARNING || 2020-07-16 12:39:54,941 || log || Bad Request: /auth/users/
+WARNING || 2020-07-16 12:39:54,957 || log || Bad Request: /auth/users/
+WARNING || 2020-07-16 12:39:54,957 || log || Bad Request: /auth/users/
+WARNING || 2020-07-16 12:39:55,160 || log || Bad Request: /auth/users/
+WARNING || 2020-07-16 12:39:55,160 || log || Bad Request: /auth/users/
+WARNING || 2020-07-16 12:39:55,614 || log || Bad Request: /auth/jwt/create
+WARNING || 2020-07-16 12:39:55,895 || log || Forbidden: /auth/users/master_slave_interchange/
+WARNING || 2020-07-16 12:39:56,648 || log || Too Many Requests: /auth/users/master_slave_interchange/
+WARNING || 2020-07-16 12:39:56,833 || log || Bad Request: /auth/users/master_slave_interchange/
+WARNING || 2020-07-16 12:39:56,912 || log || Bad Request: /auth/jwt/refresh
+WARNING || 2020-07-16 12:39:56,927 || log || Unauthorized: /auth/jwt/refresh
+WARNING || 2020-07-16 12:39:57,376 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-16 12:39:57,751 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-16 12:39:58,245 || log || Bad Request: /auth/users/set_slaves/
+WARNING || 2020-07-16 12:39:58,326 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-16 12:39:58,335 || log || Forbidden: /auth/users/resend_activation/
+WARNING || 2020-07-16 12:39:58,398 || log || Too Many Requests: /auth/users/resend_activation/
+WARNING || 2020-07-16 12:39:58,849 || log || Too Many Requests: /auth/users/undelete_account/
+WARNING || 2020-07-16 12:39:59,293 || log || Bad Request: /auth/users/undelete_account/
+WARNING || 2020-07-16 12:47:21,099 || log || Not Found: /favicon.ico
+WARNING || 2020-07-16 12:47:21,100 || basehttp || "GET /favicon.ico HTTP/1.1" 404 12161
+WARNING || 2020-07-16 13:16:08,548 || log || Not Found: /archives/tvseries/9/seasons/182/
+WARNING || 2020-07-16 13:16:08,549 || basehttp || "GET /archives/tvseries/9/seasons/182/ HTTP/1.1" 404 20975
+ERROR || 2020-07-16 13:16:43,871 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 55, in retrieve
+    serializer = self.get_serializer(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 86, in __init__
+    _fields = MappingProxyType(self.fields)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1038, in get_fields
+    field_names = self.get_field_names(declared_fields, info)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1134, in get_field_names
+    assert field_name in fields, (
+AssertionError: The field 'series_name' was declared on serializer DetailSeasonSerializer, but has not been included in the 'fields' option.
+ERROR || 2020-07-16 13:16:43,968 || basehttp || "GET /archives/tvseries/9/seasons/105/ HTTP/1.1" 500 160503
+ERROR || 2020-07-16 13:17:48,572 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 55, in retrieve
+    serializer = self.get_serializer(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 86, in __init__
+    _fields = MappingProxyType(self.fields)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1038, in get_fields
+    field_names = self.get_field_names(declared_fields, info)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1134, in get_field_names
+    assert field_name in fields, (
+AssertionError: The field 'series_name' was declared on serializer DetailSeasonSerializer, but has not been included in the 'fields' option.
+ERROR || 2020-07-16 13:17:48,659 || basehttp || "GET /archives/tvseries/9/seasons/105/ HTTP/1.1" 500 160503
+ERROR || 2020-07-16 13:19:36,708 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 55, in retrieve
+    serializer = self.get_serializer(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 86, in __init__
+    _fields = MappingProxyType(self.fields)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1038, in get_fields
+    field_names = self.get_field_names(declared_fields, info)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1134, in get_field_names
+    assert field_name in fields, (
+AssertionError: The field 'series_name' was declared on serializer DetailSeasonSerializer, but has not been included in the 'fields' option.
+ERROR || 2020-07-16 13:19:36,805 || basehttp || "GET /archives/tvseries/9/seasons/105/ HTTP/1.1" 500 160811
+ERROR || 2020-07-16 13:19:54,025 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 55, in retrieve
+    serializer = self.get_serializer(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 86, in __init__
+    _fields = MappingProxyType(self.fields)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1038, in get_fields
+    field_names = self.get_field_names(declared_fields, info)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1134, in get_field_names
+    assert field_name in fields, (
+AssertionError: The field 'series_name' was declared on serializer DetailSeasonSerializer, but has not been included in the 'fields' option.
+ERROR || 2020-07-16 13:19:54,137 || basehttp || "GET /archives/tvseries/9/seasons/105/ HTTP/1.1" 500 160811
+ERROR || 2020-07-16 13:25:41,838 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
+    return Response(serializer.data)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 529, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 1905, in to_representation
+    return method(value)
+TypeError: get_series_name() takes 1 positional argument but 2 were given
+ERROR || 2020-07-16 13:25:41,935 || basehttp || "GET /archives/tvseries/9/seasons/105/ HTTP/1.1" 500 150529
+ERROR || 2020-07-16 13:56:51,855 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 55, in retrieve
+    serializer = self.get_serializer(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 86, in __init__
+    _fields = MappingProxyType(self.fields)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.initial_data.entry_author
+AttributeError: 'DetailSeasonSerializer' object has no attribute 'initial_data'
+ERROR || 2020-07-16 13:56:51,976 || basehttp || "GET /archives/tvseries/9/seasons/105/ HTTP/1.1" 500 149375

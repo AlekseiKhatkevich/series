@@ -6,6 +6,7 @@ from unittest.mock import Mock, patch
 from django.test import tag
 from django.utils import timezone
 from psycopg2.extras import DateRange
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 import archives.models
@@ -186,3 +187,19 @@ class SeasonModelPositiveTest(test_helpers.TestHelpers, APITestCase):
             self.season_1.progress,
             control_value,
         )
+
+    def test_get_absolute_url(self):
+        """
+        Check that 'get_absolute_url' method returns correct url of a season.
+        """
+        expected_url = reverse(
+            f'{self.season_1.__class__._meta.model_name}-detail',
+            args=(self.season_1.series_id, self.season_1.pk),
+        )
+        actual_url = self.season_1.get_absolute_url
+
+        self.assertURLEqual(
+            expected_url,
+            actual_url
+        )
+

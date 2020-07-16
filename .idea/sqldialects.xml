@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/archives/migrations/0045_defend_future_constraint.py" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/archives/migrations/0053_max_range_one_year_constraint.py" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/archives/migrations/0055_hstore_constraint.py" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/archives/migrations/0056_episodes_in_season_constraint.py" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/archives/migrations/0057_add_custom_function.py" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/series/tests/positive/test_lookups_and_transforms.py" dialect="GenericSQL" />
+  </component>
+</project>

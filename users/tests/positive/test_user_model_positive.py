@@ -207,3 +207,9 @@ class CreateUserModelPositiveTest(APITestCase):
         self.assertTrue(
             sjwt_blacklist_models.BlacklistedToken.objects.filter(token__user=user).exists()
         )
+
+    def test_have_slaves_or_master_alive(self):
+        """
+        Check that property 'have_slaves_or_master_alive' returns True if user has not soft-deleted
+        slaves or master.
+        """

@@ -360,10 +360,12 @@ class SeasonModel(models.Model):
     def __str__(self):
         return f'pk - {self.pk}, season number - {self.season_number}, series name - {self.series.name}'
 
-    # todo
     @cached_property
     def get_absolute_url(self):
-        raise NotImplementedError()
+        return reverse(
+            f'{self.__class__._meta.model_name}-detail',
+            args=(self.series_id, self.pk),
+        )
 
     def clean(self):
         errors = defaultdict(list)

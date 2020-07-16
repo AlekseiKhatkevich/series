@@ -177,6 +177,18 @@ class User(AbstractUser):
         """
         return bool(self.master)
 
+    @property
+    def have_slaves_or_master_alive(self):
+        """
+        Returns whether or not user has at least one not soft-deleted master or slave account.
+        """
+        try:
+            has_master_alive = not self.master.deleted
+        except AttributeError:  # in case master is None.
+            has_master_alive = False
+
+        return has_master_alive or self.slaves.exists()
+
     def liberate(self) -> Optional[int]:
         """
         Deallocate slaves accounts from a master one.

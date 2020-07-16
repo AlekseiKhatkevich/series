@@ -1,0 +1,1893 @@
+ERROR || 2020-07-16 13:58:27,508 || log || Internal Server Error: /archives/tvseries/9/seasons/105/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 34, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 228, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 55, in retrieve
+    serializer = self.get_serializer(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 110, in get_serializer
+    return serializer_class(*args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\series\helpers\serializer_mixins.py", line 86, in __init__
+    _fields = MappingProxyType(self.fields)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 301, in get_fields
+    entry_author = self.data.entry_author
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
+    ret = super().data
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
+    self._data = self.to_representation(self.instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
+    for field in fields:
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
+    for field in self.fields.values():
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
+    for key, value in self.get_fields().items():
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\serializers.py", line 299, in get_fields
+    fields = super().get_fields()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1028, in get_fields
+    declared_fields = copy.deepcopy(self._declared_fields)
+  File "c:\python\lib\copy.py", line 172, in deepcopy
+    y = _reconstruct(x, memo, *rv)
+  File "c:\python\lib\copy.py", line 296, in _reconstruct
+    value = deepcopy(value, memo)
+  File "c:\python\lib\copy.py", line 153, in deepcopy
+    y = copier(memo)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 683, in __deepcopy__
+    return self.__class__(*args, **kwargs)
+RecursionError: maximum recursion depth exceeded

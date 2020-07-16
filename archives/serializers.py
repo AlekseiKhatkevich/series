@@ -274,3 +274,40 @@ class SeasonsSerializer(serializer_mixins.ReadOnlyRaisesException, serializers.M
         return super().create(validated_data)
 
 
+class DetailSeasonSerializer(SeasonsSerializer):
+    """
+    Serializer for seasons detail action.
+    """
+    series_name = serializers.SerializerMethodField(
+    )
+    time_until_free_access = serializers.SerializerMethodField(
+    )
+
+    class Meta(SeasonsSerializer.Meta):
+        fields = SeasonsSerializer.Meta.fields + ('series_name', 'time_until_free_access', )
+
+    def get_time_until_free_access(self, obj):
+        """
+        """
+        author = obj.entry_author
+
+    def get_series_name(self, obj):
+        """
+        Returns name of the correspondent series. Implemented via serializer method as
+        we already have series object retrieved in view and do not need to retrieve it again
+        directly or via select_related.
+        """
+        view = self.context['view']
+        return view.series.name
+
+    def get_fields(self):
+        """
+        """
+        fields = super().get_fields()
+        entry_author = self.context['view'].get_object().entry_author
+
+        if entry_author.deleted and entry_author.deleted_time is not None:
+             pass
+
+
+        return fields
