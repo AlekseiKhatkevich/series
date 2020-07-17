@@ -5,7 +5,8 @@ from django.db.models import F, Q, Value
 from django.db.models.functions import Concat
 from drf_extra_fields.fields import DateRangeField
 from rest_framework import permissions, serializers
-
+from django.utils import timezone
+import datetime
 import archives.models
 from series import constants
 from series.helpers import serializer_mixins
@@ -280,16 +281,21 @@ class DetailSeasonSerializer(SeasonsSerializer):
     """
     series_name = serializers.SerializerMethodField(
     )
-    time_until_free_access = serializers.SerializerMethodField(
+    days_until_free_access = serializers.SerializerMethodField(
     )
 
     class Meta(SeasonsSerializer.Meta):
-        fields = SeasonsSerializer.Meta.fields + ('series_name', 'time_until_free_access', )
+        fields = SeasonsSerializer.Meta.fields + ('series_name', 'days_until_free_access', )
 
-    def get_time_until_free_access(self, obj):
+    @staticmethod
+    def get_days_until_free_access(obj):
         """
+        Returns days until free(almost free) access to soft-deleted author entry or zero after time has elapsed.
         """
         author = obj.entry_author
+        days_until_access = ((author.deleted_time + timezone.timedelta(days=constants.DAYS_ELAPSED_SOFT_DELETED_USER))
+                             - timezone.now()).days
+        return max((days_until_access, 0))
 
     def get_series_name(self, obj):
         """
@@ -302,12 +308,17 @@ class DetailSeasonSerializer(SeasonsSerializer):
 
     def get_fields(self):
         """
+        Discards 'days_until_free_access' field in case:
+        a) Author is not soft deleted.
+        b) Author deleted_time is None.
+        c) Author has alive slaves or master.
         """
         fields = super().get_fields()
         entry_author = self.context['view'].get_object().entry_author
 
-        if entry_author.deleted and entry_author.deleted_time is not None:
-             pass
-
+        if not entry_author.deleted or \
+                entry_author.deleted_time is None or \
+                entry_author.have_slaves_or_master_alive:
+            fields.pop('days_until_free_access')
 
         return fields

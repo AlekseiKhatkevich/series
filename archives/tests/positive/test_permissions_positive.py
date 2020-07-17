@@ -1,5 +1,6 @@
 import datetime
 
+import more_itertools
 from django.contrib.auth.models import Group
 from guardian.shortcuts import assign_perm
 from rest_framework import generics
@@ -24,6 +25,9 @@ class PermissionPositiveTest(APITestCase):
 
         cls.series = initial_data.create_tvseries(cls.users)
         cls.series_1, cls.series_2 = cls.series
+
+        cls.seasons = initial_data.create_seasons(cls.series)
+        cls.season_1_1, *rest = cls.seasons
 
         cls.view = generics.GenericAPIView()
 
@@ -96,11 +100,30 @@ class PermissionPositiveTest(APITestCase):
             permission.has_object_permission(self.request, self.view, obj)
         )
 
+    def test_FriendsGuardianPermission_perm_on_primary_model_object(self):
+        """
+        Check that if user has guardian object permission on series, he can act on each season
+        of this series even if he doesn't have guardian object permission on season itself.
+        """
+        permission = archives.permissions.FriendsGuardianPermission()
+        obj = self.season_1_1
+        series = obj.series
+        friend = more_itertools.first_true(self.users, lambda user: user != series.entry_author)
+        perm_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
+        assign_perm(perm_code, friend, series)
+
+        self.request.user = friend
+
+        self.assertTrue(
+            permission.has_object_permission(self.request, self.view, obj)
+        )
+
     def test_HandleDeletedUsersEntriesPermission(self):
         """
         Check that 'HandleDeletedUsersEntriesPermission' permission returns True if object author is soft-deleted
-        for at lest half-year and either a) request user is staff or b) request user has special group permission
-        to handle entries of-soft deleted users.
+        for at lest half-of-year and does not have alive slaves or master and either:
+        a) request user is staff or,
+        b) request user has special group permission to handle entries of-soft deleted users.
         """
         permission = archives.permissions.HandleDeletedUsersEntriesPermission()
         time_fringe = constants.DAYS_ELAPSED_SOFT_DELETED_USER

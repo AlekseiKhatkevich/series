@@ -172,6 +172,46 @@ class CreateUserModelNegativeTest(APITestCase):
             self.user_1.master
         )
 
+    def test_have_slaves_or_master_alive(self):
+        """
+        Check that property 'have_slaves_or_master_alive' returns False if user does not have
+         not-soft-deleted slaves or master.
+        """
+        self.assertFalse(
+            self.user_1.have_slaves_or_master_alive
+        )
+        self.assertFalse(
+            self.user_1.have_slaves_or_master_alive
+        )
+
+    def test_have_slaves_or_master_alive_slave_soft_deleted(self):
+        """
+        Check that property 'have_slaves_or_master_alive' returns False if user do have slaves but
+        it soft-deleted.
+        """
+        master = self.user_1
+        slave = self.user_2
+        master.slaves.add(slave)
+        slave.delete(soft_del=True)
+
+        self.assertFalse(
+            master.have_slaves_or_master_alive
+        )
+
+    def test_have_slaves_or_master_alive_master_soft_deleted(self):
+        """
+        Check that property 'have_slaves_or_master_alive' returns False if user do have master but
+        it soft-deleted.
+        """
+        master = self.user_1
+        slave = self.user_2
+        master.slaves.add(slave)
+        master.delete(soft_del=True)
+
+        self.assertFalse(
+            slave.have_slaves_or_master_alive
+        )
+
 
 
 

@@ -210,6 +210,16 @@ class CreateUserModelPositiveTest(APITestCase):
 
     def test_have_slaves_or_master_alive(self):
         """
-        Check that property 'have_slaves_or_master_alive' returns True if user has not soft-deleted
+        Check that property 'have_slaves_or_master_alive' returns True if user has not-soft-deleted
         slaves or master.
         """
+        master = self.user_1
+        slave = self.user_2
+        master.slaves.add(slave)
+
+        self.assertTrue(
+            master.have_slaves_or_master_alive
+        )
+        self.assertTrue(
+            slave.have_slaves_or_master_alive
+        )

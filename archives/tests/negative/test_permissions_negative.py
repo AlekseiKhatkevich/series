@@ -3,7 +3,7 @@ import datetime
 from django.contrib.auth.models import AnonymousUser, Group
 from rest_framework import generics
 from rest_framework.test import APIRequestFactory, APITestCase
-
+import more_itertools
 import archives.permissions
 from archives.tests.data import initial_data
 from series import constants
@@ -25,9 +25,8 @@ class PermissionNegativeTest(APITestCase):
         cls.series = initial_data.create_tvseries(cls.users)
         cls.series_1, cls.series_2 = cls.series
 
-        cls.view = generics.GenericAPIView()
-
     def setUp(self) -> None:
+        self.view = generics.GenericAPIView()
         self.request = APIRequestFactory().request()
 
     def test_ReadOnlyIfOnlyAuthenticated(self):
@@ -86,7 +85,7 @@ class PermissionNegativeTest(APITestCase):
     def test_FriendsGuardianPermission(self):
         """
         Check that 'FriendsGuardianPermission' permission returns False if request user do not have permission
-        'DEFAULT_OBJECT_LEVEL_PERMISSION_CODE' on this object.
+        'DEFAULT_OBJECT_LEVEL_PERMISSION_CODE' on this object or on object's series.
         """
         permission = archives.permissions.FriendsGuardianPermission()
         obj = self.series_1
@@ -159,4 +158,17 @@ class PermissionNegativeTest(APITestCase):
         self.assertFalse(
             permission.has_object_permission(self.request, self.view, test_object)
         )
+        # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        user_with_perm.is_staff = True
 
+        slave = more_itertools.first_true(
+            self.users,
+            lambda user: user != author and user != user_with_perm,
+        )
+        author.slaves.add(slave)
+
+        # If author has slaves or master alive -> False
+        self.assertFalse(
+            permission.has_object_permission(self.request, self.view, test_object)
+        )
+        slave.master = None

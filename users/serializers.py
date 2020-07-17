@@ -79,15 +79,25 @@ class CustomUserSerializer(
     Serializer for endpoint that shows list of users for Admin or user detail for current user
     if it not an admin.
     """
+    slave_accounts_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        source='slv',
+        read_only=True,
+    )
 
     class Meta(djoser_serializers.UserSerializer.Meta):
-        fields = djoser_serializers.UserSerializer.Meta.fields + ('user_country', 'master',)
+        fields = djoser_serializers.UserSerializer.Meta.fields + ('user_country', 'master', 'slave_accounts_ids',)
         read_only_fields = djoser_serializers.UserSerializer.Meta.read_only_fields + ('master',)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        if self.context['view'].action != 'list':
+        # As 'me'action uses request.user as an object we need to make extra call to DB to fetch slaves.
+        if self.context['view'].action == 'me':
             data['slave_accounts_ids'] = instance.slaves.all().values_list('pk', flat=True) or None
+        # Return plain None instead of [None] if there are no slaves.
+        elif data['slave_accounts_ids'][0] is None:
+            [data['slave_accounts_ids']] = data['slave_accounts_ids']
+
         return data
 
 

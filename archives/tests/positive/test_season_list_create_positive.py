@@ -10,7 +10,7 @@ from users.helpers import create_test_users
 import archives.models
 
 
-class TvSeriesListCreatePositiveTest(test_helpers.TestHelpers, APITestCase):
+class SeasonsListCreatePositiveTest(test_helpers.TestHelpers, APITestCase):
     """
     Positive test case on SeasonModel list/create api.
     archives/tvseries/<int:series_pk/seasons/ GET, POST

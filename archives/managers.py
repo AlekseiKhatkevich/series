@@ -20,9 +20,9 @@ class TvSeriesQueryset(models.QuerySet):
             Min('rating', output_field=FloatField()),
             Max('rating', output_field=FloatField()),
         )
-        percent_value = (result['rating__max'] - result['rating__min']) / 100
+        one_percent_value = (result['rating__max'] - result['rating__min']) / 100
         top_range = (
-            Ceil(result['rating__max'] - (percent * percent_value)),
+            Ceil(result['rating__max'] - (percent * one_percent_value)),
             Floor(result['rating__max'])
         )
         return self.filter(rating__range=top_range)

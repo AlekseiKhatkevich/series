@@ -52,7 +52,7 @@ class TvSeriesBase(generics.GenericAPIView):
             defer(*user_model_deferred_fields)
         return super().get_queryset()
 
-    @functools.lru_cache(maxsize=10)
+    @functools.lru_cache(maxsize=1)
     def get_object(self):
         return super().get_object()
 
@@ -197,11 +197,13 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
     )
     permission_action_classes = dict(
         create=non_safe_methods_permissions,
+        delete=non_safe_methods_permissions,
     )
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return archives.serializers.DetailSeasonSerializer
+
         return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
@@ -210,6 +212,7 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         current user to root series object.
         """
         self.check_object_permissions(self.request, self.series)
+
         return super().create(request, *args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
@@ -237,7 +240,7 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
 
         return super().get_queryset()
 
-    @functools.lru_cache(maxsize=10)
+    @functools.lru_cache(maxsize=1)
     def get_object(self):
         return super().get_object()
 

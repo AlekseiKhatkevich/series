@@ -1,10 +1,10 @@
-import collections
 from typing import Optional, Type
 
 import djoser.views
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.exceptions import ValidationError
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
@@ -14,11 +14,10 @@ from rest_framework import exceptions, status, throttling
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
-from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 
-import users.models
 import users.filters
+import users.models
 from series import error_codes
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
@@ -44,6 +43,15 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         '^last_name', '=last_name',
     )
 
+    def get_queryset(self):
+        """
+        Fetch slave PKs for list action.
+        """
+        qs = super().get_queryset()
+        if self.action == 'list':
+            qs = qs.annotate(slv=ArrayAgg('slaves', distinct=True))
+        return qs
+
     @cached_property
     def get_child_extra_actions(self):
         """
@@ -54,35 +62,6 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         parent_extra_actions = cls.__base__.get_extra_actions()
         child_extra_actions = set(all_extra_actions).difference(parent_extra_actions)
         return (act.__name__ for act in child_extra_actions)
-
-    def add_slaves_data(self, data: ReturnDict) -> ReturnDict:
-        """
-         Adds to each master information about his slave's pks in paginated response data.
-        """
-        model = self.get_serializer_class().Meta.model
-        # List of users in data except slaves.
-        masters_id_list = [
-            user['id'] for user in data if user['master'] is None
-        ]
-        # List of aforementioned users slaves.
-        slaves = model.objects.filter(
-            master_id__in=masters_id_list
-        ).values_list('master_id', 'id', named=True)
-        # Mapping master_id: user.id where later is contained in list.
-        # (allows multiple slaves pk as a dict value).
-        slaves_dict = collections.defaultdict(list)
-        for slave in slaves:
-            slaves_dict[slave.master_id].append(slave.id)
-        # Attaching slaves pks into return data.
-        for user in data:
-            user['slave_accounts_ids'] = slaves_dict.get(user['id'], None)
-
-        return data
-
-    def get_paginated_response(self, data):
-        if self.action in 'list':
-            data = self.add_slaves_data(data)
-        return super().get_paginated_response(data)
 
     @action(['post'], detail=False, permission_classes=djoser_settings.PERMISSIONS.master_slave_interchange)
     def master_slave_interchange(self, request, *args, **kwargs):

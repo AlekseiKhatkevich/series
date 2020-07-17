@@ -295,6 +295,9 @@ class SeasonModel(models.Model):
         unique_together = (
             ('series', 'season_number',),
         )
+        permissions = (
+            ('permissiveness', 'Allow any action',),
+        )
         index_together = unique_together
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'

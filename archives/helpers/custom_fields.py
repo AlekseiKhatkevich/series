@@ -98,15 +98,6 @@ class CustomHStoreField(postgres_fields.HStoreField):
 
     def validate(self, value, model_instance):
         return models.Field.validate(self, value, model_instance)
-        # for key, val in value.items():
-        #     if not isinstance(key, int) and key is not None:
-        #         raise exceptions.ValidationError(
-        #             *error_codes.KEY_NOT_AN_INTEGER,
-        #         )
-        #     if not isinstance(val, datetime.date) and val is not None:
-        #         raise exceptions.ValidationError(
-        #             *error_codes.NOT_ISO_DATE,
-        #         )
 
     def to_python(self, value):
         if value is None:

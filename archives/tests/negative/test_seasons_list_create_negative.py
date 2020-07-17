@@ -8,7 +8,7 @@ from series.helpers import test_helpers
 from users.helpers import create_test_users
 
 
-class TvSeriesListCreateNegativeTest(test_helpers.TestHelpers, APITestCase):
+class SeasonsListCreateNegativeTest(test_helpers.TestHelpers, APITestCase):
     """
     Negative test case on SeasonModel list/create api.
     archives/tvseries/<int:series_pk/seasons/ GET, POST
