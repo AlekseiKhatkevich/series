@@ -1,9 +1,6 @@
 from rest_framework.test import APITestCase
 
-from django.db.models.functions import Floor, Ceil
-import datetime
 import archives.models
-from psycopg2.extras import DateRange
 
 
 class ManagersPositiveTest(APITestCase):
@@ -12,21 +9,37 @@ class ManagersPositiveTest(APITestCase):
     """
     fixtures = ('users.json', 'series.json',)
 
-    def test_top_x_percent(self):
+    def test_select_x_percent_top(self):
         """
-        Check whether or not 'top_x_percent' method returns top x % of series according their rating.
+        Check whether or not 'select_x_percent' method returns top x % of series
+        according their rating.
         """
         percent = 40
-        value_of_one_percent = 0.08
         low_value = 6.8
-        filtering_range = (6.8-10)  # their ceil and floor as rating is INT.
-        expected_series_range = (Ceil(low_value), Floor(10))
         expected_queryset = archives.models.TvSeriesModel.objects.filter(
-            rating__range=expected_series_range
+            rating__gte=low_value,
         )
 
         self.assertQuerysetEqual(
-            archives.models.TvSeriesModel.objects.all().top_x_percent(40),
+            archives.models.TvSeriesModel.objects.all().select_x_percent(percent, 'top'),
+            expected_queryset,
+            ordered=False,
+            transform=lambda x: x
+        )
+
+    def test_select_x_percent_lower(self):
+        """
+        Check whether or not 'select_x_percent' method returns lower x % of series
+        according their rating.
+        """
+        percent = 40
+        upper_value = 5.2
+        expected_queryset = archives.models.TvSeriesModel.objects.filter(
+            rating__lte=upper_value,
+        )
+
+        self.assertQuerysetEqual(
+            archives.models.TvSeriesModel.objects.all().select_x_percent(percent, 'bottom'),
             expected_queryset,
             ordered=False,
             transform=lambda x: x

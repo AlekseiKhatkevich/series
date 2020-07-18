@@ -133,3 +133,57 @@ class SeasonsDetailPositiveTest(test_helpers.TestHelpers, APITestCase):
         self.assertFalse(
             archives.models.SeasonModel.objects.filter(pk=test_season.pk).exists()
         )
+
+    def test_update_season(self):
+        """
+        Check that if correct data is provided, than it is possible to correctly update season
+        instance.
+        """
+        test_season = self.season_1_1
+        author = test_season.entry_author
+
+        data = {
+            'season_number': test_season.season_number,
+            'number_of_episodes': 12,
+            'last_watched_episode': 4,
+            'episodes': {
+                '1': test_season.episodes[1].isoformat(),
+                '2': test_season.episodes[2].isoformat(),
+            },
+            'translation_years': {
+                'lower': test_season.translation_years.lower.isoformat(),
+                'upper': test_season.translation_years.upper.isoformat(),
+                'bounds': '[]',
+            }}
+        self.client.force_authenticate(user=test_season.entry_author)
+
+        response = self.client.put(
+            test_season.get_absolute_url,
+            data=data,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        test_season.refresh_from_db()
+
+        self.assertEqual(
+            test_season.number_of_episodes,
+            12,
+        )
+        self.assertEqual(
+            test_season.entry_author,
+            author,
+        )
+
+        response = self.client.patch(
+            test_season.get_absolute_url,
+            data=data,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )

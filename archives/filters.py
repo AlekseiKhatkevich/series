@@ -4,8 +4,11 @@ from django.db.models import BooleanField, ExpressionWrapper, F, FloatField, Q
 from django.db.models.functions import Cast
 from django_filters import fields, rest_framework as rest_framework_filters, widgets
 from psycopg2.extras import DateRange
-
+from django import forms
+from django.core import exceptions
 import archives.models
+from django.forms.widgets import Input
+from django.forms import MultiValueField
 
 queryset_instance = archives.models.models.QuerySet
 
@@ -15,6 +18,51 @@ class DateExactRangeWidget(widgets.DateRangeWidget):
     Date widget to help filter by *_lower and *_upper.
     """
     suffixes = ['lower', 'upper']
+
+
+class TopBottomPercentWidget(widgets.SuffixedMultiWidget):
+    """
+    Widget for TopBottomPercentField. Accept positions (top or bottom) as first suffix
+    and int percent as second suffix.
+    """
+    suffixes = ['position', 'percent']
+
+    def __init__(self, attrs=None):
+        widgets = (forms.TextInput, forms.NumberInput)
+        super().__init__(widgets, attrs)
+
+
+class TopBottomPercentField(fields.RangeField):
+    """
+    Field for TopBottomPercentFilter. Compresses position and percent values into a dict.
+    """
+    widget = TopBottomPercentWidget
+
+    def __init__(self, *args, **kwargs):
+        fields = (
+            forms.ChoiceField(choices=(('top', 'top',), ('bottom', 'bottom',))),
+            forms.IntegerField(min_value=1, max_value=99)
+        )
+        super().__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        if data_list:
+            return {'position': data_list[0], 'percent': data_list[1]}
+
+        return None
+
+    def clean(self, value):
+        if len(value) != 2 or value.count('') == 1:
+            raise exceptions.ValidationError('here')
+
+        return super().clean(value)
+
+
+class TopBottomPercentFilter(rest_framework_filters.Filter):
+    """
+    Filter to be used for Postgres specific Django field - DateRangeField.
+    """
+    field_class = TopBottomPercentField
 
 
 class DateExactRangeField(fields.DateRangeField):
@@ -71,6 +119,10 @@ class TvSeriesListCreateViewFilter(rest_framework_filters.FilterSet):
         field_name='translation_years',
         lookup_expr='overlap',
     )
+    series_percent = TopBottomPercentFilter(
+        method='x_percent',
+        label='Select top or bottom x percent.',
+    )
 
     class Meta:
         model = archives.models.TvSeriesModel
@@ -82,6 +134,19 @@ class TvSeriesListCreateViewFilter(rest_framework_filters.FilterSet):
             'name': ['exact'],
             'rating': ['lte', 'gte', ],
         }
+
+    @staticmethod
+    def x_percent(queryset: queryset_instance, field_name: str, value: dict) -> queryset_instance:
+        """
+        Returns queryset filtered by top or bottom % ratings values.
+        """
+        try:
+            position = value['position']
+            percent = value['percent']
+        except KeyError:
+            return queryset
+
+        return queryset.select_x_percent(percent=percent, position=position)
 
     @staticmethod
     def finished(queryset: queryset_instance, field_name: str, value: bool) -> queryset_instance:

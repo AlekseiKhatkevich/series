@@ -195,9 +195,9 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         archives.permissions.FriendsGuardianPermission |
         archives.permissions.HandleDeletedUsersEntriesPermission,
     )
-    permission_action_classes = dict(
-        create=non_safe_methods_permissions,
-        delete=non_safe_methods_permissions,
+    permission_action_classes = dict.fromkeys(
+        ('create', 'destroy', 'update', 'partial_update', ),
+        non_safe_methods_permissions,
     )
 
     def get_serializer_class(self):

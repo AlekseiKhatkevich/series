@@ -206,3 +206,7 @@ NOT_ISO_DATE = exc_msg(
     'Date should be in ISO 8601 format.',
     'not_iso_date',
 )
+SELECT_X_PERCENT = exc_msg(
+    '"position" argument should be "top" or "bottom".',
+    'select_x_percent',
+)

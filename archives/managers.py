@@ -3,8 +3,9 @@ from typing import List
 
 from django.db import models
 from django.db.models import FloatField, Max, Min
-from django.db.models.functions import Ceil, Floor
 from psycopg2.extras import DateRange
+
+from series import error_codes
 
 
 class TvSeriesQueryset(models.QuerySet):
@@ -12,20 +13,32 @@ class TvSeriesQueryset(models.QuerySet):
     TvSeries model custom queryset.
     """
 
-    def top_x_percent(self, percent: int) -> models.QuerySet:
+    def select_x_percent(self, percent: int, position: str) -> models.QuerySet:
         """
-        Returns top x % of Tv series according their rating.
+        Returns top or bottom x % of Tv series according their rating.
         """
-        result = self.aggregate(
-            Min('rating', output_field=FloatField()),
-            Max('rating', output_field=FloatField()),
-        )
-        one_percent_value = (result['rating__max'] - result['rating__min']) / 100
-        top_range = (
-            Ceil(result['rating__max'] - (percent * one_percent_value)),
-            Floor(result['rating__max'])
-        )
-        return self.filter(rating__range=top_range)
+        rating_max = Max('rating', output_field=FloatField())
+        rating_min = Min('rating', output_field=FloatField())
+        one_percent = (rating_max - rating_min) / 100.0
+
+        if position == 'top':
+            condition = dict(
+                rating__gte=self.aggregate(
+                    lvl=rating_max - (one_percent * float(percent))
+                )['lvl'],
+            )
+        elif position == 'bottom':
+            condition = dict(
+                rating__lte=self.aggregate(
+                    lvl=rating_min + (one_percent * float(percent))
+                )['lvl'],
+            )
+        else:
+            raise ValueError(
+                *error_codes.SELECT_X_PERCENT
+            )
+
+        return self.filter(**condition).order_by('rating')
 
     def running_series(self) -> models.QuerySet:
         """

@@ -149,7 +149,7 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
     )
 
     class Meta(TvSeriesSerializer.Meta):
-        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons', )
+        fields = TvSeriesSerializer.Meta.fields + ('allowed_redactors', 'seasons',)
         keys_to_swap = ('friends', 'seasons',)
 
     @transaction.atomic
@@ -285,7 +285,7 @@ class DetailSeasonSerializer(SeasonsSerializer):
     )
 
     class Meta(SeasonsSerializer.Meta):
-        fields = SeasonsSerializer.Meta.fields + ('series_name', 'days_until_free_access', )
+        fields = SeasonsSerializer.Meta.fields + ('series_name', 'days_until_free_access',)
 
     @staticmethod
     def get_days_until_free_access(obj):
@@ -293,8 +293,10 @@ class DetailSeasonSerializer(SeasonsSerializer):
         Returns days until free(almost free) access to soft-deleted author entry or zero after time has elapsed.
         """
         author = obj.entry_author
-        days_until_access = ((author.deleted_time + timezone.timedelta(days=constants.DAYS_ELAPSED_SOFT_DELETED_USER))
-                             - timezone.now()).days
+        days_until_access = (
+                (author.deleted_time + timezone.timedelta(days=constants.DAYS_ELAPSED_SOFT_DELETED_USER))
+                - timezone.now()
+        ).days
         return max((days_until_access, 0))
 
     def get_series_name(self, obj):
