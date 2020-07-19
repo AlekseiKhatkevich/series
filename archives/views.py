@@ -77,7 +77,6 @@ class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
 
 class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
     pagination_class = pagination.FasterLimitOffsetPagination
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = archives.serializers.TvSeriesSerializer
     filterset_class = archives.filters.TvSeriesListCreateViewFilter
     ordering = ('pk',)

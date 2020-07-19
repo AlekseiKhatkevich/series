@@ -91,12 +91,6 @@ class TvSeriesModelPositiveTest(APITestCase):
         """
         Check possibility to add rating if correct rating data is provided.
         """
-        self.series_1.refresh_from_db()
-
-        self.assertIsNone(
-            self.series_1.rating
-        )
-
         self.series_1.rating = 5
         self.series_1.full_clean()
         self.series_1.save()

@@ -210,3 +210,8 @@ SELECT_X_PERCENT = exc_msg(
     '"position" argument should be "top" or "bottom".',
     'select_x_percent',
 )
+SELECT_X_PERCENT_FIELD = exc_msg(
+    'Please provide both "series_percent_position" & "series_percent_percent"'
+    ' url kwargs or omit them both.',
+    'select_x_percent_field',
+)

@@ -30,6 +30,7 @@ django-guardian = "*"
 django-extra-fields = "*"
 django-filter = "*"
 cerberus = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.8"

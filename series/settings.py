@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # project apps
     'archives.apps.ArchivesConfig',
     'users.apps.UsersConfig',
+    'administration.apps.AdministrationConfig',
 
     # 3-rd party apps
     'rest_framework',

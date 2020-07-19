@@ -31,6 +31,7 @@ def create_tvseries(users: users_instances) -> series_instances:
         'series_1':
             {'entry_author': users[0],
              'name': 'Django unleashed',
+             'rating': 2,
              'imdb_url': 'https://www.imdb.com',
              'translation_years': DateRange(
                  datetime.date(year=2012, month=1, day=1),
@@ -39,6 +40,7 @@ def create_tvseries(users: users_instances) -> series_instances:
         'series_2':
             {'entry_author': users[1],
              'name': 'Shameless',
+             'rating': 8,
              'imdb_url': 'https://www.imdb.com/video/vi2867576345?ref_=hm_hp_i_3&listId=ls053181649',
              'translation_years': DateRange(
                  datetime.date(year=2015, month=1, day=1),

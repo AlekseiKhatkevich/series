@@ -1,8 +1,10 @@
 import datetime
 from typing import List
 
+import more_itertools
 from django.db import models
 from django.db.models import FloatField, Max, Min
+from django.db.models.functions import Coalesce
 from psycopg2.extras import DateRange
 
 from series import error_codes
@@ -20,17 +22,20 @@ class TvSeriesQueryset(models.QuerySet):
         rating_max = Max('rating', output_field=FloatField())
         rating_min = Min('rating', output_field=FloatField())
         one_percent = (rating_max - rating_min) / 100.0
+        choices, *rest = more_itertools.unzip(self.model._meta.get_field('rating').choices)
+        filtered_choices = tuple(filter(None.__ne__, choices))
+        min_choice, max_choice = min(filtered_choices), max(filtered_choices)
 
         if position == 'top':
             condition = dict(
                 rating__gte=self.aggregate(
-                    lvl=rating_max - (one_percent * float(percent))
+                    lvl=Coalesce(rating_max - (one_percent * float(percent)), min_choice)
                 )['lvl'],
             )
         elif position == 'bottom':
             condition = dict(
                 rating__lte=self.aggregate(
-                    lvl=rating_min + (one_percent * float(percent))
+                    lvl=Coalesce(rating_min + (one_percent * float(percent)), max_choice)
                 )['lvl'],
             )
         else:

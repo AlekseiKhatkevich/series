@@ -1,23 +1,16 @@
 import datetime
 
+from django import forms
+from django.core import exceptions
 from django.db.models import BooleanField, ExpressionWrapper, F, FloatField, Q
 from django.db.models.functions import Cast
 from django_filters import fields, rest_framework as rest_framework_filters, widgets
 from psycopg2.extras import DateRange
-from django import forms
-from django.core import exceptions
+
 import archives.models
-from django.forms.widgets import Input
-from django.forms import MultiValueField
+from series import error_codes
 
 queryset_instance = archives.models.models.QuerySet
-
-
-class DateExactRangeWidget(widgets.DateRangeWidget):
-    """
-    Date widget to help filter by *_lower and *_upper.
-    """
-    suffixes = ['lower', 'upper']
 
 
 class TopBottomPercentWidget(widgets.SuffixedMultiWidget):
@@ -52,8 +45,13 @@ class TopBottomPercentField(fields.RangeField):
         return None
 
     def clean(self, value):
-        if len(value) != 2 or value.count('') == 1:
-            raise exceptions.ValidationError('here')
+        """
+        Check that both position and percent are present or omitted in data.
+        """
+        if value.count('') == 1:
+            raise exceptions.ValidationError(
+                *error_codes.SELECT_X_PERCENT_FIELD,
+            )
 
         return super().clean(value)
 
@@ -63,6 +61,13 @@ class TopBottomPercentFilter(rest_framework_filters.Filter):
     Filter to be used for Postgres specific Django field - DateRangeField.
     """
     field_class = TopBottomPercentField
+
+
+class DateExactRangeWidget(widgets.DateRangeWidget):
+    """
+    Date widget to help filter by *_lower and *_upper.
+    """
+    suffixes = ['lower', 'upper']
 
 
 class DateExactRangeField(fields.DateRangeField):

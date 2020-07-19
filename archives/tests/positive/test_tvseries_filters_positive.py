@@ -7,6 +7,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 import archives.filters
+import archives.models
 from archives.helpers.custom_functions import daterange
 from archives.tests.data import initial_data
 from series.helpers import custom_functions
@@ -21,6 +22,7 @@ class FiltersPositiveTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
+        cls.user_1, *rest = cls.users
 
     def setUp(self) -> None:
         self.series = initial_data.create_tvseries(users=self.users)
@@ -58,6 +60,8 @@ class FiltersPositiveTest(APITestCase):
         self.series_1.seasons.all().delete()
         self.query_dict['is_empty'] = True
 
+        self.client.force_authenticate(user=self.user_1)
+
         response = self.client.get(
             reverse('tvseries') + '?' + self.query_dict.urlencode(),
             data=None,
@@ -79,8 +83,10 @@ class FiltersPositiveTest(APITestCase):
          Check that 'is_finished' filter returns only finished series.
         """
         self.series_2.translation_years = daterange((2012, 1, 1), None)
-        self.series_2.save(update_fields=('translation_years', ))
+        self.series_2.save(update_fields=('translation_years',))
         self.query_dict['is_finished'] = True
+
+        self.client.force_authenticate(user=self.user_1)
 
         response = self.client.get(
             reverse('tvseries') + '?' + self.query_dict.urlencode(),
@@ -110,6 +116,8 @@ class FiltersPositiveTest(APITestCase):
         self.query_dict_2['translation_years_overlap_upper'] = '2013-01-01'
         self.query_dict_2['translation_years_overlap_lower'] = '2011-1-1'
 
+        self.client.force_authenticate(user=self.user_1)
+
         for dictionary in (self.query_dict, self.query_dict_2):
             with self.subTest(dictionary=dictionary):
                 response = self.client.get(
@@ -124,7 +132,7 @@ class FiltersPositiveTest(APITestCase):
                     response.status_code,
                     status.HTTP_200_OK,
                 )
-                self.assertTrue(
+                self.assertEqual(
                     len(response_dict),
                     1
                 )
@@ -132,3 +140,52 @@ class FiltersPositiveTest(APITestCase):
                     self.series_1.pk,
                     response_dict.keys()
                 )
+
+    def test_TopBottomPercentField(self):
+        """
+        Check that 'TopBottomPercentField' field converts input value to dict.
+        """
+        field = archives.filters.TopBottomPercentField()
+        data_list = ['top', 10]
+        expected_output_dict = dict(
+            position='top',
+            percent=10,
+        )
+
+        output_dict = field.compress(data_list)
+
+        self.assertDictEqual(
+            expected_output_dict,
+            output_dict,
+        )
+
+    def test_series_percent(self):
+        """
+        Check that 'series_percent' filter returns queryset filtered by top or bottom x % by rating.
+        """
+        self.query_dict['series_percent_position'] = 'top'
+        self.query_dict['series_percent_percent'] = 30
+        expected_queryset = archives.models.TvSeriesModel.objects.all().select_x_percent(30, 'top')
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+            reverse('tvseries') + '?' + self.query_dict.urlencode(),
+            data=None,
+            format='json',
+        )
+
+        response_dict = custom_functions.response_to_dict(response, key_field='pk')
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertNotEqual(
+            len(response_dict),
+            len(self.series)
+        )
+        self.assertListEqual(
+            list(response_dict.keys()),
+            list(expected_queryset.values_list('pk', flat=True))
+        )

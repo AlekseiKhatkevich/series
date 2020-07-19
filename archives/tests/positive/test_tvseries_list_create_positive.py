@@ -52,6 +52,8 @@ class TvSeriesListCreatePositiveTest(APITestCase):
                 'reason_for_interrelationship': 'test'
             })
 
+        self.client.force_authenticate(user=self.user_1)
+
         response = self.client.get(
             reverse('tvseries'),
             data=None,
@@ -95,6 +97,8 @@ class TvSeriesListCreatePositiveTest(APITestCase):
         """
         self.series_1.seasons.all().delete()
 
+        self.client.force_authenticate(user=self.user_1)
+
         response = self.client.get(
             reverse('tvseries'),
             data=None,
@@ -112,6 +116,8 @@ class TvSeriesListCreatePositiveTest(APITestCase):
         Check that if correct input data is provided - then endpoint is able to successfully create
         model instances.
         """
+        self.client.force_authenticate(user=self.user_1)
+
         self.client.force_authenticate(user=self.user_1)
 
         response = self.client.post(
