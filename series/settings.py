@@ -13,6 +13,8 @@ IM_IN_TEST_MODE = False
 
 SITE_NAME = 'Series notebook'
 
+ADMINS = [('Aleksei Khatkevich', 'hardcase@inbox.ru',), ]
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
