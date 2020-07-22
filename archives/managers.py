@@ -1,13 +1,15 @@
 import datetime
 from typing import List
 
+import guardian.models
 import more_itertools
+from django.contrib.postgres.aggregates import BoolAnd, StringAgg
 from django.db import models
-from django.db.models import FloatField, Max, Min
-from django.db.models.functions import Coalesce
+from django.db.models import Case, CharField, F, FloatField, Max, Min, OuterRef, Q, Subquery, When, functions
 from psycopg2.extras import DateRange
 
 from series import error_codes
+from series.constants import DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
 
 
 class TvSeriesQueryset(models.QuerySet):
@@ -29,13 +31,13 @@ class TvSeriesQueryset(models.QuerySet):
         if position == 'top':
             condition = dict(
                 rating__gte=self.aggregate(
-                    lvl=Coalesce(rating_max - (one_percent * float(percent)), min_choice)
+                    lvl=functions.Coalesce(rating_max - (one_percent * float(percent)), min_choice)
                 )['lvl'],
             )
         elif position == 'bottom':
             condition = dict(
                 rating__lte=self.aggregate(
-                    lvl=Coalesce(rating_min + (one_percent * float(percent)), max_choice)
+                    lvl=functions.Coalesce(rating_min + (one_percent * float(percent)), max_choice)
                 )['lvl'],
             )
         else:
@@ -56,6 +58,50 @@ class TvSeriesQueryset(models.QuerySet):
         Returns only finished series.
         """
         return self.filter(translation_years__fully_lt=DateRange(datetime.date.today(), None))
+
+    def annotate_with_responsible_user(self):
+        """
+        Annotates queryset with 'responsible' ,which is email of the user who is responsible
+        for this series.
+        """
+        annotations = dict(
+            responsible=Case(
+                #  If entry author is not soft deleted.
+                When(
+                    entry_author__deleted=False,
+                    then=F('entry_author__email')
+                ),
+                # If entry author is soft-deleted but has master alive.
+                When(
+                    entry_author__master__isnull=False, entry_author__master__deleted=False,
+                    then=F('entry_author__master__email')
+                ),
+                # If entry author is soft-deleted, hasn't master alive but has alive slaves.
+                When(
+                    # when not [author is deleted(True) == all slaves are deleted(False)]
+                    ~Q(entry_author__deleted=BoolAnd('entry_author__slaves__deleted')),
+                    then=StringAgg(
+                        'entry_author__slaves__email',
+                        distinct=True,
+                        delimiter=', ',
+                        filter=Q(entry_author__slaves__deleted=False)
+                    )),
+                #  When user is soft-deleted and does not have alive master or slaves but has friends with objects
+                #  permission on this series alive.
+                #  https://stackoverflow.com/questions/63020407/return-multiple-values-in-subquery-in-django-orm
+                default=Subquery(
+                    guardian.models.UserObjectPermission.objects.filter(
+                        object_pk=functions.Cast(OuterRef('id'), CharField()),
+                        content_type__model=self.model.__name__.lower(),
+                        content_type__app_label=self.model._meta.app_label.lower(),
+                        permission__codename=DEFAULT_OBJECT_LEVEL_PERMISSION_CODE,
+                        user__deleted=False,
+                    ).values('object_pk').annotate(
+                        emails=StringAgg('user__email', ', ', distinct=True)
+                    ).values('emails')
+                )))
+
+        return self.annotate(**annotations)
 
 
 class TvSeriesManager(models.Manager):

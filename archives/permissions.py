@@ -104,16 +104,3 @@ class HandleDeletedUsersEntriesPermission(permissions.BasePermission):
 
         return False
 
-   # default=Subquery(guardian.models.UserObjectPermission.objects.filter(
-                #     object_pk=OuterRef('pk'),
-                #     content_type__model=series_model.__name__.lower(),
-                #     content_type__app_label=series_model._meta.app_label.lower(),
-                #     permission__codename=DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
-                # ).values_list('user__email', flat=True)
-                # )
-            #))
-        # object_pk = obj.pk,
-        # content_type__model = obj.__class__.__name__.lower(),
-        # content_type__app_label = obj.__class__._meta.app_label.lower(),
-        # user = request.user,
-        # permission__codename = self.permission_code,

@@ -27,5 +27,9 @@ beat_schedule = {
         'task': 'users.tasks.clean_stale_permissions',
         'schedule': crontab(hour=17, minute=2),
     },
+    'notify_users': {
+        'task': 'archives.tasks.notify_authors_about_invalid_urls',
+        'schedule': crontab(hour=17, minute=3),
+    },
 }
 
