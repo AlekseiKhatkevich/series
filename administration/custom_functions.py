@@ -18,7 +18,6 @@ class HandleWrongUrls:
     Checks statuses of each url in archives series and in case of status != 200 sends email
     to user in order to notify him.
     """
-
     @staticmethod
     @sync_to_async
     def get_queryset() -> Coroutine[series_generator, None, series_generator]:

@@ -275,10 +275,10 @@ DJOSER = {
     },
 }
 #  Email related settings.
-if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
-    EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
+#     EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+# else:
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #  Scope throttling cache.
 SCOPE_THROTTLING_CACHE = 'throttling'
@@ -319,6 +319,10 @@ LOGGING = {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
         },
+        'memory': {
+            'class': 'logging.handlers.MemoryHandler',
+            'capacity': 1000,
+        },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'filename': r'series/logs/logfile.txt',
@@ -340,7 +344,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console'],
+            'handlers': ['file', 'console', ],
             'propagate': True,
             'level': 'INFO'
         },

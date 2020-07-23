@@ -24,3 +24,4 @@ class CheckEpisodes(models.Transform):
 models.CharField.register_lookup(Length)
 
 HStoreField.register_lookup(CheckEpisodes)
+

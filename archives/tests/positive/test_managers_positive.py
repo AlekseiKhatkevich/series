@@ -1,13 +1,19 @@
+from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 import archives.models
+from archives.tests.data import initial_data
+from series.constants import DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
+from series.helpers import test_helpers
+from users.helpers import create_test_users
 
 
-class ManagersPositiveTest(APITestCase):
+class ManagersPositiveTest(test_helpers.TestHelpers, APITestCase):
     """
     Test for managers and queryset custom methods in 'archives' app.
     """
     fixtures = ('users.json', 'series.json',)
+    maxDiff = None
 
     def test_select_x_percent_top(self):
         """
@@ -111,3 +117,88 @@ class ManagersPositiveTest(APITestCase):
                 pk__in=(instance.pk for instance in pair_of_instances)
             ).exists()
         )
+
+
+class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
+    """
+    Test for managers and queryset custom methods in 'archives' app.
+    This one with regular setup instead of fixtures.
+    """
+    maxDiff = None
+
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+        self.series = initial_data.create_tvseries(self.users)
+        self.series_1, self.series_2 = self.series
+
+    def test_annotate_with_responsible_user(self):
+        """
+        Check that queryset annotates with the responsible user for a series email.
+        This case - user is not soft-deleted.
+        """
+        responsible_user_email = archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk).\
+            annotate_with_responsible_user().first().responsible
+
+        self.assertEqual(
+            responsible_user_email,
+            self.series_1.entry_author.email,
+        )
+
+    def test_annotate_with_responsible_user_deleted_has_master(self):
+        """
+        Check that queryset annotates with the responsible user for a series email.
+        This case - user is soft-deleted but has master alive.
+        """
+        author = self.series_1.entry_author
+        master = self.series_2.entry_author
+        master.slaves.add(author)
+        author.delete(soft_del=True)
+
+        responsible_user_email = archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk). \
+            annotate_with_responsible_user().first().responsible
+
+        self.assertEqual(
+            responsible_user_email,
+            master.email,
+        )
+
+    def test_annotate_with_responsible_user_deleted_has_slaves(self):
+        """
+        Check that queryset annotates with the responsible user for a series email.
+        This case - user is soft-deleted no master.
+        """
+        author = self.series_1.entry_author
+        slave = self.series_2.entry_author
+        author.slaves.add(slave)
+        #  liberate slaves
+        author.deleted = True
+        author.save()
+
+        responsible_user_email = archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk). \
+            annotate_with_responsible_user().first().responsible
+
+        self.assertEqual(
+            responsible_user_email,
+            slave.email,
+        )
+
+    def test_annotate_with_responsible_user_deleted_has_friends(self):
+        """
+        Check that queryset annotates with the responsible user for a series email.
+        This case - user is soft-deleted no master, no slaves but has friend alive.
+        """
+        author = self.series_1.entry_author
+        friend = self.series_2.entry_author
+        assign_perm(DEFAULT_OBJECT_LEVEL_PERMISSION_CODE, friend, self.series_1)
+        author.delete(soft_del=True)
+
+        responsible_user_email = archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk). \
+            annotate_with_responsible_user().first().responsible
+
+        self.assertEqual(
+            responsible_user_email,
+            friend.email,
+        )
+

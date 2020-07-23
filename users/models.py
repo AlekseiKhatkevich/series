@@ -78,13 +78,22 @@ class User(AbstractUser):
         verbose_name_plural = 'users'
         default_manager_name = 'all_objects'
         constraints = [
+            # Checks that country code is according the ISO..
             models.CheckConstraint(
                 name='country_code_within_list_of_countries_check',
                 check=models.Q(user_country__in=countries.CODE_ITERATOR), ),
+            #  Doesn't allow master_id fk point on itself.
             models.CheckConstraint(
                 name='point_on_itself_check',
                 check=~models.Q(master=models.F('pk'))
-            )]
+            ),
+            # Doesnt allow to soft-deleted users have slaves of any kind. Fake constraint.for
+            # real one in 0015_deleted_user_slaves_constraint.
+            models.CheckConstraint(
+                name='slaves_of_deleted_user_check',
+                check=models.Q(
+                    deleted=models.Func(models.F('master_id'), function='users_user_valid_master')
+                ))]
 
     def __str__(self):
         return f'{"SLAVE ACC." if self.master else "MASTER ACC."} ' \
