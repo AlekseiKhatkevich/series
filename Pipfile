@@ -31,6 +31,7 @@ django-extra-fields = "*"
 django-filter = "*"
 cerberus = "*"
 aiohttp = "*"
+django-db-logger = "*"
 
 [requires]
 python_version = "3.8"

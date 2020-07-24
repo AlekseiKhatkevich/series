@@ -71,4 +71,4 @@ class Migration(migrations.Migration):
                                           models.expressions.F('master_id'),
                                           function='users_user_valid_master')),
                                       name='slaves_of_deleted_user_check'),
-                              ), ]),]
+                              ), ]), ]

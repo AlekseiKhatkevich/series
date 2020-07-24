@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'guardian',
     'django_filters',
+    'django_db_logger',
 ]
 
 MIDDLEWARE = [
@@ -319,9 +320,10 @@ LOGGING = {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
         },
-        'memory': {
-            'class': 'logging.handlers.MemoryHandler',
-            'capacity': 1000,
+        'db_log': {
+            'level': 'WARNING',
+            'class': 'django_db_logger.db_log_handler.DatabaseLogHandler',
+            'formatter': 'database',
         },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
@@ -344,7 +346,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['file', 'console', ],
+            'handlers': ['file', 'console', 'db_log', ],
             'propagate': True,
             'level': 'INFO'
         },
@@ -369,6 +371,9 @@ LOGGING = {
             'format': '{levelname} {message}',
             'style': '{',
         },
+        'database': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
     },
     'filters': {
         'require_debug_true': {
@@ -376,3 +381,5 @@ LOGGING = {
         },
     },
 }
+DJANGO_DB_LOGGER_ENABLE_FORMATTER = True
+

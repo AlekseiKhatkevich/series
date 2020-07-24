@@ -215,3 +215,7 @@ SELECT_X_PERCENT_FIELD = exc_msg(
     ' url kwargs or omit them both.',
     'select_x_percent_field',
 )
+DELETED_MASTER_SLAVES = exc_msg(
+    'Soft-deleted master can not have slaves.',
+    'deleted_master_slaves',
+)

@@ -49,7 +49,7 @@ class TestHelpers(test.APISimpleTestCase):
         :param status_code: Expected status code.
         :return: None
         """
-        value = response.data[field]if field is not None else response.data[0]
+        value = response.data[field] if field is not None else response.data[0]
 
         if isinstance(value, exceptions.ErrorDetail):
             error_in_response = str(value)

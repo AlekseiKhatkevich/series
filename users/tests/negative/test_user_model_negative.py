@@ -33,11 +33,6 @@ class CreateUserModelNegativeTest(APITestCase):
         get_user_model().objects.all().delete()
         super(CreateUserModelNegativeTest, cls).tearDownClass()
 
-    # @unittest.skipIf(custom_functions.check_code_inside(
-    #     func=get_user_model().save,
-    #     code=('full_clean()', 'clean()'), ),
-    #     reason='Wrong country will be validated on the model level '
-    # )
     def test_wrong_user_country_db_constraint(self):
         """
         Check whether or not DB constraint doesnt allow to save wrong country code in DB.
@@ -47,10 +42,9 @@ class CreateUserModelNegativeTest(APITestCase):
         expected_constraint_name = 'country_code_within_list_of_countries_check'
 
         #  https://stackoverflow.com/questions/21458387/transactionmanagementerror-you-cant-execute-queries-until-the-end-of-the-atom/61498699#61498699
-        with transaction.atomic():
-            with self.assertRaisesRegex(IntegrityError, expected_constraint_name):
-                user = get_user_model().objects.create_user(db_save=False, **self.test_user_data)
-                user.save(fc=False)
+        with transaction.atomic(), self.assertRaisesRegex(IntegrityError, expected_constraint_name):
+            user = get_user_model().objects.create_user(db_save=False, **self.test_user_data)
+            user.save(fc=False)
 
         self.assertFalse(
             get_user_model().objects.filter(email=self.test_user_data['email']).exists()
@@ -89,11 +83,6 @@ class CreateUserModelNegativeTest(APITestCase):
             get_user_model().objects.filter(email=self.test_user_data['email']).exists()
         )
 
-    # @unittest.skipIf(custom_functions.check_code_inside(
-    #     func=get_user_model().save,
-    #     code=('full_clean()', 'clean()'), ),
-    #     reason='Uniqueness will be validated on the model level '
-    # )
     @unittest.skip(reason='Unique together was removed.')
     def test_first_name_and_last_name_unique_together(self):
         """
@@ -211,6 +200,36 @@ class CreateUserModelNegativeTest(APITestCase):
         self.assertFalse(
             slave.have_slaves_or_master_alive
         )
+
+    def test_slaves_of_deleted_user_check_constraint(self):
+        """
+        Check that 'slaves_of_deleted_user_check' would not allow to have slaves to user
+         with 'deleted' = True.
+        """
+        expected_error_message = 'slaves_of_deleted_user_check'
+        master = self.user_1
+        slave = self.user_2
+        master.slaves.add(slave)
+        master.deleted = True
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            master.save(fc=False)
+
+    def test_slaves_of_deleted_user_clean(self):
+        """
+        Check that 'slaves_of_deleted_user_check' would not allow to have slaves to user
+         with 'deleted' = True by clean(0 method in model.
+        """
+        expected_error_message = error_codes.DELETED_MASTER_SLAVES.message
+        master = self.user_1
+        slave = self.user_2
+        master.slaves.add(slave)
+        master.deleted = True
+
+        with self.assertRaisesMessage(exceptions.ValidationError, expected_error_message):
+            master.save(fc=True)
+
+
 
 
 

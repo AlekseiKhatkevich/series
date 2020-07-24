@@ -1,0 +1,497 @@
+[
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 1,
+    "fields": {
+        "logger_name": "django.utils.autoreload",
+        "level": 20,
+        "msg": "Watching for file changes with StatReloader",
+        "trace": null,
+        "create_datetime": "2020-07-24T09:59:45.663Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 2,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "Not Found: /archives/tvseries/555/",
+        "trace": null,
+        "create_datetime": "2020-07-24T09:59:59.618Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 3,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "\"GET /archives/tvseries/555/ HTTP/1.1\" 404 55",
+        "trace": null,
+        "create_datetime": "2020-07-24T09:59:59.621Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 4,
+    "fields": {
+        "logger_name": "django.utils.autoreload",
+        "level": 20,
+        "msg": "C:\\Users\\hardcase1\\PycharmProjects\\series\\series\\settings.py changed, reloading.",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:15:41.848Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 5,
+    "fields": {
+        "logger_name": "django.utils.autoreload",
+        "level": 20,
+        "msg": "Watching for file changes with StatReloader",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:15:43.837Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 6,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "Not Found: /archives/tvseries/555/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:15:52.507Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 7,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "\"GET /archives/tvseries/555/ HTTP/1.1\" 404 55",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:15:52.517Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 8,
+    "fields": {
+        "logger_name": "django.utils.autoreload",
+        "level": 20,
+        "msg": "Watching for file changes with StatReloader",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:16:05.196Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 9,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "Not Found: /archives/tvseries/555/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:16:11.646Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 10,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "\"GET /archives/tvseries/555/ HTTP/1.1\" 404 55",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:16:11.657Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 11,
+    "fields": {
+        "logger_name": "django.utils.autoreload",
+        "level": 20,
+        "msg": "INFO 2020-07-24 13:16:49,931 autoreload 1140 14524 Watching for file changes with StatReloader",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:16:50.000Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 12,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:16:54,172 log 1140 14136 Not Found: /archives/tvseries/555/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:16:54.173Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 13,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:16:54,232 basehttp 1140 14136 \"GET /archives/tvseries/555/ HTTP/1.1\" 404 55",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:16:54.232Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 14,
+    "fields": {
+        "logger_name": "django.utils.autoreload",
+        "level": 20,
+        "msg": "INFO 2020-07-24 13:18:23,332 autoreload 1140 14524 C:\\Users\\hardcase1\\PycharmProjects\\series\\series\\settings.py changed, reloading.",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:18:23.333Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 15,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:20:23,887 log 16000 15892 Not Found: /archives/tvseries/555/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:20:23.887Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 16,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:20:23,898 basehttp 16000 15892 \"GET /archives/tvseries/555/ HTTP/1.1\" 404 55",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:20:23.898Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 17,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "Not Found: /archives/tvseries/555/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:21:37.362Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 18,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "\"GET /archives/tvseries/555/ HTTP/1.1\" 404 55",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:21:37.365Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 19,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:40:47,712 log 12948 12076 Forbidden: /archives/tvseries/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:40:47.759Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 20,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:40:47,759 basehttp 12948 12076 \"GET /archives/tvseries/ HTTP/1.1\" 403 14151",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:40:47.759Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 21,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:40:57,244 log 12948 12076 Forbidden: /administration/logs/",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:40:57.303Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 22,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:40:57,314 basehttp 12948 12076 \"GET /administration/logs/ HTTP/1.1\" 403 14075",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:40:57.315Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 23,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:40:58,321 log 12948 9988 Not Found: /favicon.ico",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:40:58.369Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 24,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 13:40:58,372 basehttp 12948 9988 \"GET /favicon.ico HTTP/1.1\" 404 12276",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:40:58.373Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 25,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:41:03,393 log 12948 9988 Internal Server Error: /administration/logs/",
+        "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\exception.py\", line 34, in inner\n    response = get_response(request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 115, in _get_response\n    response = self.process_exception_by_middleware(e, request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 113, in _get_response\n    response = wrapped_callback(request, *callback_args, **callback_kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\decorators\\csrf.py\", line 54, in wrapped_view\n    return view_func(*args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\generic\\base.py\", line 71, in view\n    return self.dispatch(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 505, in dispatch\n    response = self.handle_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 465, in handle_exception\n    self.raise_uncaught_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 476, in raise_uncaught_exception\n    raise exc\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 502, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 199, in get\n    return self.list(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\mixins.py\", line 38, in list\n    queryset = self.filter_queryset(self.get_queryset())\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 63, in get_queryset\n    assert self.queryset is not None, (\nAssertionError: 'LogsListView' should either include a `queryset` attribute, or override the `get_queryset()` method.",
+        "create_datetime": "2020-07-24T10:41:03.394Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 26,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:41:03,475 basehttp 12948 9988 \"GET /administration/logs/ HTTP/1.1\" 500 129953",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:41:03.475Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 27,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:48:02,490 log 10252 15520 Internal Server Error: /administration/logs/",
+        "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\exception.py\", line 34, in inner\n    response = get_response(request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 115, in _get_response\n    response = self.process_exception_by_middleware(e, request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 113, in _get_response\n    response = wrapped_callback(request, *callback_args, **callback_kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\decorators\\csrf.py\", line 54, in wrapped_view\n    return view_func(*args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\generic\\base.py\", line 71, in view\n    return self.dispatch(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 505, in dispatch\n    response = self.handle_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 465, in handle_exception\n    self.raise_uncaught_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 476, in raise_uncaught_exception\n    raise exc\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 502, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 199, in get\n    return self.list(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\mixins.py\", line 43, in list\n    return self.get_paginated_response(serializer.data)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 760, in data\n    ret = super().data\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 260, in data\n    self._data = self.to_representation(self.instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 677, in to_representation\n    return [\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 678, in <listcomp>\n    self.child.to_representation(item) for item in iterable\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 514, in to_representation\n    for field in fields:\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 375, in _readable_fields\n    for field in self.fields.values():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\utils\\functional.py\", line 48, in __get__\n    res = instance.__dict__[self.name] = self.func(instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 363, in fields\n    for key, value in self.get_fields().items():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 1038, in get_fields\n    field_names = self.get_field_names(declared_fields, info)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 1110, in get_field_names\n    assert not (fields is None and exclude is None), (\nAssertionError: (\"Creating a ModelSerializer without either the 'fields' attribute or the 'exclude' attribute has been deprecated since 3.3.0, and is now disallowed. Add an explicit fields = '__all__' to the LogsSerializer serializer.\",)",
+        "create_datetime": "2020-07-24T10:48:02.493Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 28,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:48:02,617 basehttp 10252 15520 \"GET /administration/logs/ HTTP/1.1\" 500 179244",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:48:02.617Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 29,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:51:34,608 log 14060 10748 Internal Server Error: /administration/logs/",
+        "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\exception.py\", line 34, in inner\n    response = get_response(request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 115, in _get_response\n    response = self.process_exception_by_middleware(e, request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 113, in _get_response\n    response = wrapped_callback(request, *callback_args, **callback_kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\decorators\\csrf.py\", line 54, in wrapped_view\n    return view_func(*args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\generic\\base.py\", line 71, in view\n    return self.dispatch(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 505, in dispatch\n    response = self.handle_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 465, in handle_exception\n    self.raise_uncaught_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 476, in raise_uncaught_exception\n    raise exc\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 502, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 199, in get\n    return self.list(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\mixins.py\", line 43, in list\n    return self.get_paginated_response(serializer.data)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 760, in data\n    ret = super().data\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 260, in data\n    self._data = self.to_representation(self.instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 677, in to_representation\n    return [\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 678, in <listcomp>\n    self.child.to_representation(item) for item in iterable\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 514, in to_representation\n    for field in fields:\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 375, in _readable_fields\n    for field in self.fields.values():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\utils\\functional.py\", line 48, in __get__\n    res = instance.__dict__[self.name] = self.func(instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 363, in fields\n    for key, value in self.get_fields().items():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 1038, in get_fields\n    field_names = self.get_field_names(declared_fields, info)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 1161, in get_field_names\n    assert field_name in fields, (\nAssertionError: The field 'pk' was included on serializer LogsSerializer in the 'exclude' option, but does not match any model field.",
+        "create_datetime": "2020-07-24T10:51:34.612Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 30,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:51:34,940 log 14060 1848 Internal Server Error: /administration/logs/",
+        "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\exception.py\", line 34, in inner\n    response = get_response(request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 115, in _get_response\n    response = self.process_exception_by_middleware(e, request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 113, in _get_response\n    response = wrapped_callback(request, *callback_args, **callback_kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\decorators\\csrf.py\", line 54, in wrapped_view\n    return view_func(*args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\generic\\base.py\", line 71, in view\n    return self.dispatch(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 505, in dispatch\n    response = self.handle_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 465, in handle_exception\n    self.raise_uncaught_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 476, in raise_uncaught_exception\n    raise exc\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 502, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 199, in get\n    return self.list(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\mixins.py\", line 43, in list\n    return self.get_paginated_response(serializer.data)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 760, in data\n    ret = super().data\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 260, in data\n    self._data = self.to_representation(self.instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 677, in to_representation\n    return [\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 678, in <listcomp>\n    self.child.to_representation(item) for item in iterable\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 514, in to_representation\n    for field in fields:\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 375, in _readable_fields\n    for field in self.fields.values():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\utils\\functional.py\", line 48, in __get__\n    res = instance.__dict__[self.name] = self.func(instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 363, in fields\n    for key, value in self.get_fields().items():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 1038, in get_fields\n    field_names = self.get_field_names(declared_fields, info)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 1161, in get_field_names\n    assert field_name in fields, (\nAssertionError: The field 'pk' was included on serializer LogsSerializer in the 'exclude' option, but does not match any model field.",
+        "create_datetime": "2020-07-24T10:51:34.942Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 31,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 13:51:35,047 basehttp 14060 1848 \"GET /administration/logs/?offset=20 HTTP/1.1\" 500 174588",
+        "trace": null,
+        "create_datetime": "2020-07-24T10:51:35.047Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 32,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 14:18:22,809 log 15312 5872 Internal Server Error: /administration/logs/",
+        "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\exception.py\", line 34, in inner\n    response = get_response(request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 115, in _get_response\n    response = self.process_exception_by_middleware(e, request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 113, in _get_response\n    response = wrapped_callback(request, *callback_args, **callback_kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\decorators\\csrf.py\", line 54, in wrapped_view\n    return view_func(*args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\generic\\base.py\", line 71, in view\n    return self.dispatch(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 505, in dispatch\n    response = self.handle_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 465, in handle_exception\n    self.raise_uncaught_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 476, in raise_uncaught_exception\n    raise exc\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 502, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 199, in get\n    return self.list(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\mixins.py\", line 43, in list\n    return self.get_paginated_response(serializer.data)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 760, in data\n    ret = super().data\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 260, in data\n    self._data = self.to_representation(self.instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 677, in to_representation\n    return [\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 678, in <listcomp>\n    self.child.to_representation(item) for item in iterable\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 514, in to_representation\n    for field in fields:\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 375, in _readable_fields\n    for field in self.fields.values():\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\utils\\functional.py\", line 48, in __get__\n    res = instance.__dict__[self.name] = self.func(instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 364, in fields\n    fields[key] = value\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\utils\\serializer_helpers.py\", line 145, in __setitem__\n    field.bind(field_name=key, parent=self.serializer)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\fields.py\", line 375, in bind\n    assert self.source != field_name, (\nAssertionError: It is redundant to specify `source='level'` on field 'ReadOnlyField' in serializer 'LogsSerializer', because it is the same as the field name. Remove the `source` keyword argument.",
+        "create_datetime": "2020-07-24T11:18:22.815Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 33,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 14:18:22,954 basehttp 15312 5872 \"GET /administration/logs/ HTTP/1.1\" 500 177428",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:18:22.955Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 34,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:21:05,362 log 15536 2640 Forbidden: /administration/logs/",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:21:05.416Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 35,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:21:05,420 basehttp 15536 2640 \"GET /administration/logs/ HTTP/1.1\" 403 14075",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:21:05.421Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 36,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:21:26,256 log 15536 2640 Forbidden: /administration/logs/",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:21:26.256Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 37,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:21:26,259 basehttp 15536 2640 \"GET /administration/logs/ HTTP/1.1\" 403 14373",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:21:26.260Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 38,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:21:32,405 log 15536 2640 Forbidden: /administration/logs/",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:21:32.455Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 39,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:21:32,458 basehttp 15536 2640 \"GET /administration/logs/ HTTP/1.1\" 403 14075",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:21:32.459Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 40,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 14:22:26,552 log 13912 6460 Internal Server Error: /administration/logs/",
+        "trace": "Traceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\fields.py\", line 454, in get_attribute\n    return get_attribute(instance, self.source_attrs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\fields.py\", line 97, in get_attribute\n    if is_simple_callable(instance):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\fields.py\", line 65, in is_simple_callable\n    raise BuiltinSignatureError(\nrest_framework.fields.BuiltinSignatureError: Built-in function signatures are not inspectable. Wrap the function call in a simple, pure Python function.\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\exception.py\", line 34, in inner\n    response = get_response(request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 115, in _get_response\n    response = self.process_exception_by_middleware(e, request)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\core\\handlers\\base.py\", line 113, in _get_response\n    response = wrapped_callback(request, *callback_args, **callback_kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\decorators\\csrf.py\", line 54, in wrapped_view\n    return view_func(*args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\django\\views\\generic\\base.py\", line 71, in view\n    return self.dispatch(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 505, in dispatch\n    response = self.handle_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 465, in handle_exception\n    self.raise_uncaught_exception(exc)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 476, in raise_uncaught_exception\n    raise exc\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\views.py\", line 502, in dispatch\n    response = handler(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\generics.py\", line 199, in get\n    return self.list(request, *args, **kwargs)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\mixins.py\", line 43, in list\n    return self.get_paginated_response(serializer.data)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 760, in data\n    ret = super().data\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 260, in data\n    self._data = self.to_representation(self.instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 677, in to_representation\n    return [\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 678, in <listcomp>\n    self.child.to_representation(item) for item in iterable\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\serializers.py\", line 516, in to_representation\n    attribute = field.get_attribute(instance)\n  File \"C:\\Users\\hardcase1\\.virtualenvs\\series-EAOB5IHD\\lib\\site-packages\\rest_framework\\fields.py\", line 466, in get_attribute\n    raise type(exc)(msg)\nrest_framework.fields.BuiltinSignatureError: Field source for `LogsSerializer.level` maps to a built-in function type and is invalid. Define a property or method on the `StatusLog` instance that wraps the call to the built-in function.",
+        "create_datetime": "2020-07-24T11:22:26.557Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 41,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 40,
+        "msg": "ERROR 2020-07-24 14:22:26,674 basehttp 13912 6460 \"GET /administration/logs/ HTTP/1.1\" 500 190457",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:22:26.675Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 42,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:34:40,546 log 6748 10476 Forbidden: /administration/logs/",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:34:40.629Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 43,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:34:40,640 basehttp 6748 10476 \"GET /administration/logs/ HTTP/1.1\" 403 59",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:34:40.641Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 44,
+    "fields": {
+        "logger_name": "django.request",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:34:54,069 log 6748 10476 Method Not Allowed: /administration/logs/",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:34:54.069Z"
+    }
+},
+{
+    "model": "django_db_logger.statuslog",
+    "pk": 45,
+    "fields": {
+        "logger_name": "django.server",
+        "level": 30,
+        "msg": "WARNING 2020-07-24 14:34:54,080 basehttp 6748 10476 \"POST /administration/logs/ HTTP/1.1\" 405 42",
+        "trace": null,
+        "create_datetime": "2020-07-24T11:34:54.080Z"
+    }
+}
+]

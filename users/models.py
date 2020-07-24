@@ -123,6 +123,13 @@ class User(AbstractUser):
                 {'master': exceptions.ValidationError(
                     *error_codes.MASTER_CANT_BE_SLAVE, )}
             )
+        #  We make sure that soft-deleted user can't have slaves, even soft-deleted ones.
+        if (self.master is None and self.deleted) and  \
+            self.__class__._default_manager.filter(master=self).exists():
+            errors.update(
+                {'master': exceptions.ValidationError(
+                    *error_codes.DELETED_MASTER_SLAVES, )}
+            )
 
         if errors:
             raise exceptions.ValidationError(errors)
@@ -136,7 +143,7 @@ class User(AbstractUser):
     def delete(self, soft_del=True, *args, **kwargs):
         if soft_del:
             self.blacklist_tokens()  # Blacklist all refresh tokens.
-            self.liberate()  # Deallocate all slaves.
+            self.liberate()  # Deallocate all slaves. Imitation of SET_NULL.
             self.deleted = True  # Soft delete self.
             self.deleted_time = timezone.now()  # Write time of soft-deletion
             self.save(update_fields=('deleted', 'deleted_time',))
@@ -199,8 +206,8 @@ class User(AbstractUser):
         """
         Deallocate slaves accounts from a master one.
         """
-        if (slaves := self.my_slaves) is not None:
-            return slaves.update(master=None)
+        all_slaves = self.__class__._default_manager.filter(master=self)
+        return all_slaves.update(master=None)
 
     def get_tokens_for_user(self) -> dict:
         """

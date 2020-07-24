@@ -14,6 +14,7 @@ djoser_router.register('users', users.views.CustomDjoserUserViewSet)
 
 #  Project level URLs
 urlpatterns = [
+    path('administration/', include('administration.urls')),
     path('admin/', admin.site.urls),
     path('archives/', include('archives.urls')),
 

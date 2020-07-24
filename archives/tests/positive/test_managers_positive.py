@@ -1,3 +1,5 @@
+import unittest
+from django.db import connection
 from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
@@ -119,6 +121,23 @@ class ManagersPositiveTest(test_helpers.TestHelpers, APITestCase):
         )
 
 
+def slaves_of_deleted_user_check_in_constraints() -> bool:
+    """
+    Checks whether or not 'slaves_of_deleted_user_check' constraint is present in DB.
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+                select count(*) > 0
+                from pg_constraint 
+                where contype ='c' and conname ='slaves_of_deleted_user_check'
+                ;
+                """
+        )
+        [row] = cursor.fetchone()
+        return row
+
+
 class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
     """
     Test for managers and queryset custom methods in 'archives' app.
@@ -138,7 +157,7 @@ class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
         Check that queryset annotates with the responsible user for a series email.
         This case - user is not soft-deleted.
         """
-        responsible_user_email = archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk).\
+        responsible_user_email = archives.models.TvSeriesModel.objects.filter(pk=self.series_1.pk). \
             annotate_with_responsible_user().first().responsible
 
         self.assertEqual(
@@ -164,6 +183,10 @@ class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
             master.email,
         )
 
+    @unittest.skipIf(
+        slaves_of_deleted_user_check_in_constraints(),
+        'check constraint "slaves_of_deleted_user_check" does not allow to run this test',
+    )
     def test_annotate_with_responsible_user_deleted_has_slaves(self):
         """
         Check that queryset annotates with the responsible user for a series email.
@@ -201,4 +224,3 @@ class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
             responsible_user_email,
             friend.email,
         )
-
