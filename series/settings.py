@@ -84,10 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
-]
+            ], }, }, ]
 
 WSGI_APPLICATION = 'series.wsgi.application'
 
@@ -275,10 +272,7 @@ DJOSER = {
         'master_slave_interchange': ['users.permissions.IsUserMasterPermission', ]
     },
 }
-#  Email related settings.
-# if IM_IN_TEST_MODE:  # Switch to locmem email backend during tests.
-#     EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-# else:
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #  Scope throttling cache.
@@ -378,8 +372,5 @@ LOGGING = {
     'filters': {
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
-}
+        }, }, }
 DJANGO_DB_LOGGER_ENABLE_FORMATTER = True
-

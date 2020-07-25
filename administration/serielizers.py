@@ -6,7 +6,9 @@ class LogsSerializer(serializers.ModelSerializer):
     """
     Serializer for logs stored in DB.
     """
-    level = serializers.ReadOnlyField(source='get_level_display')
+    level = serializers.ReadOnlyField(
+        source='get_level_display',
+    )
 
     class Meta:
         model = StatusLog
