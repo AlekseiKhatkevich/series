@@ -1,10 +1,9 @@
 import asyncio
-from typing import Coroutine, Dict, Generator, List
+from typing import Coroutine, Generator, List
 
 import aiohttp
 from asgiref.sync import sync_to_async
-from django.db.models import Min, QuerySet
-from django_db_logger.models import StatusLog
+from django.db.models import QuerySet
 from rest_framework import status
 
 import administration.tasks
@@ -96,16 +95,5 @@ class HandleWrongUrls:
 
         return f'There are {len(series_with_invalid_url_pks)} series with invalid urls.'
 
-
-def clear_old_logs(keep_num: int) -> Dict[int, Dict[str: int]]:
-    """
-    Deletes part of the logs exceeded specified quantity.
-    For example if we have 20000 logs entries and keep_num = 17000, than oldest 3000
-    logs will be deleted.
-    """
-    threshold_dt = StatusLog.objects.all().order_by('-create_datetime')[: keep_num].\
-        aggregate(max_dt=Min('create_datetime'))['max_dt']
-
-    return StatusLog.objects.filter(create_datetime__lt=threshold_dt).delete()
 
 

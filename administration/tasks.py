@@ -5,6 +5,8 @@ import smtplib
 from celery import shared_task
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Min
+from django_db_logger.models import StatusLog
 
 
 @shared_task(
@@ -38,3 +40,15 @@ def send_one_email(self: shared_task, series: dict) -> None:
 
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
+
+@shared_task
+def clear_old_logs(keep_num: int) -> tuple:
+    """
+    Deletes part of the logs exceeded specified quantity.
+    For example if we have 20000 logs entries and keep_num = 17000, than oldest 3000
+    logs will be deleted.
+    """
+    threshold_dt = StatusLog.objects.all().order_by('-create_datetime')[: keep_num].\
+        aggregate(min_dt=Min('create_datetime'))['min_dt']
+
+    return StatusLog.objects.filter(create_datetime__lt=threshold_dt).delete()

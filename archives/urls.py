@@ -37,11 +37,6 @@ urlpatterns = [
                 ),
                 path('seasons/', include(router.urls))
         ])),
-    # path(
-    #     'tvseries/<str:position>/<int:percent>/',
-    #     'view',
-    #     name='x-percent',
-    # ),
     path(
         'tvseries/',
         archives.views.TvSeriesListCreateView.as_view(),

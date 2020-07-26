@@ -1,8 +1,9 @@
 import datetime
 import os
 from collections import defaultdict
-from typing import KeysView, Optional, Tuple, Union
 from fractions import Fraction
+from typing import KeysView, Optional, Tuple, Union
+
 import more_itertools
 from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
@@ -107,6 +108,10 @@ class TvSeriesModel(models.Model):
         'ImageModel',
         related_query_name='series',
     )
+    access_logs = GenericRelation(
+        'administration.EntriesChangeLog',
+        related_query_name='series',
+    )
 
     entry_author = models.ForeignKey(
         get_user_model(),
@@ -191,7 +196,7 @@ class TvSeriesModel(models.Model):
         # Exclude 'url_to_imdb' from field validation if field hasn't changed or
         # model instance is not just created.
         if fc:
-            if self.pk is not None and ('url_to_imdb' not in self.changed_fields):
+            if not self._state.adding and ('imdb_url' not in self.changed_fields):
                 exclude = ('imdb_url',)
             else:
                 exclude = ()
@@ -237,6 +242,10 @@ class SeasonModel(models.Model):
     """
     Model represents one singular season of a series.
     """
+    access_logs = GenericRelation(
+        'administration.EntriesChangeLog',
+        related_query_name='seasons',
+    )
 
     objects = archives.managers.SeasonManager.from_queryset(archives.managers.SeasonQueryset)()
 
@@ -259,12 +268,11 @@ class SeasonModel(models.Model):
     )
     season_number = models.PositiveSmallIntegerField(
         verbose_name='Number of the current season',
+        default=1,
         validators=[
             non_zero_validator,
             validators.MaxValueValidator(30),
-        ],
-        default=1,
-    )
+        ], )
     last_watched_episode = models.PositiveSmallIntegerField(
         blank=True,
         null=True,
@@ -302,7 +310,7 @@ class SeasonModel(models.Model):
         verbose_name = 'Season'
         verbose_name_plural = 'Seasons'
         indexes = [
-            psgr_indexes.GistIndex(fields=('translation_years', ), ),
+            psgr_indexes.GistIndex(fields=('translation_years',), ),
         ]
         constraints = [
             # (Last_watched_episodes >= 1 or None) and number_of_episodes in range(1, 30).
@@ -494,7 +502,7 @@ class SeasonModel(models.Model):
     @property
     def season_available_range(self):
         """
-        Returns daterange available by all validators for the season.
+        Returns daterange allowed by all validators for the season.
         """
         cls = self.__class__
         series_range = self.series.translation_years
@@ -659,3 +667,4 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         """
         image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
         return IOBTree(image_hash_from_db)
+

@@ -31,5 +31,10 @@ beat_schedule = {
         'task': 'archives.tasks.notify_authors_about_invalid_urls',
         'schedule': crontab(hour=17, minute=3),
     },
+    'delete_old_logs': {
+        'task': 'administration.tasks.clear_old_logs',
+        'schedule': crontab(hour=17, minute=4, day_of_week='sat'),
+        'args': (10000, )
+    }
 }
 

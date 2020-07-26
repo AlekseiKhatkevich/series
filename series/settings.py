@@ -97,7 +97,15 @@ DATABASES = {
         'HOST': 'localhost',
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'NAME': 'series_db'},
+        'NAME': 'series_db'
+    },
+    'replica': {  # Replica database
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',
+        'USER': 'postgres',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'NAME': 'series_db_replica',
+    },
     'test_test': {  # Test database
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
@@ -108,6 +116,8 @@ DATABASES = {
             'NAME': 'auto_tests', }
     },
 }
+
+DATABASE_ROUTERS = []
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
