@@ -61,7 +61,6 @@ class EntriesChangeLog(models.Model):
         return f'pk = {self.pk}, user pk = {self.user_id}, access_time = {self.access_time}'
 
     class Meta:
-
         verbose_name = 'Entries log'
         verbose_name_plural = 'Entries logs'
         get_latest_by = ('access_time', )

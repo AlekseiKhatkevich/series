@@ -7,3 +7,4 @@ class AdministrationConfig(AppConfig):
     def ready(self):
         import administration.tasks
         import series.lookups_and_transforms
+        import administration.signals

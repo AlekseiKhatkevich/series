@@ -95,7 +95,6 @@ class TvSeriesModel(models.Model):
     """
     Model represents TV series as a whole.
     """
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._original_model_state = model_to_dict(self, exclude='interrelationship')

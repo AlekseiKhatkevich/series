@@ -8,6 +8,7 @@ from drf_extra_fields.fields import DateRangeField
 from rest_framework import permissions, serializers
 
 import archives.models
+from administration.models import OperationTypeChoices, UserStatusChoices
 from archives.helpers import custom_fields
 from series import constants
 from series.helpers import serializer_mixins
@@ -107,6 +108,11 @@ class TvSeriesSerializer(serializer_mixins.NoneInsteadEmptyMixin, serializers.Mo
             **validated_data,
             entry_author=request_user
         )
+        # series.access_logs.create(
+        #     user=request_user,
+        #     as_who=UserStatusChoices.CREATOR.value,
+        #     operation_type=OperationTypeChoices.CREATE.value,
+        # )
 
         if interrelationship_data is not None:
             list_of_interrelationships = []

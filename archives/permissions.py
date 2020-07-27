@@ -2,6 +2,7 @@ import guardian.models
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework import permissions
+from administration.models import UserStatusChoices, OperationTypeChoices
 
 from series import constants, error_codes
 
@@ -26,7 +27,12 @@ class IsObjectOwner(permissions.IsAuthenticated):
     message = error_codes.ONLY_AUTHORS.message
 
     def has_object_permission(self, request, view, obj):
-        return obj.entry_author == request.user
+        is_author = obj.entry_author == request.user
+
+        if is_author:
+            obj.accessed_as_who = UserStatusChoices.CREATOR
+
+        return is_author
 
 
 class MasterSlaveRelations(IsObjectOwner):
@@ -40,7 +46,13 @@ class MasterSlaveRelations(IsObjectOwner):
             return True
         else:
             is_master = request.user == obj.entry_author.master
+            if is_master:
+                obj.accessed_as_who = UserStatusChoices.MASTER
+
             is_slave = request.user.master == obj.entry_author
+            if is_slave:
+                obj.accessed_as_who = UserStatusChoices.SLAVE
+
             return is_master or is_slave
 
 
@@ -76,10 +88,14 @@ class FriendsGuardianPermission(permissions.IsAuthenticated):
             # We might have 'series' as view namespace attribute as well. Need not to fetch it from DB.
             series = getattr(view, 'series', None) or obj.series
             condition = principal_condition | Q(**self.generate_condition(request, series))
-        except AttributeError:
+        except AttributeError:  # To work with both series and season instances.
             condition = principal_condition
 
-        return guardian.models.UserObjectPermission.objects.filter(condition).exists()
+        is_friend = guardian.models.UserObjectPermission.objects.filter(condition).exists()
+        if is_friend:
+            obj.accessed_as_who = UserStatusChoices.FRIEND
+
+        return is_friend
 
 
 class HandleDeletedUsersEntriesPermission(permissions.BasePermission):
@@ -99,8 +115,16 @@ class HandleDeletedUsersEntriesPermission(permissions.BasePermission):
         #  If user has soft-deleted for more then half-year and does not have master o slaves alive.
         if author.deleted and (self.now - author.deleted_time).days > self.time_fringe and \
                 not author.have_slaves_or_master_alive:
-            return request.user.is_staff or \
-                   request.user.groups.filter(name=self.group_permission_code).exists()
+
+            is_admin = request.user.is_staff
+            if is_admin:
+                obj.accessed_as_who = UserStatusChoices.ADMIN
+                return True
+
+            has_group_perm = request.user.groups.filter(name=self.group_permission_code).exists()
+            if has_group_perm:
+                obj.accessed_as_who = UserStatusChoices.LEGACY
+                return True
 
         return False
 
