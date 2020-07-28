@@ -2,7 +2,7 @@ from drf_extra_fields.fields import DateRangeField
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
-import administration.models
+
 import archives.models
 from archives.tests.data import initial_data
 from series.helpers import custom_functions
@@ -142,31 +142,4 @@ class TvSeriesListCreatePositiveTest(APITestCase):
             [series.pk for series in self.series],
         )
 
-    def test_log_entry_created(self):
-        """
-        Check that 'EntriesChangeLog' instance is created along with series instance.
-        """
-        self.client.force_authenticate(user=self.user_1)
-
-        response = self.client.post(
-            reverse('tvseries'),
-            data=self.data,
-            format='json',
-        )
-
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_201_CREATED,
-        )
-
-        self.assertTrue(
-            administration.models.EntriesChangeLog.objects.filter(
-                object_id=response.data['pk'],
-                user=self.user_1,
-                as_who=administration.models.UserStatusChoices.CREATOR.value,
-                operation_type=administration.models.OperationTypeChoices.CREATE.value,
-                content_type__model=archives.models.TvSeriesModel.__name__.lower(),
-                content_type__app_label=archives.models.TvSeriesModel._meta.app_label.lower(),
-            )
-        )
 

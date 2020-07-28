@@ -114,11 +114,13 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
             ))
         self.queryset = archives.models.TvSeriesModel.objects.all(). \
             select_related('entry_author').prefetch_related(pr_permissions)
+
         return super().get_queryset()
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['series'] = self.get_object()
+
         return context
 
     def get_file(self, request: Request) -> ContentFile:
@@ -138,10 +140,12 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
             )
         finally:
             in_memory_uploaded_file.close()
+
         return image_file
 
     def create(self, request, *args, **kwargs):
         request.data['image'] = self.get_file(request)
+
         return super().create(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

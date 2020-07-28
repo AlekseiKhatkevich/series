@@ -57,15 +57,12 @@ class EntriesChangeLog(models.Model):
         max_length=6,
     )
 
-    def __str__(self):
-        return f'pk = {self.pk}, user pk = {self.user_id}, access_time = {self.access_time}'
-
     class Meta:
         verbose_name = 'Entries log'
         verbose_name_plural = 'Entries logs'
         get_latest_by = ('access_time', )
         indexes = [
-            BrinIndex(fields=('access_time',), autosummarize=True,),
+            BrinIndex(fields=('access_time',), autosummarize=True, ),
         ]
         constraints = [
             models.CheckConstraint(
@@ -76,3 +73,12 @@ class EntriesChangeLog(models.Model):
                 name='operation_type_check',
                 check=models.Q(operation_type__in=OperationTypeChoices.values)
             ), ]
+
+    def save(self, fc=True, *args, **kwargs):
+        if fc:
+            self.full_clean(validate_unique=True)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'pk = {self.pk}, user pk = {self.user_id}, access_time = {self.access_time}'
+

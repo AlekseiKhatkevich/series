@@ -555,6 +555,11 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     Model represents an image. Can be attached to any model in the project.
     Based on a Generic FK.
     """
+    access_logs = GenericRelation(
+        'administration.EntriesChangeLog',
+        related_query_name='images',
+    )
+
     objects = archives.managers.ImageManager.from_queryset(archives.managers.ImageQueryset)()
 
     image = models.ImageField(

@@ -6,6 +6,7 @@ from guardian.shortcuts import assign_perm
 from rest_framework import generics
 from rest_framework.test import APIRequestFactory, APITestCase
 
+import administration.models
 import archives.permissions
 from archives.tests.data import initial_data
 from series import constants
@@ -61,6 +62,10 @@ class PermissionPositiveTest(APITestCase):
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, obj)
         )
+        self.assertEqual(
+            obj.accessed_as_who,
+            administration.models.UserStatusChoices.CREATOR
+        )
 
     def test_MasterSlaveRelations(self):
         """
@@ -77,11 +82,19 @@ class PermissionPositiveTest(APITestCase):
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, obj)
         )
+        self.assertEqual(
+            obj.accessed_as_who,
+            administration.models.UserStatusChoices.SLAVE
+        )
 
         self.request.user = author
         obj = self.series_2
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, obj)
+        )
+        self.assertEqual(
+            obj.accessed_as_who,
+            administration.models.UserStatusChoices.MASTER
         )
 
     def test_FriendsGuardianPermission(self):
@@ -98,6 +111,10 @@ class PermissionPositiveTest(APITestCase):
 
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, obj)
+        )
+        self.assertEqual(
+            obj.accessed_as_who,
+            administration.models.UserStatusChoices.FRIEND
         )
 
     def test_FriendsGuardianPermission_perm_on_primary_model_object(self):
@@ -116,6 +133,10 @@ class PermissionPositiveTest(APITestCase):
 
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, obj)
+        )
+        self.assertEqual(
+            obj.accessed_as_who,
+            administration.models.UserStatusChoices.FRIEND
         )
 
     def test_HandleDeletedUsersEntriesPermission(self):
@@ -146,11 +167,19 @@ class PermissionPositiveTest(APITestCase):
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, test_object)
         )
+        self.assertEqual(
+            test_object.accessed_as_who,
+            administration.models.UserStatusChoices.LEGACY
+        )
 
         user_with_perm.groups.clear()
         user_with_perm.is_staff = True
 
         self.assertTrue(
             permission.has_object_permission(self.request, self.view, test_object)
+        )
+        self.assertEqual(
+            test_object.accessed_as_who,
+            administration.models.UserStatusChoices.ADMIN
         )
 
