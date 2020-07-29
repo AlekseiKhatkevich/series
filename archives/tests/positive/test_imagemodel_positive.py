@@ -140,6 +140,3 @@ class ImageModelPositiveTest(APITestCase):
             test_image_instance.image_hash,
             imagehash.ImageHash,
         )
-
-
-

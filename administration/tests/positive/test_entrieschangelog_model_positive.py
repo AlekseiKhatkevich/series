@@ -1,5 +1,5 @@
 from rest_framework.test import APITestCase
-
+from django.forms.models import model_to_dict
 import administration.models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
@@ -24,6 +24,7 @@ class EntriesChangeLogModelPositiveTest(APITestCase):
             user=cls.user_1,
             as_who=administration.models.UserStatusChoices.CREATOR,
             operation_type=administration.models.OperationTypeChoices.CREATE,
+            state=model_to_dict(cls.series_1),
         )
 
     def test_create_model_instance(self):

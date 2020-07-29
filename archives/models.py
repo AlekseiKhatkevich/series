@@ -557,7 +557,7 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     """
     access_logs = GenericRelation(
         'administration.EntriesChangeLog',
-        related_query_name='images',
+        related_query_name='archives_images',
     )
 
     objects = archives.managers.ImageManager.from_queryset(archives.managers.ImageQueryset)()
@@ -611,11 +611,14 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         # If image hash has Hamming difference les then X - raise validation error as this or closer
         # to this image already exists in DB.
         for img_hash in self.__class__.stored_image_hash.values():
-            if (img_hash - self.image_hash) < 10:
-                raise exceptions.ValidationError(
-                    {'image': error_codes.IMAGE_ALREADY_EXISTS.message},
-                    code=error_codes.IMAGE_ALREADY_EXISTS.code,
-                )
+            try:  # new!!!
+                if (img_hash - self.image_hash) < 10:
+                    raise exceptions.ValidationError(
+                        {'image': error_codes.IMAGE_ALREADY_EXISTS.message},
+                        code=error_codes.IMAGE_ALREADY_EXISTS.code,
+                    )
+            except TypeError:
+                return None
 
     def save(self, fc=True, *args, **kwargs):
         """

@@ -3,6 +3,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.indexes import BrinIndex
 from django.db import models
+from django.contrib.postgres.fields import JSONField
+from administration.encoders import CustomEncoder
 
 
 class UserStatusChoices(models.TextChoices):
@@ -55,6 +57,10 @@ class EntriesChangeLog(models.Model):
         verbose_name='Type of the access operation.',
         choices=OperationTypeChoices.choices,
         max_length=6,
+    )
+    state = JSONField(
+        verbose_name='Model state before save or delete.',
+        encoder=CustomEncoder,
     )
 
     class Meta:

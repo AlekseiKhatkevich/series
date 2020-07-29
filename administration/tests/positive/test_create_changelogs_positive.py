@@ -101,6 +101,35 @@ class CreateAccessLogPositiveTest(APITestCase):
             ).exists()
         )
 
+    def test_test_tvseries_log_entry_deleted(self):
+        """
+        Check that log gets created when TvSeriesModel instance is deleted via API endpoint.
+        """
+        user = self.series_1.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.delete(
+            self.series_1.get_absolute_url,
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT,
+        )
+
+        self.assertTrue(
+            administration.models.EntriesChangeLog.objects.filter(
+                object_id=self.series_1.pk,
+                user=user,
+                as_who=administration.models.UserStatusChoices.CREATOR,
+                operation_type=administration.models.OperationTypeChoices.DELETE,
+                content_type__model=archives.models.TvSeriesModel.__name__.lower(),
+                content_type__app_label=archives.models.TvSeriesModel._meta.app_label.lower(),
+            ).exists()
+        )
+
     def test_test_seasons_log_entry_created(self):
         """
         Check that log gets created when SeasonModel instance is created via API endpoint.

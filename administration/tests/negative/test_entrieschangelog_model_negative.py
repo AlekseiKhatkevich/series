@@ -1,5 +1,6 @@
 from django.core import exceptions
 from django.db.utils import IntegrityError
+from django.forms.models import model_to_dict
 from rest_framework.test import APITestCase
 
 import administration.models
@@ -27,6 +28,7 @@ class EntriesChangeLogModelNegativeTest(APITestCase):
             user=self.user_1,
             as_who=administration.models.UserStatusChoices.CREATOR,
             operation_type=administration.models.OperationTypeChoices.CREATE,
+            state=model_to_dict(self.series_1)
         )
 
     def test_as_who_check_constraint(self):

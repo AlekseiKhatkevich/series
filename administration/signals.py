@@ -2,8 +2,9 @@ import inspect
 from typing import Optional
 
 from django.db.models.base import ModelBase
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.forms.models import model_to_dict
 from django.http import HttpRequest
 
 from administration.models import OperationTypeChoices, UserStatusChoices
@@ -50,6 +51,7 @@ def create_log(
         user=request.user,
         as_who=getattr(instance, 'accessed_as_who', UserStatusChoices.CREATOR),
         operation_type=operation_type,
+        state=model_to_dict(instance),
     )
 
 
