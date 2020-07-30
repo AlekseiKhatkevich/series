@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Sum
 from django.db.models.functions import NullIf
 from django.shortcuts import get_object_or_404
-from rest_framework import exceptions, generics, mixins, parsers, permissions, status, viewsets
+from rest_framework import exceptions, generics, mixins, parsers, status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 

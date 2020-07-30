@@ -1,7 +1,7 @@
 from collections import namedtuple
 
 from rest_framework.test import APITestCase
-
+from django.forms.models import model_to_dict
 import administration.models
 import archives.models
 from administration.signals import create_log
@@ -55,5 +55,6 @@ class SignalsPositiveTest(APITestCase):
                         operation_type=operation_type,
                         content_type__model=archives.models.TvSeriesModel.__name__.lower(),
                         content_type__app_label=archives.models.TvSeriesModel._meta.app_label.lower(),
+                        state=model_to_dict(self.series_1)
                     ).exists()
                 )

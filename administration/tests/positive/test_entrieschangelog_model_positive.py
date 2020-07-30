@@ -45,8 +45,8 @@ class EntriesChangeLogModelPositiveTest(APITestCase):
         Check string representation of model instance
         """
         instance = administration.models.EntriesChangeLog.objects.create(**self.data)
-        expected_str = f'pk = {instance.pk}, user pk = {instance.user_id},' \
-                       f' access_time = {instance.access_time}'
+        expected_str = f'pk = {instance.pk}, object = {instance.object_id},' \
+                       f' operation_type = {instance.operation_type}'
 
         self.assertEqual(
             instance.__str__(),

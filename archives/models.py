@@ -611,14 +611,11 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         # If image hash has Hamming difference les then X - raise validation error as this or closer
         # to this image already exists in DB.
         for img_hash in self.__class__.stored_image_hash.values():
-            try:  # new!!!
-                if (img_hash - self.image_hash) < 10:
-                    raise exceptions.ValidationError(
-                        {'image': error_codes.IMAGE_ALREADY_EXISTS.message},
-                        code=error_codes.IMAGE_ALREADY_EXISTS.code,
-                    )
-            except TypeError:
-                return None
+            if img_hash is not None and (img_hash - self.image_hash) < 10:
+                raise exceptions.ValidationError(
+                    {'image': error_codes.IMAGE_ALREADY_EXISTS.message},
+                    code=error_codes.IMAGE_ALREADY_EXISTS.code,
+                )
 
     def save(self, fc=True, *args, **kwargs):
         """

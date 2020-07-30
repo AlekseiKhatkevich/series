@@ -1,4 +1,5 @@
 import datetime
+import operator
 
 from rest_framework import status
 from rest_framework.reverse import reverse
@@ -25,6 +26,14 @@ class CreateAccessLogPositiveTest(APITestCase):
         cls.series_1, cls.series_2 = cls.series
 
         cls.image = initial_data.generate_test_image()
+
+        cls.images = initial_data.create_images_instances(cls.series, 2)
+        cls.series_1_images_pks = map(
+            operator.attrgetter('pk'),
+            filter(
+                lambda img: img.object_id == cls.series_1.pk,
+                cls.images)
+        )
 
     def setUp(self) -> None:
         self.seasons = initial_data.create_seasons(self.series)
@@ -229,12 +238,40 @@ class CreateAccessLogPositiveTest(APITestCase):
 
         self.assertTrue(
             administration.models.EntriesChangeLog.objects.filter(
-                user=self.season_1_1.entry_author,
+                user=user,
                 as_who=administration.models.UserStatusChoices.CREATOR,
                 operation_type=administration.models.OperationTypeChoices.CREATE,
                 content_type__model=archives.models.ImageModel.__name__.lower(),
                 content_type__app_label=archives.models.ImageModel._meta.app_label.lower(),
             ).exists()
         )
+
+    def test_create_logs_after_delete_image(self):
+        """
+        Check that log is created after image deletion.
+        """
+        user = self.series_1.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.delete(
+            reverse('delete-image', args=[self.series_1.pk, self.series_1_images_pks]),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_204_NO_CONTENT
+        )
+        self.assertTrue(
+            administration.models.EntriesChangeLog.objects.filter(
+                user=user,
+                as_who=administration.models.UserStatusChoices.CREATOR,
+                operation_type=administration.models.OperationTypeChoices.DELETE,
+                content_type__model=archives.models.ImageModel.__name__.lower(),
+                content_type__app_label=archives.models.ImageModel._meta.app_label.lower(),
+            ).exists()
+        )
+
 
 

@@ -46,6 +46,7 @@ class ImageModelNegativeTest(APITestCase):
         image = archives.models.ImageModel.objects.create(
             image=self.test_image,
             content_object=self.series_1,
+            fc=False
         )
 
         with self.assertRaisesMessage(IntegrityError, expected_error_message):

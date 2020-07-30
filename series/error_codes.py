@@ -219,3 +219,8 @@ DELETED_MASTER_SLAVES = exc_msg(
     'Soft-deleted master can not have slaves.',
     'deleted_master_slaves',
 )
+MODEL_FIELDS_MISMATCH = exc_msg(
+    'Model fields stored in "state" field should coincide to said fields declared in '
+    'content object model class',
+    'model_fields_mismatch',
+)

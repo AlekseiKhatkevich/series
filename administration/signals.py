@@ -55,6 +55,3 @@ def create_log(
     )
 
 
-
-
-

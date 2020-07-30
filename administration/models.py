@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.indexes import BrinIndex
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.indexes import BrinIndex, GinIndex
+from django.core import exceptions
+from django.db import models
+from series import error_codes
 from administration.encoders import CustomEncoder
 
 
@@ -66,9 +68,10 @@ class EntriesChangeLog(models.Model):
     class Meta:
         verbose_name = 'Entries log'
         verbose_name_plural = 'Entries logs'
-        get_latest_by = ('access_time', )
+        get_latest_by = ('access_time',)
         indexes = [
             BrinIndex(fields=('access_time',), autosummarize=True, ),
+            GinIndex(fields=('state',)),
         ]
         constraints = [
             models.CheckConstraint(
@@ -86,5 +89,4 @@ class EntriesChangeLog(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'pk = {self.pk}, user pk = {self.user_id}, access_time = {self.access_time}'
-
+        return f'pk = {self.pk}, object = {self.object_id}, operation_type = {self.operation_type}'
