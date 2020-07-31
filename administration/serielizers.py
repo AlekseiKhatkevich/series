@@ -20,7 +20,7 @@ class HistorySerializer(serializers.ModelSerializer):
     """
     Serializer for 'EntriesChangeLog' model.
     """
-    user = serializers.ReadOnlyField(
+    user = serializers.EmailField(
         source='user.email',
     )
 

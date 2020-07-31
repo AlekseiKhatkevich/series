@@ -557,7 +557,7 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     """
     access_logs = GenericRelation(
         'administration.EntriesChangeLog',
-        related_query_name='archives_images',
+        related_query_name='images',
     )
 
     objects = archives.managers.ImageManager.from_queryset(archives.managers.ImageQueryset)()

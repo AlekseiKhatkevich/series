@@ -5,6 +5,7 @@ from rest_framework import generics, permissions, viewsets
 import administration.filters
 import administration.serielizers
 import archives.permissions
+import archives.models
 from series.helpers import custom_functions
 
 
@@ -43,7 +44,7 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         model = self.kwargs['model_name']
-        pk = self.kwargs['pk']
+        instance_pk = self.kwargs['instance_pk']
 
         deferred_fields = custom_functions.get_model_fields_subset(
             model=get_user_model(),
@@ -54,7 +55,7 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
             deferred_fields.add('state')
 
         self.queryset = self.model.objects.filter(
-            object_id=pk,
+            object_id=instance_pk,
             content_type__model=model.__name__.lower(),
             content_type__app_label=model._meta.app_label.lower(),
         ).select_related('user', ).defer(*deferred_fields)
@@ -65,11 +66,11 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Here we check whether or not object with pk and models from url kwargs exists in fact.
         """
-        obj = get_object_or_404(
+        model_instance = get_object_or_404(
             self.kwargs['model_name'],
-            pk=self.kwargs['pk'],
+            pk=self.kwargs['instance_pk'],
         )
-        setattr(self, 'obj', obj)
+        setattr(self, 'model_instance', model_instance)
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -77,7 +78,9 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Enforce permissions check here as by default list action does not do it.
         """
-        self.check_object_permissions(self.request, self.obj)
+        #  Pass series related to image in case object is image, as image doesn't have entry_author.
+        model_instance_to_check = getattr(self.model_instance, 'content_object', self.model_instance)
+        self.check_object_permissions(self.request, model_instance_to_check)
 
         return super().list(request, *args, **kwargs)
 

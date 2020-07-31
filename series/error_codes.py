@@ -224,3 +224,7 @@ MODEL_FIELDS_MISMATCH = exc_msg(
     'content object model class',
     'model_fields_mismatch',
 )
+MULTIPLE_OPERATIONS = exc_msg(
+    'One model entry can have only one "DELETE" or one "CREATE" operation.',
+    'multiple_operations',
+)

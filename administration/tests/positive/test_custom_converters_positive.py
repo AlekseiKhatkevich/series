@@ -9,23 +9,31 @@ class CustomConvertersPositiveTest(APISimpleTestCase):
     """
     Positive test on administration custom path converters.
     """
-    url = r'/administration/history/tvseriesmodel/158/'
 
     def test_ModelNameConverter_to_python(self):
         """
         Check that 'ModelNameConverter' is able to parse model name from url and convert it to actual
         model class.
         """
-        resolver = resolve(self.url)
+        url_series = r'/administration/history/tvseriesmodel/158/'
+        url_images = r'/administration/history/imagemodel/158/'
+        url_seasons = r'/administration/history/seasonmodel/158/'
 
-        self.assertEqual(
-            resolver.url_name,
-            'history-list'
-        )
-        self.assertEqual(
-            resolver.kwargs['model_name'],
-            archives.models.TvSeriesModel,
-        )
+        for url, model_type in zip(
+                (url_series, url_images, url_seasons),
+                (archives.models.TvSeriesModel, archives.models.ImageModel, archives.models.SeasonModel),
+        ):
+            with self.subTest(url=url, model_type=model_type):
+                resolver = resolve(url)
+
+                self.assertEqual(
+                    resolver.url_name,
+                    'history-list',
+                )
+                self.assertEqual(
+                    resolver.kwargs['model_name'],
+                    model_type,
+                )
 
     def test_ModelNameConverter_to_url(self):
         """

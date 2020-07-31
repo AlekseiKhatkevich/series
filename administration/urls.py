@@ -23,7 +23,7 @@ urlpatterns = [
          name='logs',
          ),
     path(
-        'history/<model:model_name>/<int:pk>/',
+        'history/<model:model_name>/<int:instance_pk>/',
         include(router.urls)
     )
 ]

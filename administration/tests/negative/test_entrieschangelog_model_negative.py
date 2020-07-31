@@ -1,4 +1,5 @@
 from django.core import exceptions
+from django.db import transaction
 from django.db.utils import IntegrityError
 from django.forms.models import model_to_dict
 from rest_framework.test import APITestCase
@@ -63,4 +64,26 @@ class EntriesChangeLogModelNegativeTest(APITestCase):
         with self.assertRaises(exceptions.ValidationError):
             instance = administration.models.EntriesChangeLog(**self.data)
             instance.save(fc=True)
+
+    def test_multiple_delete_or_update_exclusion(self):
+        """
+        Check that 'multiple_delete_or_update_exclusion' would raise exception if there are an attempt
+        to save 'EntriesChangeLog' entry where same 'archives' model entry has 'DELETE' or 'CREATE'
+        twice.
+        """
+        expected_error_message = 'multiple_delete_or_update_exclusion'
+        instance = administration.models.EntriesChangeLog(**self.data)
+        instance.save(fc=False)
+
+        with transaction.atomic(), self.assertRaisesMessage(IntegrityError, expected_error_message):
+            instance = administration.models.EntriesChangeLog(**self.data)
+            instance.save(fc=False)
+
+        self.data['operation_type'] = administration.models.OperationTypeChoices.DELETE
+        instance = administration.models.EntriesChangeLog(**self.data)
+        instance.save(fc=False)
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            instance = administration.models.EntriesChangeLog(**self.data)
+            instance.save(fc=False)
 
