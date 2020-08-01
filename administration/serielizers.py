@@ -26,5 +26,33 @@ class HistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = administration.models.EntriesChangeLog
-        fields = ('pk', 'access_time', 'as_who', 'operation_type', 'user', )
+        fields = (
+            'pk',
+            'access_time',
+            'as_who',
+            'operation_type',
+            'user',
+        )
 
+
+class HistoryDetailSerializer(HistorySerializer):
+    """
+    Serializer for 'EntriesChangeLog' model in detail views of 'HistoryViewSet'.
+    """
+    prev_state = serializers.JSONField(
+    )
+    next_state = serializers.JSONField(
+    )
+
+    class Meta:
+        model = administration.models.EntriesChangeLog
+        fields = (
+            'pk',
+            'access_time',
+            'as_who',
+            'operation_type',
+            'user',
+            'prev_state',
+            'state',
+            'next_state',
+        )

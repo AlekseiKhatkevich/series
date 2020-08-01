@@ -1,12 +1,11 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.constraints import ExclusionConstraint
 from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import BrinIndex, GinIndex
 from django.db import models
-from django.core import exceptions
-from series import error_codes
+from django.utils.functional import cached_property
+from rest_framework.reverse import reverse
 
 from administration.encoders import CustomEncoder
 
@@ -86,30 +85,15 @@ class EntriesChangeLog(models.Model):
                 name='operation_type_check',
                 check=models.Q(operation_type__in=OperationTypeChoices.values)
             ),
-            # One model entry can have only one 'DELETE' or only one 'CREATE'.
-            ExclusionConstraint(
+            #  One model entry can have only one 'DELETE' or only one 'CREATE'.
+            models.constraints.UniqueConstraint(
                 name='multiple_delete_or_update_exclusion',
-                expressions=[
-                    ('operation_type', '='),
-                    ('object_id', '='),
-                    ('content_type_id', '='),
-                ],
+                fields=('object_id', 'operation_type', 'content_type_id'),
                 condition=models.Q(
-                    operation_type__in=(
-                        OperationTypeChoices.DELETE,
-                        OperationTypeChoices.CREATE,
-                    )))]
-
-    def clean(self):
-        if self.operation_type in (OperationTypeChoices.DELETE, OperationTypeChoices.CREATE,):
-            if self.__class__.objects.filter(
-                    operation_type=self.operation_type,
-                    object_id=self.object_id,
-                    content_type_id=self.content_type_id,
-            ).exists():
-                raise exceptions.ValidationError(
-
-                )
+                            operation_type__in=(
+                                OperationTypeChoices.DELETE,
+                                OperationTypeChoices.CREATE,
+                            )),)]
 
     def save(self, fc=True, *args, **kwargs):
         if fc:
@@ -118,3 +102,10 @@ class EntriesChangeLog(models.Model):
 
     def __str__(self):
         return f'pk = {self.pk}, object = {self.object_id}, operation_type = {self.operation_type}'
+
+    @cached_property
+    def get_absolute_url(self):
+        return reverse(
+
+        )
+
