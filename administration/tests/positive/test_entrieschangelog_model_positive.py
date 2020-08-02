@@ -3,6 +3,7 @@ from django.forms.models import model_to_dict
 import administration.models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
+from rest_framework.reverse import reverse
 
 
 class EntriesChangeLogModelPositiveTest(APITestCase):
@@ -51,5 +52,24 @@ class EntriesChangeLogModelPositiveTest(APITestCase):
         self.assertEqual(
             instance.__str__(),
             expected_str,
+        )
+
+    def test_get_absolute_url(self):
+        """
+        Check that 'get_absolute_url' returns correct url.
+        """
+        test_instance = administration.models.EntriesChangeLog.objects.create(**self.data)
+
+        expected_url = reverse(
+            'history-detail',
+            args=[
+                test_instance.content_object.__class__._meta.model_name,
+                test_instance.object_id,
+                test_instance.pk,
+            ])
+
+        self.assertEqual(
+            test_instance.get_absolute_url,
+            expected_url,
         )
 

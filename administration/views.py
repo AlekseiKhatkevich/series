@@ -103,14 +103,14 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
             next_state=Subquery(
                 administration.models.EntriesChangeLog.objects.filter(
                     self.condition,
-                    pk__gt=OuterRef('pk'),
-                ).values('state', )[:1]
+                    access_time__gt=OuterRef('access_time'),
+                ).order_by('access_time').values('state', )[:1]
             ),
             prev_state=Subquery(
                 administration.models.EntriesChangeLog.objects.filter(
                     self.condition,
-                    pk__lt=OuterRef('pk'),
-                ).values('state', )[:1]
+                    access_time__lt=OuterRef('access_time'),
+                ).order_by('-access_time').values('state', )[:1]
             ))
 
         obj = get_object_or_404(queryset, pk=self.kwargs['pk'])

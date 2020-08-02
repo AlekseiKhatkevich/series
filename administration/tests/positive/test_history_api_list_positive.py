@@ -11,7 +11,7 @@ from users.helpers import create_test_users
 class HistoryAPIPositiveTest(APITestCase):
     """
     Positive tests on models change history api list action
-    administration/history/<model name>/<pk/.
+    administration/history/<model name>/<instance_pk>/.
     """
     maxDiff = None
 

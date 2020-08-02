@@ -90,10 +90,10 @@ class EntriesChangeLog(models.Model):
                 name='multiple_delete_or_update_exclusion',
                 fields=('object_id', 'operation_type', 'content_type_id'),
                 condition=models.Q(
-                            operation_type__in=(
-                                OperationTypeChoices.DELETE,
-                                OperationTypeChoices.CREATE,
-                            )),)]
+                    operation_type__in=(
+                        OperationTypeChoices.DELETE,
+                        OperationTypeChoices.CREATE,
+                    )), )]
 
     def save(self, fc=True, *args, **kwargs):
         if fc:
@@ -106,6 +106,9 @@ class EntriesChangeLog(models.Model):
     @cached_property
     def get_absolute_url(self):
         return reverse(
-
-        )
-
+            'history-detail',
+            args=((
+                self.content_object.__class__._meta.model_name,
+                self.object_id,
+                self.pk,
+            )))
