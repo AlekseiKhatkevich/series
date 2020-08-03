@@ -1,7 +1,11 @@
+import os
+import tempfile
+
 from django.contrib.auth import get_user_model
 from django.db.models import OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions, viewsets, views
+from rest_framework import decorators, generics, permissions, viewsets
+from rest_framework.response import Response
 
 import administration.filters
 import administration.models
@@ -118,5 +122,24 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
         self.check_object_permissions(self.request, model_instance_to_check)
 
         return obj
+
+#cache&&&&&&&&&&&&&&&&&&&&&&&&&&&
+@decorators.api_view(http_method_names=['GET'])
+@decorators.permission_classes([permissions.IsAdminUser, ])
+def coverage_view(request):
+    """
+    Views to show .coverage test results.
+    """
+    file = tempfile.NamedTemporaryFile(delete=False)
+
+    try:
+        os.system(f'coverage json -o {file.name}')
+        file.seek(os.SEEK_SET)
+        json_report = file.read()
+    finally:
+        file.close()
+        os.remove(file.name)
+
+    return Response(data=json_report)
 
 
