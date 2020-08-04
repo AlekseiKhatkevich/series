@@ -2,15 +2,19 @@ import os
 import tempfile
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db.models import OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, generics, permissions, viewsets
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_extensions.mixins import DetailSerializerMixin
 
 import administration.filters
 import administration.models
 import administration.serielizers
 import archives.permissions
+from administration import cache_functions
 from series.helpers import custom_functions
 
 
@@ -34,7 +38,7 @@ class LogsListView(generics.ListAPIView):
     )
 
 
-class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
+class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
     """
     Displays change history of chosen model.
     """
@@ -48,12 +52,8 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
     ordering = ('-access_time',)
     ordering_fields = ('access_time', 'user',)
     search_fields = ('user',)
-
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return administration.serielizers.HistorySerializer
-        else:
-            return administration.serielizers.HistoryDetailSerializer
+    serializer_class = administration.serielizers.HistorySerializer
+    serializer_detail_class = administration.serielizers.HistoryDetailSerializer
 
     def get_queryset(self):
         model = self.kwargs['model_name']
@@ -123,23 +123,39 @@ class HistoryViewSet(viewsets.ReadOnlyModelViewSet):
 
         return obj
 
-#cache&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
 @decorators.api_view(http_method_names=['GET'])
 @decorators.permission_classes([permissions.IsAdminUser, ])
-def coverage_view(request):
+def coverage_view(request: Request) -> Response:
     """
     Views to show .coverage test results.
     """
-    file = tempfile.NamedTemporaryFile(delete=False)
+    data_key = 'coverage_data_key'
+    time_key = 'coverage_time_key'
 
-    try:
-        os.system(f'coverage json -o {file.name}')
-        file.seek(os.SEEK_SET)
-        json_report = file.read()
-    finally:
-        file.close()
-        os.remove(file.name)
+    cached_data = cache.get_many((data_key, time_key, ))
+    json_report = cached_data.get(data_key, None)
+    stored_time = cached_data.get(time_key, None)
+
+    coverage_last_time_ran = cache_functions.get_coverage_last_time()
+    assert coverage_last_time_ran is not None, 'Coverage has not ran yet.'
+
+    # If not data sored in cache or stored data is old...
+    if None in (json_report, stored_time) or coverage_last_time_ran > stored_time:
+
+        file = tempfile.NamedTemporaryFile(delete=False)
+
+        try:
+            os.system(f'coverage json -o {file.name}')
+            file.seek(os.SEEK_SET)
+            json_report = file.read()
+            cache.set_many({
+                    data_key: json_report,
+                    time_key: coverage_last_time_ran
+                })
+        finally:
+            file.close()
+            os.remove(file.name)
 
     return Response(data=json_report)
-
 

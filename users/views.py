@@ -225,3 +225,12 @@ class CustomTokenObtainPairView(views_mixins.TokenViewBaseMixin, simplejwt_views
     raise exception.
     """
     pass
+
+
+class UserLastEntries(simplejwt_views.generics.RetrieveAPIView):
+    """
+    Displays user's last entries in each category.
+    """
+    # EntriesChangeLog.objects.filter(user_id=1).values('content_type_id').\
+    #     annotate(time=Max('access_time')).values_list(
+    #     'time', flat=True)

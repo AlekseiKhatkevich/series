@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.indexes import BrinIndex, GinIndex
 from django.db import models
 from django.utils.functional import cached_property
@@ -61,7 +60,7 @@ class EntriesChangeLog(models.Model):
         choices=OperationTypeChoices.choices,
         max_length=6,
     )
-    state = JSONField(
+    state = models.JSONField(
         verbose_name='Model state before save or delete.',
         encoder=CustomEncoder,
     )

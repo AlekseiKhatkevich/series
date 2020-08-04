@@ -115,6 +115,10 @@ DATABASES = {
         'TEST': {
             'NAME': 'auto_tests', }
     },
+    'coverage': {  # .coverage database
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '.coverage',
+    }
 }
 
 DATABASE_ROUTERS = []
