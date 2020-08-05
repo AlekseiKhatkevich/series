@@ -63,12 +63,13 @@ class ImageDeleteNegativeTest(test_helpers.TestHelpers, APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
+        cls.user_1, *rest = cls.users
 
         cls.series = initial_data.create_tvseries(cls.users)
         cls.series_1, cls.series_2 = cls.series
 
     def setUp(self) -> None:
-        self.images = initial_data.create_images_instances(self.series, 2)
+        self.images = initial_data.create_images_instances(self.series, user=self.user_1, num_img=2,)
         self.series_1_images_pks = map(
             operator.attrgetter('pk'),
             filter(

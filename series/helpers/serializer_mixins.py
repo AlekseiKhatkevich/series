@@ -121,7 +121,7 @@ class NoneInsteadEmptyMixin:
         Modifies incoming data recursively by changing:
         a) Values, which keys indicated in 'keys_to_swap' to swap_value, usually None ,
          if value is empty container.
-        b) All empty containers, like [], {}, (), etc. if specified in empty_containers_to_swap
+        b) All empty containers, like [], {}, (), etc. if specified in 'empty_containers_to_swap'
         are subject to change as well.
         """
         pass

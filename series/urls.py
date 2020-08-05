@@ -17,6 +17,7 @@ urlpatterns = [
     path('administration/', include('administration.urls')),
     path('admin/', admin.site.urls),
     path('archives/', include('archives.urls')),
+    path('user-resources/', include('users.urls')),
 
     #  Url to custom JWT token refresh endpoint. Overrides one url in 'djoser.urls.jwt'.
     re_path(r'^auth/jwt/refresh/?', users.views.CustomJWTTokenRefreshView.as_view(), name='jwt-refresh'),
@@ -25,7 +26,7 @@ urlpatterns = [
     re_path(r'^auth/', include('djoser.urls.jwt')),
     # Change 'djoser.urls' in order to be able to use custom Views
     re_path(r'^auth/', include(djoser_router.urls)),
-    #  re_path(r'^auth/', include('djoser.urls')),
+
 
     path('api-auth/', include('rest_framework.urls')),  # for basic auth in browsable apis
 ]

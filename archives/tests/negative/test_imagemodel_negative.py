@@ -19,6 +19,7 @@ class ImageModelNegativeTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
+        cls.user_1, cls.user_2, cls.user_3 = cls.users
 
         cls.series_1, *tail = initial_data.create_tvseries(users=cls.users)
 
@@ -46,6 +47,7 @@ class ImageModelNegativeTest(APITestCase):
         image = archives.models.ImageModel.objects.create(
             image=self.test_image,
             content_object=self.series_1,
+            entry_author=self.user_3,
             fc=False
         )
 
@@ -63,4 +65,5 @@ class ImageModelNegativeTest(APITestCase):
                 archives.models.ImageModel.objects.create(
                     image=self.test_image,
                     content_object=self.series_1,
+                    entry_author=self.user_3,
                 )

@@ -63,6 +63,10 @@ class ImagesCreatePositiveTest(test_helpers.TestHelpers, APITestCase):
         self.assertTrue(
             os.path.exists(expected_image_file_path)
         )
+        self.assertEqual(
+            self.series_1.images.get().entry_author,
+            user,
+        )
 
 
 class ImageDeletePositiveTest(test_helpers.TestHelpers, APITestCase):
@@ -80,7 +84,7 @@ class ImageDeletePositiveTest(test_helpers.TestHelpers, APITestCase):
         cls.series_1, cls.series_2 = cls.series
 
     def setUp(self) -> None:
-        self.images = initial_data.create_images_instances(self.series, 2)
+        self.images = initial_data.create_images_instances(self.series, num_img=2)
         self.series_1_images_pks = map(
             operator.attrgetter('pk'),
             filter(

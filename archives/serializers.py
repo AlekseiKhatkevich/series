@@ -46,6 +46,7 @@ class ImagesSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['content_object'] = self.context['series']
+        validated_data['entry_author'] = self.context['request'].user
         return super().create(validated_data)
 
 

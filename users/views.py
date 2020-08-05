@@ -18,9 +18,12 @@ from rest_framework_simplejwt import settings as simplejwt_settings, views as si
 
 import users.filters
 import users.models
+import users.serializers
 from series import error_codes
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
+import archives.models
+from django.db.models import Value, Prefetch
 
 
 class CustomDjoserUserViewSet(djoser.views.UserViewSet):
@@ -227,10 +230,35 @@ class CustomTokenObtainPairView(views_mixins.TokenViewBaseMixin, simplejwt_views
     pass
 
 
-class UserLastEntries(simplejwt_views.generics.RetrieveAPIView):
+class UserEntries(simplejwt_views.generics.RetrieveAPIView):
     """
-    Displays user's last entries in each category.
+    Displays user's entries in each category.
     """
     # EntriesChangeLog.objects.filter(user_id=1).values('content_type_id').\
     #     annotate(time=Max('access_time')).values_list(
     #     'time', flat=True)
+    #  Далее использовать в субквери с ин
+    serializer_class = users.serializers.UserEntriesSerializer
+    model = serializer_class.Meta.model
+    season_model = archives.models.SeasonModel
+    series_model = archives.models.TvSeriesModel
+    images_model = archives.models.ImageModel
+
+    def get_queryset(self):
+        user = self.request.user
+        pr_seasons = Prefetch(
+            'seasons',
+            queryset=self.season_model.objects.all().select_related('series', ),
+        )
+        self.queryset = get_user_model().objects.filter(pk=user.pk).prefetch_related(
+            'series',
+            pr_seasons,
+            'series__images',
+        )
+        return super().get_queryset()
+
+    def get_object(self):
+        return self.get_queryset().first()
+
+
+

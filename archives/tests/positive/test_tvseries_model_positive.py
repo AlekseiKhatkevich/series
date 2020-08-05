@@ -54,6 +54,7 @@ class TvSeriesModelPositiveTest(APITestCase):
         image = archive_models.ImageModel(
             content_object=self.series_1,
             image=raw_image,
+            entry_author=self.series_1.entry_author
         )
         image.save(fc=False)
 

@@ -5,6 +5,7 @@ from typing import BinaryIO, Iterable, Iterator, Optional, Sequence, Union
 import PIL
 import imagehash
 from psycopg2.extras import DateRange
+from django.core.files.base import File
 
 test_list = ['a', 1, 2, 99, -8, 2.2, 'sfsdfdf', '6', '88', '5.6', '-67']
 
@@ -39,7 +40,10 @@ def filter_positive_int_or_digit(container: Iterable, to_integer: bool = True) -
     return final_list_of_positive_numbers_gte_zero
 
 
-def create_image_hash(image: BinaryIO, raise_errors: bool = False) -> Optional[imagehash.ImageHash]:
+def create_image_hash(
+        image: Union[BinaryIO, File],
+        raise_errors: bool = False,
+) -> Optional[imagehash.ImageHash]:
     """
     Creates image hash on image file.
     """

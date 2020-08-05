@@ -27,7 +27,7 @@ class CreateAccessLogPositiveTest(APITestCase):
 
         cls.image = initial_data.generate_test_image()
 
-        cls.images = initial_data.create_images_instances(cls.series, 2)
+        cls.images = initial_data.create_images_instances(cls.series, num_img=2)
         cls.series_1_images_pks = map(
             operator.attrgetter('pk'),
             filter(

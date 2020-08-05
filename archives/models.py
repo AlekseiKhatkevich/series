@@ -562,6 +562,13 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
 
     objects = archives.managers.ImageManager.from_queryset(archives.managers.ImageQueryset)()
 
+    entry_author = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.PROTECT,
+        related_name='images',
+        verbose_name='Author of the image.',
+    )
+
     image = models.ImageField(
         upload_to=file_uploads.save_image_path,
         verbose_name='An image',

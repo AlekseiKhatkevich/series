@@ -6,10 +6,67 @@ from django.db.models.functions import NullIf
 from djoser import serializers as djoser_serializers
 from rest_framework import serializers
 
+import archives.models
 from series import error_codes
-from users.helpers import validators as custom_validators
-from users.helpers import serializer_mixins
 from series.helpers import serializer_mixins as project_serializer_mixins
+from users.helpers import serializer_mixins, validators as custom_validators
+
+
+class SeasonsInnerSerializer(serializers.ModelSerializer):
+    """
+    Nested serializer for SeasonModel.
+    """
+    series_name = serializers.CharField(
+        source='series.name',
+    )
+
+    class Meta:
+        model = archives.models.SeasonModel
+        fields = ('pk', 'series_name', 'season_number',)
+
+
+class ImagesInnerSerializer(serializers.ModelSerializer):
+    """
+    Nested serializer for imageModel.
+    """
+    class Meta:
+        model = archives.models.ImageModel
+        fields = ('pk', 'image', )
+
+
+class SeriesInnerSerializer(
+    project_serializer_mixins.NoneInsteadEmptyMixin,
+    serializers.ModelSerializer,
+):
+    """
+    Nested serializer for TvSeriesModel.
+    """
+    images = ImagesInnerSerializer(
+        many=True,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = archives.models.TvSeriesModel
+        fields = ('pk', 'name', 'images', )
+        none_if_empty = ('images',)
+
+
+class UserEntriesSerializer(serializers.ModelSerializer):
+    """
+    Serializer for user's entries.
+    """
+
+    series = SeriesInnerSerializer(
+        many=True,
+    )
+    seasons = SeasonsInnerSerializer(
+        many=True,
+    )
+
+    class Meta:
+        model = get_user_model()
+        fields = ('series', 'seasons', )
 
 
 class CustomDjoserUserCreateSerializer(

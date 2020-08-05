@@ -58,7 +58,7 @@ class CreateInitialDataPositiveTest(APITestCase):
         Check that 'create_images_instances' function attaches images to model instances.
         """
         series = initial_data.create_tvseries(self.users)
-        images = initial_data.create_images_instances(series, 3)
+        images = initial_data.create_images_instances(series, num_img=3)
 
         self.assertListEqual(
             sorted([image.pk for image in images]),
@@ -69,3 +69,9 @@ class CreateInitialDataPositiveTest(APITestCase):
             len(images),
             len(series) * 3,
         )
+        for image in images:
+            with self.subTest(image=image):
+                self.assertEqual(
+                    image.entry_author,
+                    image.content_object.entry_author,
+                )

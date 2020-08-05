@@ -4,8 +4,9 @@ from rest_framework.test import APITestCase
 
 from administration import encoders
 from archives import models as archive_models
-from archives.helpers.custom_functions import daterange
+from archives.helpers.custom_functions import create_image_hash, daterange
 from archives.tests.data import initial_data
+from archives.tests.data.initial_data import generate_test_image
 from users.helpers import create_test_users
 
 
@@ -67,4 +68,18 @@ class EncodersPositiveTest(APITestCase):
         self.assertJSONEqual(
             actual_result,
             expected_result,
+        )
+
+    def test_CustomEncoder_ImageHash(self):
+        """
+        Check that 'CustomEncoder' correctly encodes ImageHash instance.
+        """
+        image = generate_test_image()
+        image_hash = create_image_hash(image)
+
+        result = encoders.CustomEncoder().encode(image_hash)
+
+        self.assertIsInstance(
+            result,
+            str,
         )

@@ -1,4 +1,5 @@
 import os
+
 import imagehash
 from django.conf import settings
 from rest_framework.test import APITestCase
@@ -16,6 +17,7 @@ class ImageModelPositiveTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
+        cls.user_1, *rest = cls.users
 
         cls.series = initial_data.create_tvseries(users=cls.users)
         cls.series_1, cls.series_2 = cls.series
@@ -28,6 +30,7 @@ class ImageModelPositiveTest(APITestCase):
             image=cls.raw_image,
             fc=False,
             image_hash=1111111111111111,
+            entry_author=cls.user_1
         )
 
     def test_file_upload_function_tvseriesmodel(self):
@@ -60,6 +63,7 @@ class ImageModelPositiveTest(APITestCase):
         image_model_instance = archive_models.ImageModel.objects.create(
             image=self.raw_image,
             content_object=self.season_1,
+            entry_author=self.user_1,
             fc=False,
         )
 
@@ -86,6 +90,7 @@ class ImageModelPositiveTest(APITestCase):
         image_model_instance = archive_models.ImageModel.objects.create(
             image=self.raw_image,
             content_object=self.users[0],
+            entry_author=self.user_1,
             fc=False,
         )
 
@@ -132,6 +137,7 @@ class ImageModelPositiveTest(APITestCase):
         """
         test_image_instance = self.series_1.images.create(
                 image=initial_data.generate_test_image(),
+                entry_author=self.user_1,
                 fc=False,
         )
         test_image_instance.refresh_from_db()
