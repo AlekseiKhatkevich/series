@@ -29,30 +29,31 @@ class ImagesInnerSerializer(serializers.ModelSerializer):
     """
     Nested serializer for imageModel.
     """
-    class Meta:
-        model = archives.models.ImageModel
-        fields = ('pk', 'image', )
-
-
-class SeriesInnerSerializer(
-    project_serializer_mixins.NoneInsteadEmptyMixin,
-    serializers.ModelSerializer,
-):
-    """
-    Nested serializer for TvSeriesModel.
-    """
-    images = ImagesInnerSerializer(
-        many=True,
-        allow_null=True,
+    model = serializers.CharField(
+        source='content_object._meta.model_name',
+    )
+    object_name = serializers.CharField(
+        source='content_object.name',
     )
 
     class Meta:
+        model = archives.models.ImageModel
+        fields = ('pk', 'model', 'object_name',)
+
+
+class SeriesInnerSerializer(serializers.ModelSerializer):
+    """
+    Nested serializer for TvSeriesModel.
+    """
+    class Meta:
         model = archives.models.TvSeriesModel
-        fields = ('pk', 'name', 'images', )
-        none_if_empty = ('images',)
+        fields = ('pk', 'name', )
 
 
-class UserEntriesSerializer(serializers.ModelSerializer):
+class UserEntriesSerializer(
+    project_serializer_mixins.NoneInsteadEmptyMixin,
+    serializers.ModelSerializer,
+):
     """
     Serializer for user's entries.
     """
@@ -63,10 +64,14 @@ class UserEntriesSerializer(serializers.ModelSerializer):
     seasons = SeasonsInnerSerializer(
         many=True,
     )
+    images = ImagesInnerSerializer(
+        many=True,
+    )
 
     class Meta:
         model = get_user_model()
-        fields = ('series', 'seasons', )
+        fields = ('series', 'seasons', 'images', )
+        none_if_empty = fields
 
 
 class CustomDjoserUserCreateSerializer(

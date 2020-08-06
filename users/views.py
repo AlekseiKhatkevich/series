@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.exceptions import ValidationError
+from django.db.models import Prefetch
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
 from djoser.compat import get_user_email
@@ -22,8 +23,6 @@ import users.serializers
 from series import error_codes
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
-import archives.models
-from django.db.models import Value, Prefetch
 
 
 class CustomDjoserUserViewSet(djoser.views.UserViewSet):
@@ -155,7 +154,7 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
         return super().get_serializer_class()
 
     def permission_denied(self, request, message=None):
-        if self.action in ('resend_activation', ):
+        if self.action in ('resend_activation',):
             raise exceptions.PermissionDenied(detail=message)
         super().permission_denied(request, message=message)
 
@@ -234,31 +233,25 @@ class UserEntries(simplejwt_views.generics.RetrieveAPIView):
     """
     Displays user's entries in each category.
     """
-    # EntriesChangeLog.objects.filter(user_id=1).values('content_type_id').\
-    #     annotate(time=Max('access_time')).values_list(
-    #     'time', flat=True)
-    #  Далее использовать в субквери с ин
     serializer_class = users.serializers.UserEntriesSerializer
     model = serializer_class.Meta.model
-    season_model = archives.models.SeasonModel
-    series_model = archives.models.TvSeriesModel
-    images_model = archives.models.ImageModel
 
     def get_queryset(self):
         user = self.request.user
         pr_seasons = Prefetch(
             'seasons',
-            queryset=self.season_model.objects.all().select_related('series', ),
+            queryset=user.seasons.all().select_related('series', ),
+        )
+        pr_images = Prefetch(
+            'images',
+            queryset=user.images.all().prefetch_related('content_object', ),
         )
         self.queryset = get_user_model().objects.filter(pk=user.pk).prefetch_related(
             'series',
             pr_seasons,
-            'series__images',
+            pr_images,
         )
         return super().get_queryset()
 
     def get_object(self):
         return self.get_queryset().first()
-
-
-

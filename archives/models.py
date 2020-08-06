@@ -568,7 +568,6 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         related_name='images',
         verbose_name='Author of the image.',
     )
-
     image = models.ImageField(
         upload_to=file_uploads.save_image_path,
         verbose_name='An image',

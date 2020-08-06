@@ -14,6 +14,7 @@ import users.managers as users_managers
 from series import error_codes
 from series.helpers.typing import url
 from users.helpers import countries, validators as custom_validators
+from users.database_functions import IpCount
 
 
 class User(AbstractUser):
@@ -259,6 +260,12 @@ class UserIP(models.Model):
         index_together = (
             ('user', 'ip',)
         )
+        constraints = [
+            # Check that max. quantity of user ips entries is 3.
+            models.CheckConstraint(
+                name='max_3_ips',
+                check=IpCount(models.F('user_id'), models.Value(3)),
+            ), ]
 
     def __str__(self):
         return f'# {self.pk} -- Ip address of user {self.user_id} / {self.user.email}.'
