@@ -2,7 +2,7 @@ import itertools
 import operator
 
 from django.db import models
-from django.db.utils import IntegrityError
+from django.db.utils import IntegrityError, InternalError
 from rest_framework.test import APITestCase
 
 from users.helpers import create_test_ips, create_test_users
@@ -31,9 +31,9 @@ class UserIPNegativeTest(APITestCase):
         Check that 'max_3_ips' check constraint would not allow to save more then 3 IP entries
         for each user.
         """
-        expected_error_message = 'max_3_ips'
+        expected_error_message = 'Cannot insert more than 3 ips for each user.'
 
-        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+        with self.assertRaisesMessage(InternalError, expected_error_message):
             entry = UserIP(ip='228.228.228.228', user=self.user_1)
             models.Model.save(entry)
-            models.Model.save(entry)
+

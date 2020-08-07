@@ -1,13 +1,4 @@
-ERROR || 2020-08-05 11:00:09,108 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 454, in get_attribute
-    return get_attribute(instance, self.source_attrs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 94, in get_attribute
-    instance = getattr(instance, attr)
-AttributeError: 'TvSeriesModel' object has no attribute 'image'
-
-During handling of the above exception, another exception occurred:
-
+ERROR || 2020-08-05 14:25:08,116 || log || Internal Server Error: /archives/tvseries/29/seasons/522/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -15,8 +6,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
     return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
     return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
     response = self.handle_exception(exc)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
@@ -25,110 +18,32 @@ Traceback (most recent call last):
     raise exc
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
     response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 529, in to_representation
-    ret[field.field_name] = field.to_representation(attribute)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 677, in to_representation
-    return [
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 678, in <listcomp>
-    self.child.to_representation(item) for item in iterable
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 516, in to_representation
-    attribute = field.get_attribute(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 487, in get_attribute
-    raise type(exc)(msg)
-AttributeError: Got AttributeError when attempting to get a value for field `image` on serializer `ImagesInnerSerializer`.
-The serializer field might be named incorrectly and not match any attribute or key on the `TvSeriesModel` instance.
-Original exception text was: 'TvSeriesModel' object has no attribute 'image'.
-ERROR || 2020-08-05 11:00:09,254 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 168449
-ERROR || 2020-08-05 11:00:47,517 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 454, in get_attribute
-    return get_attribute(instance, self.source_attrs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 94, in get_attribute
-    instance = getattr(instance, attr)
-AttributeError: 'User' object has no attribute 'img'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 516, in to_representation
-    attribute = field.get_attribute(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 487, in get_attribute
-    raise type(exc)(msg)
-AttributeError: Got AttributeError when attempting to get a value for field `images` on serializer `UserEntriesSerializer`.
-The serializer field might be named incorrectly and not match any attribute or key on the `User` instance.
-Original exception text was: 'User' object has no attribute 'img'.
-ERROR || 2020-08-05 11:00:47,655 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 155154
-ERROR || 2020-08-05 11:02:14,037 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 54, in retrieve
     instance = self.get_object()
-  File "C:\Users\hardcase1\PycharmProjects\series\users\views.py", line 265, in get_object
-    return self.get_queryset().first()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 678, in first
-    for obj in (self if self.ordered else self.order_by('pk'))[:1]:
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 287, in __iter__
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 248, in get_object
+    return super().get_object()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 96, in get_object
+    obj = get_object_or_404(queryset, **filter_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 19, in get_object_or_404
+    return _get_object_or_404(queryset, *filter_args, **filter_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\shortcuts.py", line 76, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 425, in get
+    num = len(clone)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
     self._fetch_all()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1305, in _fetch_all
-    self._prefetch_related_objects()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 814, in _prefetch_related_objects
-    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1705, in prefetch_related_objects
-    obj_list, additional_lookups = prefetch_one_level(obj_list, prefetcher, lookup, level)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1854, in prefetch_one_level
-    raise ValueError(msg.format(to_attr, model.__name__))
-ValueError: to_attr=images conflicts with a field on the TvSeriesModel model.
-ERROR || 2020-08-05 11:02:14,236 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 156553
-ERROR || 2020-08-05 11:02:48,378 || log || Internal Server Error: /user-resources/entries/
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:25:08,216 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -136,8 +51,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
     return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
     return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
     response = self.handle_exception(exc)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
@@ -146,38 +63,26 @@ Traceback (most recent call last):
     raise exc
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
     response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
-    for field in fields:
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
-    for field in self.fields.values():
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
-    res = instance.__dict__[self.name] = self.func(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 364, in fields
-    fields[key] = value
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\utils\serializer_helpers.py", line 145, in __setitem__
-    field.bind(field_name=key, parent=self.serializer)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 375, in bind
-    assert self.source != field_name, (
-AssertionError: It is redundant to specify `source='images'` on field 'ListSerializer' in serializer 'UserEntriesSerializer', because it is the same as the field name. Remove the `source` keyword argument.
-ERROR || 2020-08-05 11:02:48,515 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 158406
-ERROR || 2020-08-05 11:03:11,381 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 454, in get_attribute
-    return get_attribute(instance, self.source_attrs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 94, in get_attribute
-    instance = getattr(instance, attr)
-AttributeError: 'User' object has no attribute 'images'
-
-During handling of the above exception, another exception occurred:
-
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:25:08,270 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -185,8 +90,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
     return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
     return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
     response = self.handle_exception(exc)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
@@ -195,32 +102,26 @@ Traceback (most recent call last):
     raise exc
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
     response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 516, in to_representation
-    attribute = field.get_attribute(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 487, in get_attribute
-    raise type(exc)(msg)
-AttributeError: Got AttributeError when attempting to get a value for field `images` on serializer `UserEntriesSerializer`.
-The serializer field might be named incorrectly and not match any attribute or key on the `User` instance.
-Original exception text was: 'User' object has no attribute 'images'.
-ERROR || 2020-08-05 11:03:11,526 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 155022
-ERROR || 2020-08-05 11:03:34,573 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 454, in get_attribute
-    return get_attribute(instance, self.source_attrs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 94, in get_attribute
-    instance = getattr(instance, attr)
-AttributeError: 'RelatedManager' object has no attribute 'images_from_prefetch'
-
-During handling of the above exception, another exception occurred:
-
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:25:08,296 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -228,8 +129,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
     return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
     return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
     response = self.handle_exception(exc)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
@@ -238,74 +141,26 @@ Traceback (most recent call last):
     raise exc
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
     response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 516, in to_representation
-    attribute = field.get_attribute(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 487, in get_attribute
-    raise type(exc)(msg)
-AttributeError: Got AttributeError when attempting to get a value for field `images` on serializer `UserEntriesSerializer`.
-The serializer field might be named incorrectly and not match any attribute or key on the `User` instance.
-Original exception text was: 'RelatedManager' object has no attribute 'images_from_prefetch'.
-ERROR || 2020-08-05 11:03:34,719 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 155720
-ERROR || 2020-08-05 11:04:23,649 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 202, in _get_response
-    response = response.render()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\template\response.py", line 105, in render
-    self.content = self.rendered_content
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\response.py", line 70, in rendered_content
-    ret = renderer.render(self.data, accepted_media_type, context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\renderers.py", line 724, in render
-    context = self.get_context(data, accepted_media_type, renderer_context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\renderers.py", line 680, in get_context
-    'content': self.get_content(renderer, data, accepted_media_type, renderer_context),
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\renderers.py", line 413, in get_content
-    content = renderer.render(data, accepted_media_type, renderer_context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\renderers.py", line 100, in render
-    ret = json.dumps(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\utils\json.py", line 25, in dumps
-    return json.dumps(*args, **kwargs)
-  File "c:\python\lib\json\__init__.py", line 234, in dumps
-    return cls(
-  File "c:\python\lib\json\encoder.py", line 201, in encode
-    chunks = list(chunks)
-  File "c:\python\lib\json\encoder.py", line 431, in _iterencode
-    yield from _iterencode_dict(o, _current_indent_level)
-  File "c:\python\lib\json\encoder.py", line 405, in _iterencode_dict
-    yield from chunks
-  File "c:\python\lib\json\encoder.py", line 325, in _iterencode_list
-    yield from chunks
-  File "c:\python\lib\json\encoder.py", line 405, in _iterencode_dict
-    yield from chunks
-  File "c:\python\lib\json\encoder.py", line 325, in _iterencode_list
-    yield from chunks
-  File "c:\python\lib\json\encoder.py", line 438, in _iterencode
-    o = _default(o)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\utils\encoders.py", line 67, in default
-    return super().default(obj)
-  File "c:\python\lib\json\encoder.py", line 179, in default
-    raise TypeError(f'Object of type {o.__class__.__name__} '
-TypeError: Object of type ImageModel is not JSON serializable
-ERROR || 2020-08-05 11:04:23,808 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 221745
-ERROR || 2020-08-05 12:01:02,556 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 454, in get_attribute
-    return get_attribute(instance, self.source_attrs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 94, in get_attribute
-    instance = getattr(instance, attr)
-AttributeError: 'RelatedManager' object has no attribute 'images_from_prefetch'
-
-During handling of the above exception, another exception occurred:
-
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:25:08,336 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -313,8 +168,10 @@ Traceback (most recent call last):
     response = wrapped_callback(request, *callback_args, **callback_kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
     return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
     return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
     response = self.handle_exception(exc)
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
@@ -323,137 +180,38 @@ Traceback (most recent call last):
     raise exc
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
     response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 516, in to_representation
-    attribute = field.get_attribute(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 487, in get_attribute
-    raise type(exc)(msg)
-AttributeError: Got AttributeError when attempting to get a value for field `images` on serializer `UserEntriesSerializer`.
-The serializer field might be named incorrectly and not match any attribute or key on the `User` instance.
-Original exception text was: 'RelatedManager' object has no attribute 'images_from_prefetch'.
-ERROR || 2020-08-05 12:01:02,704 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 154493
-ERROR || 2020-08-05 12:01:47,820 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 454, in get_attribute
-    return get_attribute(instance, self.source_attrs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 94, in get_attribute
-    instance = getattr(instance, attr)
-AttributeError: 'RelatedManager' object has no attribute 'images_from_prefetch'
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 516, in to_representation
-    attribute = field.get_attribute(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\fields.py", line 487, in get_attribute
-    raise type(exc)(msg)
-AttributeError: Got AttributeError when attempting to get a value for field `images` on serializer `UserEntriesSerializer`.
-The serializer field might be named incorrectly and not match any attribute or key on the `User` instance.
-Original exception text was: 'RelatedManager' object has no attribute 'images_from_prefetch'.
-ERROR || 2020-08-05 12:01:47,966 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 154493
-ERROR || 2020-08-05 12:03:34,582 || log || Internal Server Error: /user-resources/entries/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 208, in get
-    return self.retrieve(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 56, in retrieve
-    return Response(serializer.data)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 562, in data
-    ret = super().data
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 260, in data
-    self._data = self.to_representation(self.instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 514, in to_representation
-    for field in fields:
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 375, in _readable_fields
-    for field in self.fields.values():
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\utils\functional.py", line 48, in __get__
-    res = instance.__dict__[self.name] = self.func(instance)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 363, in fields
-    for key, value in self.get_fields().items():
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1062, in get_fields
-    field_class, field_kwargs = self.build_field(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1208, in build_field
-    return self.build_unknown_field(field_name, model_class)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\serializers.py", line 1323, in build_unknown_field
-    raise ImproperlyConfigured(
-django.core.exceptions.ImproperlyConfigured: Field name `images` is not valid for model `User`.
-ERROR || 2020-08-05 12:03:34,728 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 500 170433
-WARNING || 2020-08-05 12:16:58,436 || log || Forbidden: /user-resources/entries/
-WARNING || 2020-08-05 12:16:58,486 || basehttp || "GET /user-resources/entries/ HTTP/1.1" 403 14109
-WARNING || 2020-08-05 12:17:24,324 || log || Not Found: /Fargo/new.jpg
-WARNING || 2020-08-05 12:17:24,335 || basehttp || "GET /Fargo/new.jpg HTTP/1.1" 404 12396
-WARNING || 2020-08-05 12:45:15,092 || log || Bad Request: /archives/tvseries/129/upload-image/new.jpg/
-WARNING || 2020-08-05 12:45:15,104 || basehttp || "POST /archives/tvseries/129/upload-image/new.jpg/ HTTP/1.1" 400 89
-WARNING || 2020-08-05 12:45:40,377 || log || Not Found: /archives/tvseries/129/upload-image/new.jpg/
-WARNING || 2020-08-05 12:45:40,380 || basehttp || "POST /archives/tvseries/129/upload-image/new.jpg/ HTTP/1.1" 404 55
-WARNING || 2020-08-05 12:46:00,521 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:46:00,525 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 108
-WARNING || 2020-08-05 12:46:41,110 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:46:41,113 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 108
-WARNING || 2020-08-05 12:48:03,076 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:48:03,079 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 40
-WARNING || 2020-08-05 12:49:32,491 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:49:32,495 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 60
-WARNING || 2020-08-05 12:49:42,415 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:49:42,426 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 60
-WARNING || 2020-08-05 12:49:50,833 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:49:50,845 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 60
-WARNING || 2020-08-05 12:50:10,337 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:50:10,340 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 40
-WARNING || 2020-08-05 12:59:14,656 || log || Bad Request: /archives/tvseries/5/upload-image/new.jpg/
-WARNING || 2020-08-05 12:59:14,661 || basehttp || "POST /archives/tvseries/5/upload-image/new.jpg/ HTTP/1.1" 400 60
-WARNING || 2020-08-05 14:21:45,871 || log || Bad Request: /archives/tvseries/30/upload-image/small_image.gif/
-WARNING || 2020-08-05 14:21:46,958 || log || Not Found: /archives/tvseries/0/seasons/
-WARNING || 2020-08-05 14:21:46,976 || log || Forbidden: /archives/tvseries/19/seasons/
-WARNING || 2020-08-05 14:21:46,997 || log || Forbidden: /archives/tvseries/20/seasons/
-WARNING || 2020-08-05 14:21:47,167 || log || Forbidden: /archives/tvseries/21/
-ERROR || 2020-08-05 14:21:47,317 || log || Internal Server Error: /archives/tvseries/23/
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+WARNING || 2020-08-05 14:28:50,770 || log || Bad Request: /archives/tvseries/84/upload-image/small_image.gif/
+WARNING || 2020-08-05 14:29:43,874 || log || Forbidden: /archives/tvseries/88/delete-image/50,51/
+WARNING || 2020-08-05 14:29:43,900 || log || Forbidden: /archives/tvseries/88/delete-image/54,55/
+WARNING || 2020-08-05 14:29:43,919 || log || Bad Request: /archives/tvseries/88/delete-image/1000,999/
+WARNING || 2020-08-05 14:30:32,777 || log || Forbidden: /archives/tvseries/94/delete-image/63,64/
+WARNING || 2020-08-05 14:30:32,808 || log || Forbidden: /archives/tvseries/94/delete-image/67,68/
+WARNING || 2020-08-05 14:30:32,827 || log || Bad Request: /archives/tvseries/94/delete-image/1000,999/
+WARNING || 2020-08-05 14:30:32,889 || log || Bad Request: /archives/tvseries/96/upload-image/small_image.gif/
+WARNING || 2020-08-05 14:30:33,572 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-08-05 14:30:33,585 || log || Forbidden: /archives/tvseries/19/seasons/
+WARNING || 2020-08-05 14:30:33,607 || log || Forbidden: /archives/tvseries/20/seasons/
+WARNING || 2020-08-05 14:30:33,689 || log || Forbidden: /archives/tvseries/21/
+ERROR || 2020-08-05 14:30:33,749 || log || Internal Server Error: /archives/tvseries/23/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -500,8 +258,8 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-WARNING || 2020-08-05 14:21:47,373 || log || Forbidden: /archives/tvseries/27/
-ERROR || 2020-08-05 14:21:49,677 || log || Internal Server Error: /archives/tvseries/17/seasons/
+WARNING || 2020-08-05 14:30:33,802 || log || Forbidden: /archives/tvseries/27/
+ERROR || 2020-08-05 14:30:35,667 || log || Internal Server Error: /archives/tvseries/17/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -540,7 +298,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:49,942 || log || Internal Server Error: /archives/tvseries/21/seasons/219/
+ERROR || 2020-08-05 14:30:35,917 || log || Internal Server Error: /archives/tvseries/21/seasons/777/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -585,7 +343,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:49,981 || log || Internal Server Error: /archives/tvseries/23/seasons/225/
+ERROR || 2020-08-05 14:30:35,941 || log || Internal Server Error: /archives/tvseries/23/seasons/783/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -630,7 +388,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,005 || log || Internal Server Error: /archives/tvseries/25/seasons/229/
+ERROR || 2020-08-05 14:30:35,962 || log || Internal Server Error: /archives/tvseries/25/seasons/787/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -675,7 +433,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,029 || log || Internal Server Error: /archives/tvseries/27/seasons/235/
+ERROR || 2020-08-05 14:30:35,981 || log || Internal Server Error: /archives/tvseries/27/seasons/793/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -720,7 +478,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,059 || log || Internal Server Error: /archives/tvseries/29/seasons/243/
+ERROR || 2020-08-05 14:30:36,004 || log || Internal Server Error: /archives/tvseries/29/seasons/801/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -765,7 +523,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,180 || log || Internal Server Error: /archives/tvseries/31/seasons/
+ERROR || 2020-08-05 14:30:36,097 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -804,7 +562,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,215 || log || Internal Server Error: /archives/tvseries/31/seasons/
+ERROR || 2020-08-05 14:30:36,119 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -843,7 +601,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,239 || log || Internal Server Error: /archives/tvseries/31/seasons/
+ERROR || 2020-08-05 14:30:36,140 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -882,7 +640,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:21:50,282 || log || Internal Server Error: /archives/tvseries/31/seasons/
+ERROR || 2020-08-05 14:30:36,180 || log || Internal Server Error: /archives/tvseries/31/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -921,12 +679,19 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-WARNING || 2020-08-05 14:25:04,671 || log || Bad Request: /archives/tvseries/92/upload-image/small_image.gif/
-WARNING || 2020-08-05 14:25:05,351 || log || Not Found: /archives/tvseries/0/seasons/
-WARNING || 2020-08-05 14:25:05,364 || log || Forbidden: /archives/tvseries/19/seasons/
-WARNING || 2020-08-05 14:25:05,384 || log || Forbidden: /archives/tvseries/20/seasons/
-WARNING || 2020-08-05 14:25:05,470 || log || Forbidden: /archives/tvseries/21/
-ERROR || 2020-08-05 14:25:05,545 || log || Internal Server Error: /archives/tvseries/23/
+WARNING || 2020-08-05 14:31:35,838 || log || Forbidden: /archives/tvseries/80/
+WARNING || 2020-08-05 14:32:01,424 || log || Forbidden: /archives/tvseries/86/
+WARNING || 2020-08-05 14:32:20,081 || log || Forbidden: /archives/tvseries/88/
+WARNING || 2020-08-05 14:32:20,600 || log || Forbidden: /archives/tvseries/94/
+WARNING || 2020-08-05 14:32:34,504 || log || Forbidden: /archives/tvseries/100/delete-image/79,80/
+WARNING || 2020-08-05 14:32:34,536 || log || Forbidden: /archives/tvseries/100/delete-image/83,84/
+WARNING || 2020-08-05 14:32:34,556 || log || Bad Request: /archives/tvseries/100/delete-image/1000,999/
+WARNING || 2020-08-05 14:32:34,617 || log || Bad Request: /archives/tvseries/102/upload-image/small_image.gif/
+WARNING || 2020-08-05 14:32:35,272 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-08-05 14:32:35,285 || log || Forbidden: /archives/tvseries/19/seasons/
+WARNING || 2020-08-05 14:32:35,306 || log || Forbidden: /archives/tvseries/20/seasons/
+WARNING || 2020-08-05 14:32:35,476 || log || Forbidden: /archives/tvseries/21/
+ERROR || 2020-08-05 14:32:35,539 || log || Internal Server Error: /archives/tvseries/23/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -973,8 +738,8 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-WARNING || 2020-08-05 14:25:05,612 || log || Forbidden: /archives/tvseries/27/
-ERROR || 2020-08-05 14:25:07,632 || log || Internal Server Error: /archives/tvseries/17/seasons/
+WARNING || 2020-08-05 14:32:35,593 || log || Forbidden: /archives/tvseries/27/
+ERROR || 2020-08-05 14:32:37,422 || log || Internal Server Error: /archives/tvseries/17/seasons/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -1013,7 +778,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:25:07,969 || log || Internal Server Error: /archives/tvseries/21/seasons/498/
+ERROR || 2020-08-05 14:32:37,672 || log || Internal Server Error: /archives/tvseries/21/seasons/1088/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -1058,7 +823,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:25:08,016 || log || Internal Server Error: /archives/tvseries/23/seasons/504/
+ERROR || 2020-08-05 14:32:37,693 || log || Internal Server Error: /archives/tvseries/23/seasons/1094/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -1103,7 +868,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:25:08,038 || log || Internal Server Error: /archives/tvseries/25/seasons/508/
+ERROR || 2020-08-05 14:32:37,716 || log || Internal Server Error: /archives/tvseries/25/seasons/1098/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -1148,7 +913,7 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
-ERROR || 2020-08-05 14:25:08,085 || log || Internal Server Error: /archives/tvseries/27/seasons/514/
+ERROR || 2020-08-05 14:32:37,738 || log || Internal Server Error: /archives/tvseries/27/seasons/1104/
 Traceback (most recent call last):
   File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
     response = get_response(request)
@@ -1193,3 +958,212 @@ Traceback (most recent call last):
   File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
     for number, date in value.items():
 AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:32:37,766 || log || Internal Server Error: /archives/tvseries/29/seasons/1112/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 54, in retrieve
+    instance = self.get_object()
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 248, in get_object
+    return super().get_object()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 96, in get_object
+    obj = get_object_or_404(queryset, **filter_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 19, in get_object_or_404
+    return _get_object_or_404(queryset, *filter_args, **filter_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\shortcuts.py", line 76, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 425, in get
+    num = len(clone)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:32:37,865 || log || Internal Server Error: /archives/tvseries/31/seasons/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:32:37,889 || log || Internal Server Error: /archives/tvseries/31/seasons/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:32:37,907 || log || Internal Server Error: /archives/tvseries/31/seasons/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+ERROR || 2020-08-05 14:32:37,943 || log || Internal Server Error: /archives/tvseries/31/seasons/
+Traceback (most recent call last):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
+    return view_func(*args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\viewsets.py", line 114, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\views.py", line 231, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
+    self.raise_uncaught_exception(exc)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
+    page = self.paginate_queryset(queryset)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
+    return self.paginator.paginate_queryset(queryset, self.request, view=self)
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 385, in paginate_queryset
+    return list(queryset[self.offset:self.offset + self.limit])
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
+    self._fetch_all()
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 70, in __iter__
+    for row in compiler.results_iter(results):
+  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1098, in apply_converters
+    value = converter(value, expression, connection)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 97, in from_db_value
+    return self.to_python(value)
+  File "C:\Users\hardcase1\PycharmProjects\series\archives\helpers\custom_fields.py", line 108, in to_python
+    for number, date in value.items():
+AttributeError: 'str' object has no attribute 'items'
+WARNING || 2020-08-05 14:33:34,237 || log || Forbidden: /archives/tvseries/86/delete-image/95,96/
+WARNING || 2020-08-05 14:33:34,270 || log || Forbidden: /archives/tvseries/86/delete-image/99,100/
+WARNING || 2020-08-05 14:33:34,290 || log || Bad Request: /archives/tvseries/86/delete-image/1000,999/
+WARNING || 2020-08-05 14:33:34,350 || log || Bad Request: /archives/tvseries/88/upload-image/small_image.gif/
+WARNING || 2020-08-05 14:33:34,946 || log || Not Found: /archives/tvseries/0/seasons/
+WARNING || 2020-08-05 14:33:34,957 || log || Forbidden: /archives/tvseries/19/seasons/
+WARNING || 2020-08-05 14:33:34,974 || log || Forbidden: /archives/tvseries/20/seasons/
+WARNING || 2020-08-05 14:33:35,044 || log || Forbidden: /archives/tvseries/21/

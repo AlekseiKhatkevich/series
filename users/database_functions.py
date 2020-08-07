@@ -1,4 +1,4 @@
-from django.db.models import BooleanField, Func
+from django.db.models import BooleanField, Func, JSONField
 
 
 class IpCount(Func):
@@ -17,5 +17,13 @@ class IpCount(Func):
     arity = 2
     output_field = BooleanField()
 
+
+class JSONDiff(Func):
+    """
+
+    """
+    function = 'json_diff'
+    arity = 2
+    output_field = JSONField
 
 

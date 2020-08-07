@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.exceptions import ValidationError
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Window, F, functions, Func
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
 from djoser.compat import get_user_email
@@ -17,9 +17,11 @@ from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 
+import administration.serielizers
 import users.filters
 import users.models
 import users.serializers
+import users.database_functions
 from series import error_codes
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
@@ -255,3 +257,24 @@ class UserEntries(simplejwt_views.generics.RetrieveAPIView):
 
     def get_object(self):
         return self.get_queryset().first()
+
+
+class UserOperationsHistoryView(simplejwt_views.generics.ListAPIView):
+    """
+    Displays history of user's operations.
+    """
+    serializer_class = administration.serielizers.UserHistorySerializer
+    model = serializer_class.Meta.model
+
+    def get_queryset(self):
+        prev_val = Window(
+            expression=functions.Lag('state'),
+            partition_by=(F('content_type_id'), F('object_id'),),
+            order_by=F('access_time').asc(),
+        )
+        self.queryset = self.model.objects.filter(user=self.request.user). \
+            select_related('content_type').annotate(
+            #diff=Func(prev_val, F('state'), function='json_diff')
+            diff=users.database_functions.JSONDiff(prev_val,  F('state'))
+        )
+        return super().get_queryset()

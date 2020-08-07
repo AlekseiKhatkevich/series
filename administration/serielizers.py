@@ -38,6 +38,22 @@ class HistorySerializer(serializers.ModelSerializer):
         )
 
 
+class UserHistorySerializer(serializers.ModelSerializer):
+    """
+    Serializer for 'UserOperationsHistoryView' in 'users' app.
+    """
+    model = serializers.CharField(
+        source='content_type.model',
+    )
+
+    class Meta:
+        model = administration.models.EntriesChangeLog
+        exclude = (
+            'content_type',
+            'user',
+        )
+
+
 class HistoryDetailSerializer(HistorySerializer):
     """
     Serializer for 'EntriesChangeLog' model in detail views of 'HistoryViewSet'.

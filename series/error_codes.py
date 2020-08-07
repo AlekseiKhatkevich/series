@@ -228,3 +228,7 @@ MULTIPLE_OPERATIONS = exc_msg(
     'One "EntriesChangeLog" model entry can have only one "DELETE" or one "CREATE" operation.',
     'multiple_operations',
 )
+MAX_3_IPS = exc_msg(
+    'Cannot insert more than 3 ips for each user.',
+    'max_3_ips',
+)
