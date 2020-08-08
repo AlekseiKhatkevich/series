@@ -20,10 +20,19 @@ class IpCount(Func):
 
 class JSONDiff(Func):
     """
+    Returns difference between 2 JSONs.
 
+    CREATE OR REPLACE FUNCTION json_diff(left_json JSONB, right_json JSONB) RETURNS JSONB AS
+    $json_diff$
+    SELECT jsonb_object_agg(left_items.key, left_items.value) FROM
+        ( SELECT key, value FROM jsonb_each(left_json) ) as left_items LEFT OUTER JOIN
+        ( SELECT key, value FROM jsonb_each(right_json) ) as right_items using(key)
+    WHERE left_items.value != right_items.value OR right_items.key IS NULL;
+    $json_diff$
+    LANGUAGE sql;
     """
     function = 'json_diff'
     arity = 2
-    output_field = JSONField
+    output_field = JSONField()
 
 

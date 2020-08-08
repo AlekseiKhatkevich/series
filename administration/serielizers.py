@@ -45,12 +45,15 @@ class UserHistorySerializer(serializers.ModelSerializer):
     model = serializers.CharField(
         source='content_type.model',
     )
+    diff = serializers.JSONField(
+    )
 
     class Meta:
         model = administration.models.EntriesChangeLog
         exclude = (
             'content_type',
             'user',
+            'state',
         )
 
 

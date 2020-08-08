@@ -292,10 +292,11 @@
         },
         "django-extra-fields": {
             "hashes": [
-                "sha256:51c083e639bf4c8ddae3056494b3cb37b9443629a25b28eb38b1799560fadba0"
+                "sha256:3725d31860e6ff29af4c099d89c52fbe285bdab47c7841947cd442152cd35cae",
+                "sha256:d4abfc836d59977dbd93dd254e58cd3c7f65b026a86e4a4a3668ea56bc1b26f3"
             ],
             "index": "pypi",
-            "version": "==2.0.5"
+            "version": "==3.0.0"
         },
         "django-filter": {
             "hashes": [
@@ -330,11 +331,11 @@
         },
         "djangorestframework": {
             "hashes": [
-                "sha256:05809fc66e1c997fd9a32ea5730d9f4ba28b109b9da71fccfa5ff241201fd0a4",
-                "sha256:e782087823c47a26826ee5b6fa0c542968219263fb3976ec3c31edab23a4001f"
+                "sha256:6dd02d5a4bd2516fb93f80360673bf540c3b6641fec8766b1da2870a5aa00b32",
+                "sha256:8b1ac62c581dbc5799b03e535854b92fc4053ecfe74bad3f9c05782063d4196b"
             ],
             "index": "pypi",
-            "version": "==3.11.0"
+            "version": "==3.11.1"
         },
         "djangorestframework-simplejwt": {
             "hashes": [

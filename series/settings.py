@@ -88,6 +88,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'series.wsgi.application'
 
+# Internationalization
+# https://docs.djangoproject.com/en/3.0/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -97,7 +110,12 @@ DATABASES = {
         'HOST': 'localhost',
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'NAME': 'series_db'
+        'NAME': 'series_db',
+        'CONN_MAX_AGE': 30,  # new
+        'TEST': {
+            'NAME': 'series_db_tests',
+            'SERIALIZE': False,  # new
+        },
     },
     'replica': {  # Replica database
         'ENGINE': 'django.db.backends.postgresql',
@@ -106,15 +124,19 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'NAME': 'series_db_replica',
     },
-    'test_test': {  # Test database
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'NAME': 'testdb',
-        'TEST': {
-            'NAME': 'auto_tests', }
-    },
+    # 'test_test': {  # Test database
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'HOST': 'localhost',
+    #     'USER': 'postgres',
+    #     'PASSWORD': os.getenv('DB_PASSWORD'),
+    #     'NAME': 'testdb',
+    #     'CONN_MAX_AGE': 30,  # new
+    #     'TEST': {
+    #         'NAME': 'auto_tests',
+    #         'SERIALIZE': False,  # new
+    #         'TEMPLATE': 'series_db',  # new
+    #     }
+    # },
     'coverage': {  # .coverage database
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': '.coverage',
@@ -141,18 +163,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
