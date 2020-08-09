@@ -142,7 +142,7 @@ DATABASES = {
         'NAME': '.coverage',
     }
 }
-
+DEFAULT_DATABASE_STATEMENT_TIMEOUT = 30000
 DATABASE_ROUTERS = []
 
 # Password validation

@@ -266,6 +266,14 @@ class UserOperationsHistoryView(simplejwt_views.generics.ListAPIView):
     serializer_class = administration.serielizers.UserHistorySerializer
     model = serializer_class.Meta.model
     pagination_class = pagination.FasterLimitOffsetPagination
+    filterset_class = users.filters.UserOperationsHistoryFilter
+    ordering = ('-access_time',)
+    ordering_fields = (
+        'model',
+        'operation_type',
+        'as_who',
+        'access_time',
+    )
 
     def get_queryset(self):
         prev_val = Window(

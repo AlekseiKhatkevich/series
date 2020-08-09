@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/
 
 import os
 
+from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from django.db.backends.signals import connection_created
 from django.dispatch import receiver
@@ -29,4 +30,4 @@ def setup_postgres(connection, **kwargs):
     else:
         # Timeout statements after 30 seconds.
         with connection.cursor() as cursor:
-            cursor.execute("SET statement_timeout TO 30000;")
+            cursor.execute(f"SET statement_timeout TO {settings.DEFAULT_DATABASE_STATEMENT_TIMEOUT};")
