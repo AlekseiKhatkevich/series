@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.test import APISimpleTestCase
 
@@ -11,8 +12,8 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
     """
 
     class TestSerializer(
-            serializer_mixins.RequiredTogetherFieldsMixin,
-            serializers.Serializer):
+        serializer_mixins.RequiredTogetherFieldsMixin,
+        serializers.Serializer):
         field_1 = serializers.CharField(max_length=10, required=True)
         field_2 = serializers.IntegerField(required=False)
         field_3 = serializers.EmailField(required=False)
@@ -59,8 +60,8 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
         )
 
     class TestSerializer_2(
-            serializer_mixins.ReadOnlyRaisesException,
-            serializers.Serializer):
+        serializer_mixins.ReadOnlyRaisesException,
+        serializers.Serializer):
         field_1 = serializers.CharField(max_length=10, read_only=True)
         field_2 = serializers.IntegerField()
         field_3 = serializers.EmailField()
@@ -76,8 +77,8 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
             self.TestSerializer_2(data=data)
 
     class TestSerializer_3(
-            serializer_mixins.NoneInsteadEmptyMixin,
-            serializers.Serializer):
+        serializer_mixins.NoneInsteadEmptyMixin,
+        serializers.Serializer):
         field_1 = serializers.CharField(
             allow_null=True,
             allow_blank=True)
@@ -86,8 +87,8 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
         field_4 = serializers.DictField()
 
         class Meta:
-            none_if_empty = ('field_1', )
-            keys_to_swap = ('key_1', )
+            none_if_empty = ('field_1',)
+            keys_to_swap = ('key_1',)
             empty_containers_to_swap = ([],)
 
     def test_NoneInsteadEmptyMixin(self):
@@ -113,4 +114,22 @@ class SerializersMixinPositiveTest(APISimpleTestCase):
         )
         self.assertIsNone(
             serializer.data['field_4']['key_2']
+        )
+
+    def test_ReadOnlyAllFieldsMixin(self):
+        """
+        Check that 'ReadOnlyAllFieldsMixin' converts all fields into 'read_only' fields.
+        """
+        class TestSerializer_4(
+            serializer_mixins.ReadOnlyAllFieldsMixin,
+            serializers.ModelSerializer,
+        ):
+            class Meta:
+                model = get_user_model()
+                exclude = ()
+
+        serializer = TestSerializer_4()
+
+        self.assertTrue(
+            all([field.read_only for field_name, field in serializer.fields.items()])
         )

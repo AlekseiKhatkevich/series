@@ -40,7 +40,7 @@ class LogsListView(generics.ListAPIView):
 
 class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
     """
-    Displays change history of chosen model.
+    Displays change history of chosen model entry.
     """
     permission_classes = (
         permissions.IsAuthenticated,

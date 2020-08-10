@@ -169,3 +169,11 @@ class NoneInsteadEmptyMixin:
         return data
 
 
+class ReadOnlyAllFieldsMixin:
+    """
+    Marks all fields in serializer as 'read_only' fields.
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.read_only = True

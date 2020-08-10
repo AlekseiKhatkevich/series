@@ -1,3 +1,4 @@
+import datetime
 import operator
 
 import more_itertools
@@ -115,8 +116,46 @@ class UsersFiltersPositiveTest(APITestCase):
             len(response.data['results']),
             2,
         )
-        max_time_series = max(self.logs_series, key=operator.attrgetter['access_time'])
-        max_time_seasons = max(self.logs_seasons, key=operator.attrgetter['access_time'])
+        max_time_series = max(self.logs_series, key=operator.attrgetter('access_time')).access_time
+        max_time_seasons = max(self.logs_seasons, key=operator.attrgetter('access_time')).access_time
 
+        self.assertSetEqual(
+            {
+                datetime.datetime.fromisoformat(data['access_time'].replace('Z', '+00:00'))
+                for data in response.data['results']
+            },
+            {max_time_seasons, max_time_series}
+        )
 
+    def test_last_x_operations(self):
+        """
+        Check that option 'last_x_operations' in filterset 'UserOperationsHistoryFilter' actually
+        returns last x entries in each model.
+        """
+        self.query_dict['last_x_operations'] = 2
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+            reverse('user-operations-history') + '?' + self.query_dict.urlencode(),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+        self.assertEqual(
+            len(response.data['results']),
+            6,
+        )
+        response_dict = custom_functions.response_to_dict(response, key_field='id')
+        last_2_series_logs = sorted(self.logs_series, key=operator.attrgetter('access_time'), reverse=True)[:2]
+        last_2_seasons_logs = sorted(self.logs_seasons, key=operator.attrgetter('access_time'), reverse=True)[:2]
+        last_2_images_logs = sorted(self.logs_images, key=operator.attrgetter('access_time'), reverse=True)[:2]
+
+        self.assertSetEqual(
+            set(response_dict.keys()),
+            {log.pk for log in (last_2_images_logs + last_2_seasons_logs + last_2_series_logs)},
+        )
 

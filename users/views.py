@@ -269,7 +269,7 @@ class UserOperationsHistoryView(simplejwt_views.generics.ListAPIView):
     filterset_class = users.filters.UserOperationsHistoryFilter
     ordering = ('-access_time',)
     ordering_fields = (
-        'model',
+        'content_type__model',
         'operation_type',
         'as_who',
         'access_time',

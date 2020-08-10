@@ -4,9 +4,10 @@ from django_db_logger.models import StatusLog
 from rest_framework import serializers
 
 import administration.models
+from series.helpers import serializer_mixins
 
 
-class LogsSerializer(serializers.ModelSerializer):
+class LogsSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelSerializer):
     """
     Serializer for logs stored in DB.
     """
@@ -19,7 +20,7 @@ class LogsSerializer(serializers.ModelSerializer):
         exclude = ('id', )
 
 
-class HistorySerializer(serializers.ModelSerializer):
+class HistorySerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelSerializer):
     """
     Serializer for 'EntriesChangeLog' model.
     """
@@ -38,7 +39,7 @@ class HistorySerializer(serializers.ModelSerializer):
         )
 
 
-class UserHistorySerializer(serializers.ModelSerializer):
+class UserHistorySerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelSerializer):
     """
     Serializer for 'UserOperationsHistoryView' in 'users' app.
     """

@@ -1,9 +1,18 @@
+from django import forms
 from django.contrib.auth import get_user_model
-from django.db.models import Exists, Max, OuterRef, QuerySet, Subquery, TextChoices
+from django.db.models import Exists, F, Max, OuterRef, QuerySet, Subquery, TextChoices, Window, RowRange
+from django.db.models.functions import DenseRank
 from django_filters import rest_framework as rest_framework_filters
 
 import administration.models
 import archives.models
+
+
+class PositiveIntegerFilter(rest_framework_filters.Filter):
+    """
+    Field accepts only integers.
+    """
+    field_class = forms.IntegerField
 
 
 class UsersListFilter(rest_framework_filters.FilterSet):
@@ -78,12 +87,12 @@ class UserOperationsHistoryFilter(rest_framework_filters.FilterSet):
         label='Show last operation for chosen model(s).',
     )
 
-    # last_operations = rest_framework_filters.NumberFilter(
-    #     #field_class=forms.IntegerField,
-    #     field_name='access_time',
-    #     method='get_last_operations',
-    #     label='Show X last operations for chosen model(s).',
-    # )
+    last_x_operations = PositiveIntegerFilter(
+        field_name='access_time',
+        method='get_last_x_operations',
+        label='Show X last operations for chosen model(s).',
+        min_value=1,
+    )
 
     class Meta:
         model = administration.models.EntriesChangeLog
@@ -102,3 +111,16 @@ class UserOperationsHistoryFilter(rest_framework_filters.FilterSet):
 
         return queryset.filter(access_time__in=last_operation_time) if value else queryset
 
+    def get_last_x_operations(self, queryset: QuerySet, field_name: str, value: int) -> QuerySet:
+        """
+        Returns last X operation in chosen models.
+        """
+        pk_to_rank = queryset.annotate(rank=Window(
+            expression=DenseRank(),
+            partition_by=('content_type_id',),
+            order_by=F('access_time').desc(),
+        )).values_list('pk', 'rank', named=True)
+
+        pks_list = sorted(log.pk for log in pk_to_rank if log.rank <= value)
+
+        return queryset.filter(pk__in=pks_list)
