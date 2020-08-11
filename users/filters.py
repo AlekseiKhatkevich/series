@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.db.models import Exists, F, Max, OuterRef, QuerySet, Subquery, TextChoices, Window, RowRange
+from django.db.models import Exists, F, Max, OuterRef, QuerySet, Subquery, TextChoices, Window
 from django.db.models.functions import DenseRank
 from django_filters import rest_framework as rest_framework_filters
 
@@ -111,16 +111,20 @@ class UserOperationsHistoryFilter(rest_framework_filters.FilterSet):
 
         return queryset.filter(access_time__in=last_operation_time) if value else queryset
 
-    def get_last_x_operations(self, queryset: QuerySet, field_name: str, value: int) -> QuerySet:
+    @staticmethod
+    def get_last_x_operations(queryset: QuerySet, field_name: str, value: int) -> QuerySet:
         """
         Returns last X operation in chosen models.
         """
         pk_to_rank = queryset.annotate(rank=Window(
             expression=DenseRank(),
             partition_by=('content_type_id',),
-            order_by=F('access_time').desc(),
+            order_by=F(field_name).desc(),
         )).values_list('pk', 'rank', named=True)
 
         pks_list = sorted(log.pk for log in pk_to_rank if log.rank <= value)
 
         return queryset.filter(pk__in=pks_list)
+
+
+

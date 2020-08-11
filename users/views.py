@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.exceptions import ValidationError
-from django.db.models import F, Prefetch, Window, functions
+from django.db.models import F, Prefetch, Q, Value, Window, functions
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
 from djoser.compat import get_user_email
@@ -23,6 +23,7 @@ import users.filters
 import users.models
 import users.serializers
 from series import error_codes, pagination
+from series.helpers import custom_functions
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
 
@@ -286,3 +287,31 @@ class UserOperationsHistoryView(simplejwt_views.generics.ListAPIView):
             diff=users.database_functions.JSONDiff(prev_val, 'state')
         )
         return super().get_queryset()
+
+
+class UserOwnedObjectsOperationsHistoryView(UserOperationsHistoryView):
+    """
+    Displays list of operations being maid on objects that are owned by request user.
+    """
+    serializer_class = administration.serielizers.UserOwnedObjectsOperationsHistorySerializer
+    ordering_fields = UserOperationsHistoryView.ordering_fields + ('user', )
+    search_fields = (
+        '@full_name',
+    )
+
+    def get_queryset(self):
+        deferred_fields = custom_functions.get_model_fields_subset(
+            model=get_user_model(),
+            prefix='user__',
+            fields_to_remove=('pk', 'first_name', 'last_name', ),
+        )
+        qs = super().get_queryset()
+        custom_functions.remove_filter('user', qs)
+        qs = qs.filter(
+            Q(series__entry_author=self.request.user) |
+            Q(seasons__entry_author=self.request.user) |
+            Q(images__entry_author=self.request.user),
+        ).annotate(
+            full_name=functions.Concat('user__first_name', Value(' '), 'user__last_name',)
+        ).select_related('user', ).defer(*deferred_fields)
+        return qs

@@ -12,5 +12,10 @@ urlpatterns = [
         'operations-history/',
         users.views.UserOperationsHistoryView.as_view(),
         name='user-operations-history',
+    ),
+    path(
+        'user-objects-history/',
+        users.views.UserOwnedObjectsOperationsHistoryView.as_view(),
+        name='user-objects-history',
     )
 ]

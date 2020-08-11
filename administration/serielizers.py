@@ -58,6 +58,22 @@ class UserHistorySerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializer
         )
 
 
+class UserOwnedObjectsOperationsHistorySerializer(UserHistorySerializer):
+    """
+    Serializer for 'UserOwnedObjectsOperationsHistoryView' in 'users' app.
+    """
+    user = serializers.CharField(
+        source='full_name',
+    )
+
+    class Meta:
+        model = administration.models.EntriesChangeLog
+        exclude = (
+            'content_type',
+            'state',
+        )
+
+
 class HistoryDetailSerializer(HistorySerializer):
     """
     Serializer for 'EntriesChangeLog' model in detail views of 'HistoryViewSet'.

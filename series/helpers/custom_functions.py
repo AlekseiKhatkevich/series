@@ -8,6 +8,7 @@ import more_itertools
 import numpy
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q, QuerySet
 from django.db.models.base import ModelBase
 from psycopg2.extras import DateRange
 from rest_framework.response import Response
@@ -227,3 +228,24 @@ def available_range(
             '(]') for sequence in available_dates_list
     )
     return available_ranges
+
+
+def remove_filter(lookup: str, queryset: QuerySet) -> None:
+    """
+     Remove filter lookup in queryset
+        queryset = User.objects.filter(email='user@gmail.com')
+        queryset.count()
+           1
+        remove_filter('email', queryset)
+        queryset.count()
+           1000
+    """
+    query = queryset.query
+    q = Q(**{lookup: None})
+    clause, _ = query._add_q(q, query.used_aliases)
+
+    def filter_lookups(child):
+        return child.lhs.target != clause.children[0].lhs.target
+
+    query.where.children = list(filter(filter_lookups, query.where.children))
+

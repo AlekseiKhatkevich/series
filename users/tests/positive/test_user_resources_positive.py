@@ -181,7 +181,7 @@ class UserResourcesPositiveTest(APITestCase):
                     cnt[model_name],
                     6
                 )
-        #  Check that difference between states is shown correctly
+        #  Check that difference between states is shown correctly.
         for one_log in response_dict.values():
             with self.subTest(one_log=one_log):
                 diff = one_log['diff']
@@ -192,6 +192,36 @@ class UserResourcesPositiveTest(APITestCase):
                         diff_id,
                         log_pk - 1,
                         )
+
+    def test_user_objects_history_endpoint(self):
+        """
+        Check that API endpoint /user-resources/user-objects-history/ returns only 'EntriesChangeLog'
+        entries of objects that belong to request user.
+        """
+        second_user_logs = generate_changelog(self.series_2, self.user_2, num_logs=6)
+        user = self.series_2.entry_author
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.get(
+            reverse('user-objects-history'),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        response_dict = response_to_dict(response, key_field='id', )
+
+        self.assertEqual(
+            len(response_dict.keys()),
+            len(second_user_logs),
+        )
+        self.assertTrue(
+            all([data['user'] == user.get_full_name() for data in response_dict.values()])
+        )
 
 
 
