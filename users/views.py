@@ -1,28 +1,31 @@
 from typing import Optional, Type
 
 import djoser.views
+import guardian.models
 import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.core.exceptions import ValidationError
-from django.db.models import F, Prefetch, Q, Value, Window, functions
+from django.db.models import F, IntegerField, Prefetch, Q, QuerySet, Subquery, Value, Window, functions
+from django.db.models.base import ModelBase
 from django.http.request import HttpRequest
 from django.utils.functional import cached_property
 from djoser.compat import get_user_email
 from djoser.conf import settings as djoser_settings
-from rest_framework import exceptions, status, throttling
+from rest_framework import exceptions, status, throttling, views
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework_simplejwt import settings as simplejwt_settings, views as simplejwt_views
 
 import administration.serielizers
+import archives.models
 import users.database_functions
 import users.filters
 import users.models
 import users.serializers
-from series import error_codes, pagination
+from series import constants, error_codes, pagination
 from series.helpers import custom_functions
 from series.helpers.typing import jwt_token
 from users.helpers import views_mixins
@@ -260,6 +263,57 @@ class UserEntries(simplejwt_views.generics.RetrieveAPIView):
         return self.get_queryset().first()
 
 
+class AllowedToHandleEntries(views.APIView):
+    """
+    Displays entries that are allowed to be managed by request user.
+    1) User is master, or
+    2) User is slave, or
+    3) User has object permission.
+    """
+    serializer_class = users.serializers.UserEntriesSerializer
+    permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
+
+    def get_individual_queryset(self, model: ModelBase) -> QuerySet:
+        """
+        Returns individual queryset on a given model with object that are allowed to be handled
+        by request user.
+        """
+        user = self.request.user
+        slaves = Subquery(get_user_model().objects.filter(master=user).values('pk'))
+        master_id = user.master_id
+
+        friend_objects_pks = Subquery(
+            guardian.models.UserObjectPermission.objects.filter(
+                content_type__model=model._meta.model_name,
+                content_type__app_label=model._meta.app_label,
+                user=user,
+                permission__codename=self.permission_code,
+            ).values(object_pk_int=functions.Cast(F('object_pk'), output_field=IntegerField()))
+        )
+
+        qs = model.objects.filter(
+            Q(entry_author_id=master_id) |
+            Q(entry_author_id__in=slaves) |
+            Q(pk__in=friend_objects_pks),
+        )
+
+        if model == archives.models.SeasonModel:
+            qs = qs.select_related('series', )
+        elif model == archives.models.ImageModel:
+            qs = qs.prefetch_related('content_object', )
+
+        return qs
+
+    def get(self, request, format=None):
+        obj = QuerySet()
+        obj.series = self.get_individual_queryset(archives.models.TvSeriesModel)
+        obj.seasons = self.get_individual_queryset(archives.models.SeasonModel)
+        obj.images = self.get_individual_queryset(archives.models.ImageModel)
+        serializer = self.serializer_class(obj)
+
+        return Response(serializer.data)
+
+
 class UserOperationsHistoryView(simplejwt_views.generics.ListAPIView):
     """
     Displays history of user's operations.
@@ -294,7 +348,7 @@ class UserOwnedObjectsOperationsHistoryView(UserOperationsHistoryView):
     Displays list of operations being maid on objects that are owned by request user.
     """
     serializer_class = administration.serielizers.UserOwnedObjectsOperationsHistorySerializer
-    ordering_fields = UserOperationsHistoryView.ordering_fields + ('user', )
+    ordering_fields = UserOperationsHistoryView.ordering_fields + ('user',)
     search_fields = (
         '@full_name',
     )
@@ -303,7 +357,7 @@ class UserOwnedObjectsOperationsHistoryView(UserOperationsHistoryView):
         deferred_fields = custom_functions.get_model_fields_subset(
             model=get_user_model(),
             prefix='user__',
-            fields_to_remove=('pk', 'first_name', 'last_name', ),
+            fields_to_remove=('pk', 'first_name', 'last_name',),
         )
         qs = super().get_queryset()
         custom_functions.remove_filter('user', qs)
@@ -312,6 +366,6 @@ class UserOwnedObjectsOperationsHistoryView(UserOperationsHistoryView):
             Q(seasons__entry_author=self.request.user) |
             Q(images__entry_author=self.request.user),
         ).annotate(
-            full_name=functions.Concat('user__first_name', Value(' '), 'user__last_name',)
+            full_name=functions.Concat('user__first_name', Value(' '), 'user__last_name', )
         ).select_related('user', ).defer(*deferred_fields)
         return qs

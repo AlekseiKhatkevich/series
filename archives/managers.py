@@ -112,6 +112,26 @@ class TvSeriesManager(models.Manager):
 
 
 # -----------------------------------------------------------------------------------
+class EmptyTvSeriesQueryset(TvSeriesQueryset):
+    """
+    EmptyTVSeriesModel custom queryset.
+    """
+    pass
+
+
+class EmptyTvSeriesManager(TvSeriesManager):
+    """
+    EmptyTVSeriesModel model custom manager.
+    """
+
+    def get_queryset(self):
+        """
+        Returns only series with no seasons (empty series).
+        """
+        return super().get_queryset().filter(seasons__isnull=True)
+
+# -----------------------------------------------------------------------------------
+
 
 class SeasonQueryset(models.QuerySet):
     """

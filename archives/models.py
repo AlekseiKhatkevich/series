@@ -237,6 +237,17 @@ class TvSeriesModel(models.Model):
         return not self.seasons.exists()
 
 
+class EmptyTVSeriesModel(TvSeriesModel):
+    """
+    Model represents empty TV series (with no seasons).
+    """
+    objects = archives.managers.EmptyTvSeriesManager.from_queryset(
+        archives.managers.EmptyTvSeriesQueryset)()
+
+    class Meta:
+        proxy = True
+
+
 class SeasonModel(models.Model):
     """
     Model represents one singular season of a series.

@@ -224,3 +224,20 @@ class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
             responsible_user_email,
             friend.email,
         )
+
+    def test_EmptyTVSeriesModel_objects(self):
+        """
+        Check that default manager in model 'EmptyTVSeriesModel' returns only series
+        with no seasons attached.
+        """
+        initial_data.create_seasons((self.series_1, ))
+        empty_series = archives.models.EmptyTVSeriesModel.objects.all()
+
+        self.assertEqual(
+            len(empty_series),
+            1,
+        )
+        self.assertEqual(
+            empty_series[0].seasons.count(),
+            0,
+        )

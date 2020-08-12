@@ -124,19 +124,6 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'NAME': 'series_db_replica',
     },
-    # 'test_test': {  # Test database
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'HOST': 'localhost',
-    #     'USER': 'postgres',
-    #     'PASSWORD': os.getenv('DB_PASSWORD'),
-    #     'NAME': 'testdb',
-    #     'CONN_MAX_AGE': 30,  # new
-    #     'TEST': {
-    #         'NAME': 'auto_tests',
-    #         'SERIALIZE': False,  # new
-    #         'TEMPLATE': 'series_db',  # new
-    #     }
-    # },
     'coverage': {  # .coverage database
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': '.coverage',

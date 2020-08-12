@@ -3,6 +3,7 @@ import tempfile
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.db import connection
 from django.db.models import OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, generics, permissions, viewsets

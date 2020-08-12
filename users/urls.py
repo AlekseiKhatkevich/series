@@ -17,5 +17,10 @@ urlpatterns = [
         'user-objects-history/',
         users.views.UserOwnedObjectsOperationsHistoryView.as_view(),
         name='user-objects-history',
+    ),
+    path(
+        'allowed-handle-entries/',
+        users.views.AllowedToHandleEntries.as_view(),
+        name='allowed-handle-entries',
     )
 ]

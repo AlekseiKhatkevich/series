@@ -16,7 +16,6 @@ router.register(
     basename='history',
 )
 
-
 urlpatterns = [
     path('logs/',
          administration.views.LogsListView.as_view(),
@@ -25,9 +24,10 @@ urlpatterns = [
     path(
         'history/<model:model_name>/<int:instance_pk>/',
         include(router.urls)
-        ),
-    path('coverage/',
-         administration.views.coverage_view,
-         name='coverage',
-         ),
+    ),
+    path(
+        'coverage/',
+        administration.views.coverage_view,
+        name='coverage',
+    ),
 ]

@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import exceptions, generics, mixins, parsers, status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_extensions.mixins import DetailSerializerMixin
 
 import archives.filters
 import archives.models
@@ -181,11 +182,16 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
             )
 
 
-class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelViewSet):
+class SeasonsViewSet(
+    view_mixins.ViewSetActionPermissionMixin,
+    DetailSerializerMixin,
+    viewsets.ModelViewSet,
+):
     """
     ViewSet for SeasonModel.
     """
     serializer_class = archives.serializers.SeasonsSerializer
+    serializer_detail_class = archives.serializers.DetailSeasonSerializer
     model = serializer_class.Meta.model
     filterset_class = archives.filters.SeasonsFilterSet
     ordering = ('_order',)
@@ -203,11 +209,11 @@ class SeasonsViewSet(view_mixins.ViewSetActionPermissionMixin, viewsets.ModelVie
         non_safe_methods_permissions,
     )
 
-    def get_serializer_class(self):
-        if self.action == 'retrieve':
-            return archives.serializers.DetailSeasonSerializer
-
-        return super().get_serializer_class()
+    # def get_serializer_class(self):
+    #     if self.action == 'retrieve':
+    #         return archives.serializers.DetailSeasonSerializer
+    #
+    #     return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         """

@@ -97,7 +97,7 @@ class User(AbstractUser):
                 ))]
 
     def __str__(self):
-        return f'{"SLAVE ACC." if self.master else "MASTER ACC."} ' \
+        return f'{"SLAVE ACC." if self.master_id is not None else "MASTER ACC."} ' \
                f'pk - {self.pk},' \
                f' full name - {self.get_full_name()},' \
                f' email - {self.email}'

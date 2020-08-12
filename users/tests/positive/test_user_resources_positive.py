@@ -224,5 +224,66 @@ class UserResourcesPositiveTest(APITestCase):
         )
 
 
+class AllowedToHandleEntriesPositiveTest(APITestCase):
+    """
+    Test on endpoint that displays resources allowed to handle for request user.
+    /user-resources/allowed-handle-entries/ GET
+    """
+    maxDiff = None
+
+    def setUp(self) -> None:
+        self.users = create_test_users.create_users()
+        self.user_1, self.user_2, self.user_3 = self.users
+
+        self.series = initial_data.create_tvseries(self.users)
+        self.series_1, self.series_2 = self.series
+
+        self.images = initial_data.create_images_instances(self.series, num_img=2)
+        self.image_1_1, self.image_1_2, self.image_2_1, self.image_2_2 = self.images
+
+        self.seasons, self.seasons_dict = initial_data.create_seasons(
+            self.series,
+            num_seasons=3,
+            return_sorted=True,
+        )
+        self.season_1_1, self.season_1_2, self.season_1_3, *series_2_seasons = self.seasons
+
+        self.image_model_name = ImageModel._meta.model_name
+        self.series_model_name = TvSeriesModel._meta.model_name
+        self.season_model_name = SeasonModel._meta.model_name
+        self.model_names = (self.image_model_name, self.season_model_name, self.series_model_name,)
+
+    def test_endpoint_user_is_master(self):
+        """
+        Check that endpoint displays only objects that are allowed for request user to be handled.
+        Where user is:
+        -master
+        """
+        user = self.user_1
+        slave = self.user_2
+        user.slaves.add(slave)
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.get(
+            reverse('allowed-handle-entries'),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        for key, model in zip(
+                ('series', 'seasons', 'images'),
+                (TvSeriesModel, SeasonModel, ImageModel)
+        ):
+            with self.subTest(key=key, model=model):
+                self.assertSetEqual(
+                    {data['pk'] for data in response.data[key]},
+                    set(model.objects.filter(entry_author=slave).values_list('pk', flat=True)),
+                )
+
 
 
