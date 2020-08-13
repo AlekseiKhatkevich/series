@@ -369,3 +369,5 @@ class UserOwnedObjectsOperationsHistoryView(UserOperationsHistoryView):
             full_name=functions.Concat('user__first_name', Value(' '), 'user__last_name', )
         ).select_related('user', ).defer(*deferred_fields)
         return qs
+
+

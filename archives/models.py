@@ -605,6 +605,9 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
     class Meta:
         verbose_name = 'Image'
         verbose_name_plural = 'Images'
+        permissions = (
+            ('permissiveness', 'Allow any action',),
+        )
         constraints = [
             models.CheckConstraint(
                 name='len_16_constraint',

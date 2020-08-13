@@ -5,8 +5,7 @@ import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, Prefetch, Sum
-from django.db.models.functions import NullIf
+from django.db.models import Count, Prefetch, Q, Subquery, Sum, base
 from django.shortcuts import get_object_or_404
 from rest_framework import exceptions, generics, mixins, parsers, status, viewsets
 from rest_framework.request import Request
@@ -17,7 +16,7 @@ import archives.filters
 import archives.models
 import archives.permissions
 import archives.serializers
-from series import error_codes, pagination
+from series import constants, error_codes, pagination
 from series.helpers import custom_functions, view_mixins
 
 
@@ -25,6 +24,7 @@ class TvSeriesBase(generics.GenericAPIView):
     """
     Base view class for TV series views.
     """
+
     @property
     def model(self):
         return getattr(self.serializer_class.Meta, 'model')
@@ -205,15 +205,9 @@ class SeasonsViewSet(
         archives.permissions.HandleDeletedUsersEntriesPermission,
     )
     permission_action_classes = dict.fromkeys(
-        ('create', 'destroy', 'update', 'partial_update', ),
+        ('create', 'destroy', 'update', 'partial_update',),
         non_safe_methods_permissions,
     )
-
-    # def get_serializer_class(self):
-    #     if self.action == 'retrieve':
-    #         return archives.serializers.DetailSeasonSerializer
-    #
-    #     return super().get_serializer_class()
 
     def create(self, request, *args, **kwargs):
         """
@@ -254,3 +248,34 @@ class SeasonsViewSet(
         return super().get_object()
 
 
+class UserObjectPermissionView(generics.ListCreateAPIView):
+    """
+    View to create and delete object permissions on certain objects for another user.
+    """
+    serializer_class = archives.serializers.ManagePermissionsSerializer
+    perm_model = serializer_class.Meta.model
+    permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
+    pagination_class = pagination.FasterLimitOffsetPagination
+
+    def get_condition(self, model: base.ModelBase) -> Q:
+        """
+        Returns Q condition  with list of user entries pks in provided model.
+        """
+        entries_pks = Subquery(model.objects.filter(entry_author=self.request.user).values('pk'))
+        condition = Q(
+                object_pk__int__in=entries_pks,
+                content_type__model=model._meta.model_name,
+                content_type__app_label=model._meta.app_label,
+            )
+
+        return condition
+
+    def get_queryset(self):
+        self.queryset = self.perm_model.objects.filter(
+            self.get_condition(archives.models.TvSeriesModel) |
+            self.get_condition(archives.models.SeasonModel) |
+            self.get_condition(archives.models.ImageModel),
+            permission__codename=self.permission_code,
+        )
+
+        return super().get_queryset()

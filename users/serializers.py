@@ -75,29 +75,6 @@ class UserEntriesSerializer(
         none_if_empty = fields
 
 
-# class AllowedToHandleEntriesSerializer(
-#     project_serializer_mixins.ReadOnlyAllFieldsMixin,
-#     project_serializer_mixins.NoneInsteadEmptyMixin,
-#     serializers.Serializer,
-# ):
-#     """
-#     Serializer for 'AllowedToHandleEntries' view in 'users' app.
-#     """
-#     series = SeriesInnerSerializer(
-#         many=True,
-#     )
-#     seasons = SeasonsInnerSerializer(
-#         many=True,
-#     )
-#     images = ImagesInnerSerializer(
-#         many=True,
-#     )
-#
-#     class Meta:
-#         pass
-#         #none_if_empty = ('series', 'seasons', 'images', )
-
-
 class CustomDjoserUserCreateSerializer(
     project_serializer_mixins.RequiredTogetherFieldsMixin,
         djoser_serializers.UserCreateSerializer):

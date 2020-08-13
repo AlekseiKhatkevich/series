@@ -325,3 +325,15 @@ class DetailSeasonSerializer(SeasonsSerializer):
             fields.pop('days_until_free_access')
 
         return fields
+
+
+class ManagePermissionsSerializer(serializers.ModelSerializer):
+    """
+    Serializer for managing user object permissions in UserObjectPermissionView.
+    """
+
+    class Meta:
+        model = guardian.models.UserObjectPermission
+        exclude = ('content_type', 'permission', 'user')
+        read_only_fields = ()
+

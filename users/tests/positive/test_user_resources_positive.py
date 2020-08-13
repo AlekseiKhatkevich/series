@@ -1,5 +1,8 @@
 import collections
 
+import guardian.models
+from django.db.models import F, IntegerField, functions
+from guardian.shortcuts import assign_perm
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -8,6 +11,7 @@ from administration.helpers.initial_data import generate_changelog
 from administration.models import EntriesChangeLog
 from archives.models import ImageModel, SeasonModel, TvSeriesModel
 from archives.tests.data import initial_data
+from series import constants
 from series.helpers.custom_functions import key_field_to_field_dict, response_to_dict
 from users.helpers import create_test_users
 
@@ -191,7 +195,7 @@ class UserResourcesPositiveTest(APITestCase):
                     self.assertEqual(
                         diff_id,
                         log_pk - 1,
-                        )
+                    )
 
     def test_user_objects_history_endpoint(self):
         """
@@ -248,12 +252,7 @@ class AllowedToHandleEntriesPositiveTest(APITestCase):
         )
         self.season_1_1, self.season_1_2, self.season_1_3, *series_2_seasons = self.seasons
 
-        self.image_model_name = ImageModel._meta.model_name
-        self.series_model_name = TvSeriesModel._meta.model_name
-        self.season_model_name = SeasonModel._meta.model_name
-        self.model_names = (self.image_model_name, self.season_model_name, self.series_model_name,)
-
-    def test_endpoint_user_is_master(self):
+    def test_endpoint_user_is_master_or_slave(self):
         """
         Check that endpoint displays only objects that are allowed for request user to be handled.
         Where user is:
@@ -285,5 +284,84 @@ class AllowedToHandleEntriesPositiveTest(APITestCase):
                     set(model.objects.filter(entry_author=slave).values_list('pk', flat=True)),
                 )
 
+    def test_endpoint_user_is_slave(self):
+        """
+        Check that endpoint displays only objects that are allowed for request user to be handled.
+        Where user is:
+        -master
+        """
+        user = self.user_1
+        master = self.user_2
+        master.slaves.add(user)
 
+        self.client.force_authenticate(user=user)
 
+        response = self.client.get(
+            reverse('allowed-handle-entries'),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        for key, model in zip(
+                ('series', 'seasons', 'images'),
+                (TvSeriesModel, SeasonModel, ImageModel)
+        ):
+            with self.subTest(key=key, model=model):
+                self.assertSetEqual(
+                    {data['pk'] for data in response.data[key]},
+                    set(model.objects.filter(entry_author=master).values_list('pk', flat=True)),
+                )
+
+    def test_endpoint_user_is_friend(self):
+        """
+        Check that endpoint displays only objects that are allowed for request user to be handled.
+        Where user is:
+        - friend (has object permission on object)
+        """
+        user = self.user_1
+        object_owner = self.user_2
+        permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
+
+        object_owner_series = [series for series in self.series if series.entry_author == object_owner]
+        object_owner_seasons = [season for season in self.seasons if season.entry_author == object_owner]
+        object_owner_images = [image for image in self.images if image.entry_author == object_owner]
+
+        for obj in (*object_owner_series, *object_owner_seasons, *object_owner_images):
+            assign_perm(permission_code, user, obj)
+
+        self.client.force_authenticate(user=user)
+
+        response = self.client.get(
+            reverse('allowed-handle-entries'),
+            data=None,
+            format='json',
+        )
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK,
+        )
+
+        for key, model in zip(
+                ('series', 'seasons', 'images'),
+                (TvSeriesModel, SeasonModel, ImageModel)
+        ):
+            with self.subTest(key=key, model=model):
+                self.assertSetEqual(
+                    {data['pk'] for data in response.data[key]},
+                    set(
+                        guardian.models.UserObjectPermission.objects.filter(
+                            content_type__model=model._meta.model_name,
+                            content_type__app_label=model._meta.app_label,
+                            user=user,
+                            permission__codename=permission_code,
+                        ).values_list(
+                            functions.Cast(
+                                F('object_pk'),
+                                output_field=IntegerField()),
+                            flat=True,
+                        ))
+                )

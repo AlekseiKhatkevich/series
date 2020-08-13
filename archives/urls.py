@@ -42,4 +42,9 @@ urlpatterns = [
         archives.views.TvSeriesListCreateView.as_view(),
         name='tvseries',
     ),
+    path(
+        'manage-permissions/',
+        archives.views.UserObjectPermissionView.as_view(),
+        name='manage-permissions',
+    )
 ]

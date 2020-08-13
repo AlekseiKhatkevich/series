@@ -21,7 +21,17 @@ class CheckEpisodes(models.Transform):
         return models.BooleanField()
 
 
+class ToInteger(models.Transform):
+    """
+    Casts text to integer.
+    """
+    lookup_name = 'int'
+    function = '::int'
+    template = '%(expressions)s%(function)s'
+
+
 models.CharField.register_lookup(Length)
 
 HStoreField.register_lookup(CheckEpisodes)
 
+models.CharField.register_lookup(ToInteger)

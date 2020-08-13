@@ -1,5 +1,5 @@
 from django.db import connection
-from django.db.models import BooleanField, ExpressionWrapper, Q
+from django.db.models import BooleanField, ExpressionWrapper, Q, F
 from rest_framework.test import APITestCase
 
 import archives.models
@@ -44,4 +44,17 @@ class LookupsAndTransformsPositiveTest(APITestCase):
         self.assertTrue(
             all(season.is_ordered for season in queryset)
         )
+
+    def test_ToInteger_transform(self):
+        """
+        Check that 'ToInteger' transform converts text to integer.
+        """
+        archives.models.TvSeriesModel.objects.all().update(name=5 + F('pk'))
+
+        self.assertEqual(
+        archives.models.TvSeriesModel.objects.filter(name__lte=0).count(),
+            len(self.series))
+
+
+
 
