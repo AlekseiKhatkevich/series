@@ -229,6 +229,26 @@ MULTIPLE_OPERATIONS = exc_msg(
     'multiple_operations',
 )
 MAX_3_IPS = exc_msg(
-    'Cannot insert more than 3 ips for each user.',
+    'Can not insert more than 3 ips for each user.',
     'max_3_ips',
+)
+PERM_TO_SELF = exc_msg(
+    'Can not assign object permission to yourself.',
+    'perm_to_self',
+)
+PERM_TO_MASTER = exc_msg(
+    'Can not assign object permission to your master.',
+    'perm_to_master',
+)
+PERM_TO_SLAVE = exc_msg(
+    'Can not assign object permission to your slave.',
+    'perm_to_slave',
+)
+OBJECT_NOT_EXISTS = exc_msg(
+    'Object with given "object_pk" does not exist in the given model.',
+    'object_not_exists',
+)
+USER_NOT_AUTHOR = exc_msg(
+    'Request user is not the object author',
+    'user_not_author',
 )

@@ -271,11 +271,21 @@ class UserObjectPermissionView(generics.ListCreateAPIView):
         return condition
 
     def get_queryset(self):
+        user_model_deferred_fields = custom_functions.get_model_fields_subset(
+            model=get_user_model(),
+            fields_to_remove=('pk', 'email', ),
+            prefix='user__',
+        )
+
         self.queryset = self.perm_model.objects.filter(
             self.get_condition(archives.models.TvSeriesModel) |
             self.get_condition(archives.models.SeasonModel) |
             self.get_condition(archives.models.ImageModel),
             permission__codename=self.permission_code,
+        ).select_related('user', 'content_type', ).defer(
+            *user_model_deferred_fields,
+            'content_type__app_label',
+            'content_type__id',
         )
 
         return super().get_queryset()

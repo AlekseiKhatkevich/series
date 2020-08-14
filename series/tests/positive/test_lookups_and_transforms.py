@@ -49,12 +49,7 @@ class LookupsAndTransformsPositiveTest(APITestCase):
         """
         Check that 'ToInteger' transform converts text to integer.
         """
-        archives.models.TvSeriesModel.objects.all().update(name=5 + F('pk'))
-
-        self.assertEqual(
-        archives.models.TvSeriesModel.objects.filter(name__lte=0).count(),
-            len(self.series))
-
-
-
-
+        self.assertIn(
+            '(name)::integer',
+            archives.models.TvSeriesModel.objects.filter(name__int=10).explain(),
+        )
