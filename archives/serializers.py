@@ -1,13 +1,13 @@
 import guardian.models
 from django.apps import apps
 from django.conf import settings
-from django.contrib.auth import get_user_model, models
-from django.db import transaction, IntegrityError
-from django.db.models import F, Q, TextChoices, Value, Subquery
+from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.db.models import F, Q, TextChoices, Value
 from django.db.models.functions import Concat
 from django.utils import timezone
 from drf_extra_fields.fields import DateRangeField
-from django.contrib.contenttypes.models import ContentType
+from guardian.shortcuts import assign_perm
 from rest_framework import permissions, serializers
 
 import archives.models
@@ -347,44 +347,41 @@ class ManagePermissionsSerializer(serializers.ModelSerializer):
         source='content_type.model',
         choices=MODEL_CHOICES.choices,
     )
+    object_pk = serializers.IntegerField(
+    )
 
     class Meta:
         model = guardian.models.UserObjectPermission
-        exclude = ('content_type', 'permission',)
-        read_only_fields = ('pk',)
+        exclude = ('content_type', 'permission', )
 
     def validate_user(self, value):
-        errors = []
 
         permission_giver = self.context['request'].user
         #  Check whether permission receiver exists in fact.
         try:
             permission_receiver = get_user_model().objects.get(email=value)
-        except get_user_model().DoesNotExist():
+        except get_user_model().DoesNotExist as err:
             raise serializers.ValidationError(
                 *error_codes.USER_DOESNT_EXISTS,
-            )
+            ) from err
 
         #  Can't assign to himself.
         if permission_giver == permission_receiver:
-            errors.append(serializers.ValidationError(
+            raise serializers.ValidationError(
                 *error_codes.PERM_TO_SELF,
-            ))
+            )
 
         #  Can't assign to master.
-        if permission_giver == permission_receiver.master:
-            errors.append(serializers.ValidationError(
+        elif permission_giver.master == permission_receiver:
+            raise serializers.ValidationError(
                 *error_codes.PERM_TO_MASTER,
-            ))
+            )
 
         #  Can't assign to slave.
-        if permission_giver.master == permission_receiver:
-            errors.append(serializers.ValidationError(
+        elif permission_giver == permission_receiver.master:
+            raise serializers.ValidationError(
                 *error_codes.PERM_TO_SLAVE,
-            ))
-
-        if errors:
-            raise serializers.ValidationError(errors)
+            )
 
         return permission_receiver
 
@@ -394,52 +391,30 @@ class ManagePermissionsSerializer(serializers.ModelSerializer):
         object_pk = attrs['object_pk']
 
         model = apps.get_model(app_label=__package__, model_name=model_name)
-        #  Check whether object is exists.
+        #  Check whether instance of model does exist.
         try:
-            obj = model.objects.get(pk=int(object_pk))
-        except model.DoesNotExist():
+            obj = attrs['obj'] = model.objects.get(pk=int(object_pk))
+        except model.DoesNotExist as err:
             raise serializers.ValidationError(
-                *error_codes.OBJECT_NOT_EXISTS,
-            )
+                {'object_pk': error_codes.OBJECT_NOT_EXISTS.message},
+                error_codes.OBJECT_NOT_EXISTS.code,
+            ) from err
 
         #  Request user can only grant permissions on his own objects.
         if obj.entry_author != permission_giver:
             raise serializers.ValidationError(
-                {'object_pk': error_codes.USER_NOT_AUTHOR.message},
+                {'user': error_codes.USER_NOT_AUTHOR.message},
                 error_codes.USER_NOT_AUTHOR.code,
             )
 
-        return super().validate(attrs)
+        return attrs
 
     def create(self, validated_data):
         permission_code = self.context['view'].permission_code
-        object_pk = validated_data['object_pk']
         user = validated_data['user']['email']
-        model_name = validated_data['content_type']['model']
-        content_type_id = Subquery(
-            ContentType.objects.filter(
-                model=model_name,
-                app_label=__package__,
-            ).values('pk',)
-        )
-        permission_id = Subquery(
-            models.Permission.objects.filter(
-                codename=permission_code,
-                content_type_id=content_type_id,
-            ).values('pk',)
-        )
-        try:
-            perm = self.Meta.model.objects.create(
-                object_pk=object_pk,
-                user=user,
-                content_type_id=content_type_id,
-                permission_id=permission_id,
-                )
-        except IntegrityError as err:
-            raise serializers.ValidationError(
-                    "here"
-            ) from err
+        obj = validated_data['obj']
 
-        return perm
+        return assign_perm(permission_code, user, obj)
+
 
 

@@ -1,11 +1,10 @@
 import functools
 from typing import Sequence
-
 import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, Prefetch, Q, Subquery, Sum, base
+from django.db.models import Count, Prefetch, Q, Subquery, Sum, base, functions
 from django.shortcuts import get_object_or_404
 from rest_framework import exceptions, generics, mixins, parsers, status, viewsets
 from rest_framework.request import Request
@@ -43,7 +42,7 @@ class TvSeriesBase(generics.GenericAPIView):
         )
         # Annotations for seasons and episodes.
         annotations = dict(
-            seasons_cnt=NullIf(Count('seasons'), 0),
+            seasons_cnt=functions.NullIf(Count('seasons'), 0),
             episodes_cnt=Sum('seasons__number_of_episodes'),
         )
         self.queryset = self.model.objects.all(). \
@@ -248,9 +247,12 @@ class SeasonsViewSet(
         return super().get_object()
 
 
-class UserObjectPermissionView(generics.ListCreateAPIView):
+class UserObjectPermissionView(mixins.CreateModelMixin,
+                               mixins.DestroyModelMixin,
+                               mixins.ListModelMixin,
+                               viewsets.GenericViewSet, ):
     """
-    View to create and delete object permissions on certain objects for another user.
+    View to create and delete  and view object permissions on certain objects for another user.
     """
     serializer_class = archives.serializers.ManagePermissionsSerializer
     perm_model = serializer_class.Meta.model
@@ -263,17 +265,17 @@ class UserObjectPermissionView(generics.ListCreateAPIView):
         """
         entries_pks = Subquery(model.objects.filter(entry_author=self.request.user).values('pk'))
         condition = Q(
-                object_pk__int__in=entries_pks,
-                content_type__model=model._meta.model_name,
-                content_type__app_label=model._meta.app_label,
-            )
+            object_pk__int__in=entries_pks,
+            content_type__model=model._meta.model_name,
+            content_type__app_label=model._meta.app_label,
+        )
 
         return condition
 
     def get_queryset(self):
         user_model_deferred_fields = custom_functions.get_model_fields_subset(
             model=get_user_model(),
-            fields_to_remove=('pk', 'email', ),
+            fields_to_remove=('pk', 'email',),
             prefix='user__',
         )
 
@@ -289,3 +291,5 @@ class UserObjectPermissionView(generics.ListCreateAPIView):
         )
 
         return super().get_queryset()
+
+

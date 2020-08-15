@@ -9,11 +9,18 @@ register_converter(
     'int_list',
 )
 
-router = routers.SimpleRouter()
-router.register(
+router_1 = routers.SimpleRouter()
+router_1.register(
     r'',
     archives.views.SeasonsViewSet,
     basename='seasonmodel',
+)
+
+router_2 = routers.SimpleRouter()
+router_2.register(
+    r'',
+    archives.views.UserObjectPermissionView,
+    basename='manage-permissions',
 )
 
 
@@ -35,7 +42,7 @@ urlpatterns = [
                     archives.views.TvSeriesDetailView.as_view(),
                     name='tvseries-detail',
                 ),
-                path('seasons/', include(router.urls))
+                path('seasons/', include(router_1.urls))
         ])),
     path(
         'tvseries/',
@@ -44,7 +51,6 @@ urlpatterns = [
     ),
     path(
         'manage-permissions/',
-        archives.views.UserObjectPermissionView.as_view(),
-        name='manage-permissions',
+        include(router_2.urls),
     )
 ]

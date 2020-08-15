@@ -252,3 +252,7 @@ USER_NOT_AUTHOR = exc_msg(
     'Request user is not the object author',
     'user_not_author',
 )
+PERM_ALREADY_EXISTS = exc_msg(
+    'Permission on this object has been already granted to this user.',
+    'perm_already_exists',
+)
