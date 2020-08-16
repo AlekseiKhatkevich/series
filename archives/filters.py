@@ -1,5 +1,6 @@
 import datetime
 
+import guardian.models
 from django import forms
 from django.core import exceptions
 from django.db.models import BooleanField, ExpressionWrapper, F, FloatField, Q
@@ -8,6 +9,7 @@ from django_filters import fields, rest_framework as rest_framework_filters, wid
 from psycopg2.extras import DateRange
 
 import archives.models
+import archives.serializers
 from series import error_codes
 
 queryset_instance = archives.models.models.QuerySet
@@ -308,3 +310,22 @@ class SeasonsFilterSet(rest_framework_filters.FilterSet):
         condition = {field_name: self.request.user}
 
         return queryset.filter(**condition) if value else queryset.exclude(**condition)
+
+
+class UserObjectPermissionFilterSet(rest_framework_filters.FilterSet):
+    """
+    Filterset for  user object permission list view archives/manage-permissions/.
+    """
+    model = progress_gte = rest_framework_filters.MultipleChoiceFilter(
+        field_name='content_type__model',
+        choices=archives.serializers.ManagePermissionsSerializer.MODEL_CHOICES.choices,
+    )
+
+    class Meta:
+        model = guardian.models.UserObjectPermission
+        fields = {
+            'object_pk': ['exact', ],
+            'id': ['exact', ],
+            'user__email': ['iexact', ],
+        }
+

@@ -198,7 +198,7 @@ class TvSeriesDetailSerializer(serializer_mixins.ReadOnlyRaisesException, TvSeri
         request = self.context['request']
         entry_author = self.context['view'].get_object().entry_author
 
-        if (not request.user == entry_author and not request.user.is_staff) or \
+        if (request.user != entry_author and not request.user.is_staff) or \
                 request.method not in permissions.SAFE_METHODS:
             fields.pop('allowed_redactors')
 

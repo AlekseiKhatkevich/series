@@ -1,5 +1,6 @@
 import functools
 from typing import Sequence
+
 import guardian.models
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
@@ -50,10 +51,12 @@ class TvSeriesBase(generics.GenericAPIView):
             select_related('entry_author', ). \
             prefetch_related('images', pr_groups, ). \
             defer(*user_model_deferred_fields)
+
         return super().get_queryset()
 
     @functools.lru_cache(maxsize=1)
     def get_object(self):
+
         return super().get_object()
 
 
@@ -159,7 +162,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
 
         return Response(
             data={'Number_of_deleted_images': deleted_amount},
-            status=status.HTTP_204_NO_CONTENT
+            status=status.HTTP_204_NO_CONTENT,
         )
 
     def validate_images_to_delete(
@@ -171,10 +174,10 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         Validates whether images with a given pks exist in database. raises exception if at least
         one of the images pks does not exist in the database.
         """
-        exists_in_db = series.images.filter(
-            pk__in=self.kwargs['image_pk']).values_list('pk', flat=True
-                                                        )
+        exists_in_db = series.images.filter(pk__in=self.kwargs['image_pk']).\
+            values_list('pk', flat=True)
         wrong_image_pks = set(images_pks).difference(exists_in_db)
+
         if wrong_image_pks:
             raise exceptions.ValidationError(
                 f'Images with pk {" ,".join(map(str, wrong_image_pks))} does not exist in the database.'
@@ -258,10 +261,23 @@ class UserObjectPermissionView(mixins.CreateModelMixin,
     perm_model = serializer_class.Meta.model
     permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
     pagination_class = pagination.FasterLimitOffsetPagination
+    filterset_class = archives.filters.UserObjectPermissionFilterSet
+    ordering = ('content_type__model', )
+    ordering_fields = (
+        'pk',
+        'user__email',
+        'content_type__model',
+        'object_pk',
+    )
+    search_fields = (
+        '^user__last_name',
+        '^user__first_name',
+        '^user__email',
+    )
 
     def get_condition(self, model: base.ModelBase) -> Q:
         """
-        Returns Q condition  with list of user entries pks in provided model.
+        Returns Q condition with list of user entries pks in provided model.
         """
         entries_pks = Subquery(model.objects.filter(entry_author=self.request.user).values('pk'))
         condition = Q(
