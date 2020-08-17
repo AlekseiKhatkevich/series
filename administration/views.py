@@ -3,23 +3,23 @@ import tempfile
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db import connection
 from django.db.models import OuterRef, Q, Subquery
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, generics, permissions, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_extensions.cache.mixins import ListCacheResponseMixin
 from rest_framework_extensions.mixins import DetailSerializerMixin
 
 import administration.filters
 import administration.models
 import administration.serielizers
 import archives.permissions
-from administration import cache_functions
+from administration import cache_functions, key_constructors
 from series.helpers import custom_functions
 
 
-class LogsListView(generics.ListAPIView):
+class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
     """
     View to show logs.
     """
@@ -37,6 +37,8 @@ class LogsListView(generics.ListAPIView):
         'msg',
         'trace',
     )
+    list_cache_key_func = key_constructors.LogsListViewKeyConstructor()
+    list_cache_timeout = 60*60
 
 
 class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):

@@ -60,9 +60,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',  # new
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # new
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -111,10 +111,10 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'NAME': 'series_db',
-        'CONN_MAX_AGE': 30,  # new
+        'CONN_MAX_AGE': 30,
         'TEST': {
             'NAME': 'series_db_tests',
-            'SERIALIZE': False,  # new
+            'SERIALIZE': False,
         },
     },
     'replica': {  # Replica database
@@ -385,3 +385,8 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugTrue',
         }, }, }
 DJANGO_DB_LOGGER_ENABLE_FORMATTER = True
+
+# DRF extensions settings
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_ERRORS': False
+}
