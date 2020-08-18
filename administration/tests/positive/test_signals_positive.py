@@ -1,9 +1,14 @@
 from collections import namedtuple
 
-from rest_framework.test import APITestCase
+from django.core.cache import cache
 from django.forms.models import model_to_dict
+from django.utils import timezone
+from django_db_logger.models import StatusLog
+from rest_framework.test import APITestCase
+
 import administration.models
 import archives.models
+from administration.filters import LogsFilterSet
 from administration.signals import create_log
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
@@ -37,13 +42,12 @@ class SignalsPositiveTest(APITestCase):
 
         for kwargs in (kwargs_created, kwargs_updated):
             with self.subTest(kwargs=kwargs):
-
                 create_log(
-                        sender=archives.models.TvSeriesModel,
-                        instance=self.series_1,
-                        request=self.request,
-                        **kwargs,
-                    )
+                    sender=archives.models.TvSeriesModel,
+                    instance=self.series_1,
+                    request=self.request,
+                    **kwargs,
+                )
                 operation_type = administration.models.OperationTypeChoices.CREATE if kwargs['created'] \
                     else administration.models.OperationTypeChoices.UPDATE
 
@@ -58,3 +62,37 @@ class SignalsPositiveTest(APITestCase):
                         state=model_to_dict(self.series_1)
                     ).exists()
                 )
+
+    def test_change_api_updated_at(self):
+        """
+        Check that 'change_api_updated_at' signal handler saves operation time of delete and save
+        operations on given model instance.
+        """
+        key = 'api_updated_at_timestamp'
+
+        StatusLog.objects.create(
+            logger_name=LogsFilterSet.LOGGERS_CHOICES.REQUEST,
+            level=50,
+            msg='test',
+            trace='test',
+            create_datetime=timezone.now(),
+        )
+        operation_datetime_from_cache = cache.get(
+            key=key,
+            default=None,
+            version=StatusLog._meta.model_name,
+        )
+        struct_datetime = timezone.datetime.fromisoformat(operation_datetime_from_cache)
+
+        self.assertIsNotNone(
+            operation_datetime_from_cache
+        )
+        self.assertIsInstance(
+            struct_datetime,
+            timezone.datetime,
+        )
+        self.assertAlmostEqual(
+            struct_datetime,
+            timezone.now(),
+            delta=timezone.timedelta(seconds=1)
+        )

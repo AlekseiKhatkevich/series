@@ -17,6 +17,7 @@ import administration.serielizers
 import archives.permissions
 from administration import cache_functions, key_constructors
 from series.helpers import custom_functions
+from series import constants
 
 
 class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
@@ -38,7 +39,7 @@ class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
         'trace',
     )
     list_cache_key_func = key_constructors.LogsListViewKeyConstructor()
-    list_cache_timeout = 60*60
+    list_cache_timeout = constants.TIMEOUTS[model._meta.model_name]
 
 
 class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
