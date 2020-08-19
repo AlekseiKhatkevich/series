@@ -8,7 +8,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import decorators, generics, permissions, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_extensions.cache.decorators import cache_response
 from rest_framework_extensions.cache.mixins import ListCacheResponseMixin
+from rest_framework_extensions.etag.decorators import etag
 from rest_framework_extensions.mixins import DetailSerializerMixin
 
 import administration.filters
@@ -16,8 +18,8 @@ import administration.models
 import administration.serielizers
 import archives.permissions
 from administration import cache_functions, key_constructors
-from series.helpers import custom_functions
 from series import constants
+from series.helpers import custom_functions
 
 
 class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
@@ -39,7 +41,13 @@ class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
         'trace',
     )
     list_cache_key_func = key_constructors.LogsListViewKeyConstructor()
+    list_etag_func = list_cache_key_func
     list_cache_timeout = constants.TIMEOUTS[model._meta.model_name]
+
+    @etag(list_etag_func)
+    @cache_response(key_func=list_cache_key_func, timeout=list_cache_timeout)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):

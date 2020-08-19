@@ -293,23 +293,23 @@ SCOPE_THROTTLING_CACHE = 'throttling'
 VALIDATOR_SWITCH_OFF_KEY = 'switch_off_in_tests'
 
 #  Caches related settings
+CACHE_OPTIONS = {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+        }
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': 'redis://127.0.0.1:6379/13',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
-        }, },
+        'OPTIONS': CACHE_OPTIONS,
+    },
     SCOPE_THROTTLING_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': 'redis://127.0.0.1:6379/14',
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            #  new all bellow.
-            'SOCKET_CONNECT_TIMEOUT': 5,
-            'SOCKET_TIMEOUT': 5,
-            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
-        }, },
+        'OPTIONS':  CACHE_OPTIONS,
+         },
 }
 
 #  Guardian.
@@ -392,5 +392,7 @@ DJANGO_DB_LOGGER_ENABLE_FORMATTER = True
 
 # DRF extensions settings
 REST_FRAMEWORK_EXTENSIONS = {
-    'DEFAULT_CACHE_ERRORS': False
+    'DEFAULT_CACHE_ERRORS': False,
+    'DEFAULT_KEY_CONSTRUCTOR_MEMOIZE_FOR_REQUEST': True,
 }
+

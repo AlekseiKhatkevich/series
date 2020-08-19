@@ -1,4 +1,5 @@
 import more_itertools
+from django_db_logger.models import StatusLog
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -44,4 +45,37 @@ class LogsAPIPositiveTest(APITestCase):
             {'logger_name', 'level', 'msg', 'trace', 'create_datetime', },
             set(response.data['results'][0].keys()),
         )
+
+    # def test_cache_invalidation_LogsListView(self):
+    #     """
+    #     Check that 'LogsListView' displays new version of page when list of objects is updated(
+    #     added or deleted one or more objects).
+    #     Check that ETAGs changes after lost of objects got changed
+    #     """
+    #     self.client.force_authenticate(self.admin)
+    #
+    #     response_1 = self.client.get(
+    #         reverse('logs'),
+    #         data=None,
+    #         format='json',
+    #     )
+    #
+    #     StatusLog.objects.last().delete()
+    #
+    #     response_2 = self.client.get(
+    #         reverse('logs'),
+    #         data=None,
+    #         format='json',
+    #     )
+    #
+    #     self.assertNotEqual(
+    #         response_1.data,
+    #         response_2.data,
+    #     )
+    #     self.assertNotEqual(
+    #         response_1['ETag'],
+    #         response_2['ETag'],
+    #     )
+
+
 
