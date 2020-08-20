@@ -1,6 +1,6 @@
 import os
 import tempfile
-
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.db.models import OuterRef, Q, Subquery
@@ -9,7 +9,7 @@ from rest_framework import decorators, generics, permissions, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_extensions.cache.decorators import cache_response
-from rest_framework_extensions.cache.mixins import ListCacheResponseMixin
+from rest_framework_extensions.cache.mixins import ListCacheResponseMixin, CacheResponseMixin
 from rest_framework_extensions.etag.decorators import etag
 from rest_framework_extensions.mixins import DetailSerializerMixin
 
@@ -22,7 +22,7 @@ from series import constants
 from series.helpers import custom_functions
 
 
-class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
+class LogsListView(generics.ListAPIView):
     """
     View to show logs.
     """
@@ -50,7 +50,7 @@ class LogsListView(ListCacheResponseMixin, generics.ListAPIView):
         return super().list(request, *args, **kwargs)
 
 
-class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
+class HistoryViewSet(ListCacheResponseMixin, DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
     """
     Displays change history of chosen model entry.
     """
@@ -67,14 +67,14 @@ class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = administration.serielizers.HistorySerializer
     serializer_detail_class = administration.serielizers.HistoryDetailSerializer
 
-    def get_queryset(self):
-        model = self.kwargs['model_name']
-        instance_pk = self.kwargs['instance_pk']
+    list_cache_key_func = key_constructors.HistoryViewSetListActionKeyConstructor()
+    list_cache_timeout = constants.TIMEOUTS[administration.models.EntriesChangeLog._meta.model_name]
 
+    def get_queryset(self):
         self.condition = Q(
-            object_id=instance_pk,
-            content_type__model=model.__name__.lower(),
-            content_type__app_label=model._meta.app_label.lower(),
+            object_id=self.kwargs['instance_pk'],
+            content_type__model=self.kwargs['model_name'],
+            content_type__app_label='archives',
         )
 
         deferred_fields = custom_functions.get_model_fields_subset(
@@ -94,8 +94,11 @@ class HistoryViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
         """
         Here we check whether or not object with pk and models from url kwargs exists in fact.
         """
+        model_name = self.kwargs['model_name']
+        self.model = apps.get_model(app_label='archives', model_name=model_name)
+
         model_instance = get_object_or_404(
-            self.kwargs['model_name'],
+            self.model,
             pk=self.kwargs['instance_pk'],
         )
         setattr(self, 'model_instance', model_instance)

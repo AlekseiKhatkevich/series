@@ -9,8 +9,10 @@ from django.forms.models import model_to_dict
 from django.http import HttpRequest
 from django.utils import timezone
 
-from administration.models import OperationTypeChoices, UserStatusChoices
+from administration.models import EntriesChangeLog, OperationTypeChoices, UserStatusChoices
 from series import constants
+
+default_timeout = constants.TIMEOUTS['default']
 
 
 @receiver([post_save, post_delete, ], sender='django_db_logger.StatusLog')
@@ -18,13 +20,28 @@ def change_api_updated_at(sender: ModelBase, instance: ModelBase, **kwargs) -> N
     """
     Signal handler sets time of delete or create operation in cache.
     """
-    default_timeout = 60 * 60
     model_name = sender._meta.model_name
     cache.set(
         key='api_updated_at_timestamp',
         value=timezone.now().isoformat(),
         timeout=constants.TIMEOUTS.get(model_name, default_timeout),
         version=model_name,
+    )
+
+
+@receiver([post_save, post_delete, ], sender=EntriesChangeLog)
+def last_operation_time_entrieschangelog(sender: ModelBase, instance: EntriesChangeLog, **kwargs) -> None:
+    """
+    Sets in cache last operation datetime for 'EntriesChangeLog' model in 'administration' app.
+    """
+    sender_model_name = sender._meta.model_name
+    contenttype_model_name = instance.content_type.model
+    version = (contenttype_model_name, instance.object_id)
+    cache.set(
+        key='last_operation_time_entrieschangelog',
+        value=timezone.now().isoformat(),
+        timeout=constants.TIMEOUTS.get(sender_model_name, default_timeout),
+        version=version,
     )
 
 

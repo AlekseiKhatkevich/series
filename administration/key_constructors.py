@@ -43,3 +43,34 @@ class LogsListViewKeyConstructor(KeyConstructor):
     unique_method_id = bits.UniqueMethodIdKeyBit()
     query_param = bits.QueryParamsKeyBit()
     last_change_time = UpdatedAtKeyBit()
+
+
+class HistoryViewSetLastOperationBit(bits.KeyBitBase):
+    """
+    Fetches last operation time in model 'EntriesChangeLog' grouped by 'object_id' from cache. If not
+    present in cache - adds it in cache.
+    """
+    cache_key = 'last_operation_time_entrieschangelog'
+
+    def get_data(self, params, view_instance, view_method, request, args, kwargs):
+        model_name = view_instance.serializer_class.Meta.model._meta.model_name
+        archives_model_name = view_instance.kwargs['model_name']
+        archives_instance_pk = view_instance.kwargs['instance_pk']
+        version = (archives_model_name, archives_instance_pk)
+
+        value = cache.get_or_set(
+            key=self.cache_key,
+            default=timezone.now().isoformat(),
+            timeout=constants.TIMEOUTS[model_name],
+            version=version,
+        )
+        return value
+
+
+class HistoryViewSetListActionKeyConstructor(KeyConstructor):
+    """
+    Cache key constructor for 'HistoryViewSet' list action.
+    """
+    unique_method_id = bits.UniqueMethodIdKeyBit()
+    query_param = bits.QueryParamsKeyBit()
+    last_operation_time = HistoryViewSetLastOperationBit()

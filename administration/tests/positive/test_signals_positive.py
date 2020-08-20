@@ -42,6 +42,7 @@ class SignalsPositiveTest(APITestCase):
 
         for kwargs in (kwargs_created, kwargs_updated):
             with self.subTest(kwargs=kwargs):
+                # noinspection PyTypeChecker
                 create_log(
                     sender=archives.models.TvSeriesModel,
                     instance=self.series_1,
@@ -93,6 +94,33 @@ class SignalsPositiveTest(APITestCase):
         )
         self.assertAlmostEqual(
             struct_datetime,
+            timezone.now(),
+            delta=timezone.timedelta(seconds=1)
+        )
+
+    def test_last_operation_time_entrieschangelog(self):
+        """
+        Check that 'last_operation_time_entrieschangelog' signal handler saves in cache current
+        datetime in iso format when 'EntriesChangeLog' model instance gets saved or deleted.
+        """
+        administration.models.EntriesChangeLog.objects.create(
+            content_object=self.series_2,
+            user=self.user_3,
+            as_who=administration.models.UserStatusChoices.CREATOR,
+            operation_type=administration.models.OperationTypeChoices.CREATE,
+            state=model_to_dict(self.series_2),
+            access_time=timezone.now(),
+        )
+        cache_key = 'last_operation_time_entrieschangelog'
+        version = (
+            self.series_2.__class__._meta.model_name,
+            self.series_2.pk,
+        )
+        datetime_from_cache = timezone.datetime.fromisoformat(
+            cache.get(key=cache_key, version=version, default=None)
+        )
+        self.assertAlmostEqual(
+            datetime_from_cache,
             timezone.now(),
             delta=timezone.timedelta(seconds=1)
         )

@@ -27,7 +27,7 @@ class IsObjectOwner(permissions.IsAuthenticated):
     message = error_codes.ONLY_AUTHORS.message
 
     def has_object_permission(self, request, view, obj):
-        is_author = obj.entry_author == request.user
+        is_author = obj.entry_author_id == request.user.pk
 
         if is_author:
             obj.accessed_as_who = UserStatusChoices.CREATOR

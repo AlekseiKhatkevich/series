@@ -12,8 +12,7 @@ class CustomConvertersPositiveTest(APISimpleTestCase):
 
     def test_ModelNameConverter_to_python(self):
         """
-        Check that 'ModelNameConverter' is able to parse model name from url and convert it to actual
-        model class.
+        Check that 'ModelNameConverter' is able to parse model name from url.
         """
         url_series = r'/administration/history/tvseriesmodel/158/'
         url_images = r'/administration/history/imagemodel/158/'
@@ -29,10 +28,6 @@ class CustomConvertersPositiveTest(APISimpleTestCase):
                 self.assertEqual(
                     resolver.url_name,
                     'history-list',
-                )
-                self.assertEqual(
-                    resolver.kwargs['model_name'],
-                    model_type,
                 )
 
     def test_ModelNameConverter_to_url(self):
