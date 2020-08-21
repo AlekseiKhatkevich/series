@@ -2,7 +2,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.indexes import BrinIndex, GinIndex
+from django.core import validators
 from django.db import models
+from django.utils import timezone
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
 
@@ -111,3 +113,51 @@ class EntriesChangeLog(models.Model):
                 self.object_id,
                 self.pk,
             )))
+
+
+class IpBlacklist(models.Model):
+    """
+    Holds list of blacklisted ips.
+    """
+    ip = models.GenericIPAddressField(
+        verbose_name='Ip address.',
+        db_index=True,
+        primary_key=True,
+        unpack_ipv4=True,
+    )
+    record_time = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Ip record time.'
+    )
+    stretch = models.DurationField(
+        verbose_name='Time interval during which ip is blacklisted.',
+        validators=[
+            validators.MinValueValidator(limit_value=timezone.timedelta(microseconds=0)),
+        ])
+
+    class Meta:
+        verbose_name = 'Ip blacklist.'
+        verbose_name_plural = 'Ip blacklists.'
+        get_latest_by = ('record_rime',)
+        constraints = [
+            #  Stretch should be > 0.
+            models.CheckConstraint(
+                name='stretch_positive_check',
+                check=models.Q(stretch__gt=timezone.timedelta(microseconds=0))
+            ), ]
+
+    def __str__(self):
+        return self.ip
+
+    @property
+    def is_active(self):
+        """
+        Returns True if ip is still blacklisted.
+        """
+        return (self.record_time + self.stretch) > timezone.now()
+
+    def save(self, fc=True, *args, **kwargs):
+        if fc:
+            self.full_clean(validate_unique=True)
+        super().save(*args, **kwargs)
+

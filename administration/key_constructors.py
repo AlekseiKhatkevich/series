@@ -74,3 +74,5 @@ class HistoryViewSetListActionKeyConstructor(KeyConstructor):
     unique_method_id = bits.UniqueMethodIdKeyBit()
     query_param = bits.QueryParamsKeyBit()
     last_operation_time = HistoryViewSetLastOperationBit()
+
+
