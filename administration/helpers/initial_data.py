@@ -9,10 +9,39 @@ from django.db.models.base import ModelBase
 from django.forms.models import model_to_dict
 from django.utils import timezone
 
-from administration.models import EntriesChangeLog, OperationTypeChoices, UserStatusChoices
+from administration.models import EntriesChangeLog, IpBlacklist, OperationTypeChoices, UserStatusChoices
 from series.helpers.context_managers import OverrideModelAttributes
+from users.helpers.create_test_ips import generate_random_ip4
 
 tz = pytz.timezone(settings.TIME_ZONE)
+
+
+def generate_blacklist_ips(num_entries: int, num_active: int) -> List[IpBlacklist]:
+    """
+    Data generator for 'IpBlacklist' model for testing purposes.
+    num_entries - number of entries to create.
+    num_active - number of active entries among all entries.
+    """
+    assert num_entries >= num_active, 'Amount of entries should be gte than amount of active entries.'
+
+    def generate_entry(active: bool = True) -> IpBlacklist:
+        """
+        Generate one 'IpBlacklist' entry.
+        """
+        entry = IpBlacklist(
+            ip=generate_random_ip4(),
+            stretch=timezone.timedelta(days=1),
+            record_time=timezone.now() if active else (timezone.now() - timezone.timedelta(days=10)),
+        )
+        return entry
+
+    active_entries = [generate_entry() for _ in range(num_active)]
+    passive_entries = [generate_entry(active=False) for _ in range(num_entries - num_active)]
+
+    with OverrideModelAttributes(model=IpBlacklist, field='record_time', auto_now_add=False):
+        resulted_entries = IpBlacklist.objects.bulk_create(active_entries + passive_entries)
+
+    return resulted_entries
 
 
 def generate_changelog(
@@ -57,3 +86,4 @@ def generate_changelog(
         )
 
     return log_entries
+

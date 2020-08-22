@@ -288,6 +288,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 #  Scope throttling cache.
 SCOPE_THROTTLING_CACHE = 'throttling'
+BLACKLIST_CACHE = 'blacklist'
 
 #  Test messaging broker keys:
 VALIDATOR_SWITCH_OFF_KEY = 'switch_off_in_tests'
@@ -310,7 +311,11 @@ CACHES = {
         'LOCATION': 'redis://127.0.0.1:6379/14',
         'OPTIONS':  CACHE_OPTIONS,
          },
-}
+    BLACKLIST_CACHE: {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/12',
+        'OPTIONS': CACHE_OPTIONS,
+    }, }
 
 #  Guardian.
 ANONYMOUS_USER_NAME = None

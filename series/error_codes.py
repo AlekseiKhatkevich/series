@@ -256,3 +256,7 @@ PERM_ALREADY_EXISTS = exc_msg(
     'Permission on this object has been already granted to this user.',
     'perm_already_exists',
 )
+STRETCH_NOT_NEGATIVE = exc_msg(
+    'The "stretch" field should be strictly positive.',
+    'stretch_not_negative',
+)

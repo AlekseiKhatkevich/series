@@ -1,7 +1,7 @@
 from rest_framework.test import APITestCase
 
 import administration.models
-from administration.helpers.initial_data import generate_changelog
+from administration.helpers.initial_data import generate_blacklist_ips, generate_changelog
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
 
@@ -60,5 +60,21 @@ class InitialDataPositiveTest(APITestCase):
         self.assertGreater(
             len({entry.user for entry in entries}),
             1,
+        )
+
+    def test_generate_blacklist_ips(self):
+        """
+        check that 'generate_blacklist_ips'initial data generator creates 'IpBlacklist'
+        entries in DB.
+        """
+        generate_blacklist_ips(10, 6)
+
+        self.assertEqual(
+            administration.models.IpBlacklist.objects.all().count(),
+            10,
+        )
+        self.assertEqual(
+            administration.models.IpBlacklist.objects.all().only_active().count(),
+            6,
         )
 

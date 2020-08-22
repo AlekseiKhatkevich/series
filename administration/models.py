@@ -7,8 +7,10 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
+import administration.managers
 
 from administration.encoders import CustomEncoder
+from series import error_codes
 
 
 class UserStatusChoices(models.TextChoices):
@@ -119,6 +121,9 @@ class IpBlacklist(models.Model):
     """
     Holds list of blacklisted ips.
     """
+    queryset = administration.managers.IpBlacklistQueryset
+    objects = administration.managers.IpBlacklistManager.from_queryset(queryset)()
+
     ip = models.GenericIPAddressField(
         verbose_name='Ip address.',
         db_index=True,
@@ -126,19 +131,22 @@ class IpBlacklist(models.Model):
         unpack_ipv4=True,
     )
     record_time = models.DateTimeField(
-        auto_now=True,
+        auto_now_add=True,
         verbose_name='Ip record time.'
     )
     stretch = models.DurationField(
         verbose_name='Time interval during which ip is blacklisted.',
         validators=[
-            validators.MinValueValidator(limit_value=timezone.timedelta(microseconds=0)),
-        ])
+            validators.MinValueValidator(
+                limit_value=timezone.timedelta(microseconds=0),
+                message=error_codes.STRETCH_NOT_NEGATIVE.message,
+            ), ])
 
     class Meta:
         verbose_name = 'Ip blacklist.'
         verbose_name_plural = 'Ip blacklists.'
         get_latest_by = ('record_rime',)
+        index_together = ('record_time', 'stretch', )
         constraints = [
             #  Stretch should be > 0.
             models.CheckConstraint(
@@ -160,4 +168,3 @@ class IpBlacklist(models.Model):
         if fc:
             self.full_clean(validate_unique=True)
         super().save(*args, **kwargs)
-

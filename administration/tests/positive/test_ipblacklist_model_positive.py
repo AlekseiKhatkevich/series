@@ -1,7 +1,9 @@
-from rest_framework.test import APITestCase
-import administration.models
-from django.utils import timezone
 from django.db.models import F
+from django.utils import timezone
+from rest_framework.test import APITestCase
+
+import administration.models
+
 
 class IpBlackListModelPositiveTest(APITestCase):
     """
@@ -51,6 +53,8 @@ class IpBlackListModelPositiveTest(APITestCase):
 
         self.one_ip.record_time = F('record_time') - timezone.timedelta(days=100)
         self.one_ip.save(fc=False)
+
+        self.one_ip.refresh_from_db()
 
         self.assertFalse(
             self.one_ip.is_active

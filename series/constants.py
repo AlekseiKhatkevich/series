@@ -12,3 +12,4 @@ TIMEOUTS = {
     'entrieschangelog': 60 * 60,
 }
 
+IP_BLACKLIST_CACHE_KEY = 'blacklist'
