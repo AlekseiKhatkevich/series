@@ -1,6 +1,7 @@
 from collections import namedtuple
 
-from django.core.cache import cache
+from django.conf import settings
+from django.core.cache import cache, caches
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django_db_logger.models import StatusLog
@@ -9,8 +10,9 @@ from rest_framework.test import APITestCase
 import administration.models
 import archives.models
 from administration.filters import LogsFilterSet
-from administration.signals import create_log
+from administration.signals import create_log, invalidate_blacklist_cache
 from archives.tests.data import initial_data
+from series import constants
 from users.helpers import create_test_users
 
 
@@ -123,4 +125,22 @@ class SignalsPositiveTest(APITestCase):
             datetime_from_cache,
             timezone.now(),
             delta=timezone.timedelta(seconds=1)
+        )
+
+    def test_invalidate_blacklist_cache(self):
+        """
+        Check that 'invalidate_blacklist_cache' signal handler deletes cache key responsible
+        for storing set of blacklisted ips in the cache.
+        """
+        blacklist_cache = caches[settings.BLACKLIST_CACHE]
+        blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
+
+        blacklist_cache.set(
+            key=blacklist_cache_key,
+            value='test',
+        )
+        invalidate_blacklist_cache()
+
+        self.assertIsNone(
+            blacklist_cache.get(key=blacklist_cache_key)
         )

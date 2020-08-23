@@ -33,6 +33,7 @@ cerberus = "*"
 aiohttp = "*"
 django-db-logger = "*"
 drf-extensions = {file = "https://github.com/chibisov/drf-extensions/archive/master.zip"}
+hiredis = "*"
 
 [requires]
 python_version = "3.8"

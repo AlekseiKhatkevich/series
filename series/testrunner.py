@@ -3,8 +3,10 @@ import shutil
 import tempfile
 
 from django.conf import settings
+from django.core.cache import caches
 from django.test.runner import DiscoverRunner
 
+from series import constants
 from series.settings import MEDIA_ROOT
 
 
@@ -19,6 +21,16 @@ class MyTestSuiteRunner(DiscoverRunner):
 
     temp_dir = None
 
+    @staticmethod
+    def remove_blacklist_key() -> None:
+        """
+        Removes blacklist cache key from cache.
+        """
+        blacklist_cache = caches[settings.BLACKLIST_CACHE]
+        blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
+
+        blacklist_cache.delete(blacklist_cache_key)
+
     def setup_test_environment(self, **kwargs):
         #  Add flag 'IM_IN_TEST_MODE' into settings.
         super().setup_test_environment(**kwargs)
@@ -29,6 +41,8 @@ class MyTestSuiteRunner(DiscoverRunner):
         #  Copy test images into aforementioned folder.
         test_images_folder = os.path.join(self.temp_dir, 'images_for_tests')
         shutil.copytree(settings.IMAGES_FOR_TESTS, test_images_folder)
+        #  Clean blacklist cache.
+        self.remove_blacklist_key()
 
     def teardown_test_environment(self, **kwargs):
         super().teardown_test_environment(**kwargs)
@@ -41,4 +55,7 @@ class MyTestSuiteRunner(DiscoverRunner):
             pass
 
         assert settings.MEDIA_ROOT == self.original_media_root, '"MEDIA_ROOT" is corrupted.'
+
+        #  Clean blacklist cache.
+        self.remove_blacklist_key()
 

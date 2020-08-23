@@ -145,7 +145,7 @@ class IpBlacklist(models.Model):
     class Meta:
         verbose_name = 'Ip blacklist.'
         verbose_name_plural = 'Ip blacklists.'
-        get_latest_by = ('record_rime',)
+        get_latest_by = ('record_time',)
         index_together = ('record_time', 'stretch', )
         constraints = [
             #  Stretch should be > 0.

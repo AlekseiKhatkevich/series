@@ -1,7 +1,8 @@
 import inspect
 from typing import Optional
 
-from django.core.cache import cache
+from django.conf import settings
+from django.core.cache import cache, caches
 from django.db.models.base import ModelBase
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
@@ -13,6 +14,17 @@ from administration.models import EntriesChangeLog, OperationTypeChoices, UserSt
 from series import constants
 
 default_timeout = constants.TIMEOUTS['default']
+
+
+@receiver([post_save, post_delete, ], sender='administration.IpBlacklist')
+def invalidate_blacklist_cache(*args, **kwargs) -> None:
+    """
+    Invalidates blacklist cache by deleting it's key from cache.
+    """
+    blacklist_cache = caches[settings.BLACKLIST_CACHE]
+    blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
+
+    blacklist_cache.delete(blacklist_cache_key)
 
 
 @receiver([post_save, post_delete, ], sender='django_db_logger.StatusLog')

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'series.middleware.IpBlackListMiddleware',  # new
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -299,6 +300,7 @@ CACHE_OPTIONS = {
             'SOCKET_CONNECT_TIMEOUT': 5,
             'SOCKET_TIMEOUT': 5,
             'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+            'PARSER_CLASS': 'redis.connection.HiredisParser',
         }
 CACHES = {
     'default': {
