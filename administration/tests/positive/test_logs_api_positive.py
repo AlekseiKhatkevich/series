@@ -1,5 +1,4 @@
 import more_itertools
-from django_db_logger.models import StatusLog
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
