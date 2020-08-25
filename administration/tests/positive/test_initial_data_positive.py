@@ -67,7 +67,7 @@ class InitialDataPositiveTest(APITestCase):
         check that 'generate_blacklist_ips'initial data generator creates 'IpBlacklist'
         entries in DB.
         """
-        generate_blacklist_ips(10, 6)
+        ips = generate_blacklist_ips(10, 6)
 
         self.assertEqual(
             administration.models.IpBlacklist.objects.all().count(),
@@ -76,5 +76,9 @@ class InitialDataPositiveTest(APITestCase):
         self.assertEqual(
             administration.models.IpBlacklist.objects.all().only_active().count(),
             6,
+        )
+        self.assertNotEqual(
+            len({entry.stretch for entry in ips}),
+            1
         )
 

@@ -1,6 +1,7 @@
 import datetime
 import ipaddress
 import itertools
+import operator
 from numbers import Integral
 from typing import Tuple
 
@@ -36,7 +37,7 @@ class IpBlackListMiddleware:
 
     def __call__(self, request):
         ip = self.get_ip_address(request)
-        #is_blacklisted = self.is_ip_blacklisted(ip)
+        # is_blacklisted = self.is_ip_blacklisted(ip)
         is_blacklisted = self.is_ip_blacklisted_native_version(ip)
         if is_blacklisted:
             return JsonResponse({
@@ -62,14 +63,14 @@ class IpBlackListMiddleware:
         lately.
         """
         elapsed_time_to_lock_release = ExpressionWrapper(
-                 (F('record_time') + F('stretch')), output_field=DateTimeField()) - Now()
+            (F('record_time') + F('stretch')), output_field=DateTimeField()) - Now()
 
         blacklist_entries = self.model.objects.only_active().aggregate(
             ttl=Coalesce(Min(elapsed_time_to_lock_release), self.cache_ttl),
             ips=ArrayAgg('ip'),
         )
 
-        #return set(blacklist_entries['ips']), blacklist_entries['ttl'].total_seconds()
+        # return set(blacklist_entries['ips']), blacklist_entries['ttl'].total_seconds()
         return blacklist_entries['ips'], blacklist_entries['ttl'].total_seconds()
 
     def is_ip_blacklisted(self, ip: str) -> bool:
@@ -100,25 +101,31 @@ class IpBlackListMiddleware:
         if not is_key_exists:
 
             ips_to_write, ttl = self.get_blacklisted_ips_from_db()
-            ips_to_write = itertools.chain.from_iterable(
-                ipaddress.ip_network(ip_or_net) for ip_or_net in ips_to_write
-            )
-            with self.redis_client.pipeline():
-                self.redis_client.sadd(
-                    self.redis_native_cache_key,
-                    *ips_to_write,
-                )
-                self.redis_client.expire(
-                    self.redis_native_cache_key,
-                    time=int(ttl),
-                )
+            ips_to_write = map(
+                operator.attrgetter('packed'),
+                itertools.chain.from_iterable(
+                    ipaddress.ip_network(ip_or_net) for ip_or_net in ips_to_write
+                ))
 
-            return ip in ips_to_write
+            pipe = self.redis_client.pipeline()
+
+            result = pipe.sadd(
+                self.redis_native_cache_key,
+                *ips_to_write,
+            ).expire(
+                self.redis_native_cache_key,
+                time=int(ttl),
+            ).sismember(
+                self.redis_native_cache_key,
+                ip.packed,
+            ).execute()
+
+            return result[-1]
 
         else:
             is_blacklisted = self.redis_client.sismember(
                 self.redis_native_cache_key,
-                ip,
+                ip.packed,
             )
 
             return bool(is_blacklisted)

@@ -260,3 +260,7 @@ STRETCH_NOT_NEGATIVE = exc_msg(
     'The "stretch" field should be strictly positive.',
     'stretch_not_negative',
 )
+NET_BIT_LOWER = exc_msg(
+    'Network mask bit is lover then threshold value specified in validator.',
+    'net_bit_lower',
+)

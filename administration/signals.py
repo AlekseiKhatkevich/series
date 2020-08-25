@@ -1,8 +1,12 @@
 import inspect
+import ipaddress
+import operator
 from typing import Optional
 
+import django_redis
 from django.conf import settings
-from django.core.cache import cache, caches
+from django.core.cache import cache
+from django.core.cache.backends.base import BaseCache
 from django.db.models.base import ModelBase
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
@@ -10,21 +14,39 @@ from django.forms.models import model_to_dict
 from django.http import HttpRequest
 from django.utils import timezone
 
-from administration.models import EntriesChangeLog, OperationTypeChoices, UserStatusChoices
+from administration.models import EntriesChangeLog, IpBlacklist, OperationTypeChoices, \
+    UserStatusChoices
 from series import constants
 
 default_timeout = constants.TIMEOUTS['default']
 
 
 @receiver([post_save, post_delete, ], sender='administration.IpBlacklist')
-def invalidate_blacklist_cache(*args, **kwargs) -> None:
+def invalidate_blacklist_cache(sender: ModelBase, instance: IpBlacklist, **kwargs) -> None:
     """
-    Invalidates blacklist cache by deleting it's key from cache.
+    Adds or removes ip addresses in set in redis cache.
     """
-    blacklist_cache = caches[settings.BLACKLIST_CACHE]
     blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
+    redis_native_cache_key = BaseCache({}).make_key(blacklist_cache_key)
+    redis_client = django_redis.get_redis_connection(settings.BLACKLIST_CACHE)
+#TTL???
+    is_save = kwargs.get('created', None)
 
-    blacklist_cache.delete(blacklist_cache_key)
+    # Returns byte repr. of individual IP or byte repr. of each ip in network.
+    ips_to_write_or_del = map(
+        operator.attrgetter('packed'),
+        ipaddress.ip_network(instance.ip),
+    )
+    args_for_func = (
+        redis_native_cache_key,
+        *ips_to_write_or_del,
+    )
+    # on post_save add ips to cache.
+    if is_save is not None:
+        redis_client.sadd(*args_for_func)
+    # on post_delete remove ips from cache.
+    else:
+        redis_client.srem(*args_for_func)
 
 
 @receiver([post_save, post_delete, ], sender='django_db_logger.StatusLog')

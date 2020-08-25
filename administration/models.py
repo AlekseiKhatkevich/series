@@ -10,6 +10,7 @@ from rest_framework.reverse import reverse
 import administration.managers
 
 from administration.encoders import CustomEncoder
+from administration.helpers import validators as admin_validators
 from series import error_codes
 
 
@@ -117,6 +118,16 @@ class EntriesChangeLog(models.Model):
             )))
 
 
+class IpAndNetworkField(models.GenericIPAddressField):
+    """
+
+    """
+
+    def __init__(self, verbose_name=None, name=None, protocol='both', unpack_ipv4=False, *args, **kwargs):
+        super().__init__(verbose_name, name, protocol, unpack_ipv4, *args, **kwargs)
+        self.default_validators = []
+
+
 class IpBlacklist(models.Model):
     """
     Holds list of blacklisted ips.
@@ -124,11 +135,12 @@ class IpBlacklist(models.Model):
     queryset = administration.managers.IpBlacklistQueryset
     objects = administration.managers.IpBlacklistManager.from_queryset(queryset)()
 
-    ip = models.GenericIPAddressField(
+    ip = IpAndNetworkField(
         verbose_name='Ip address.',
         db_index=True,
         primary_key=True,
         unpack_ipv4=True,
+        validators=[admin_validators.ValidateIpAddressOrNetwork(24),]
     )
     record_time = models.DateTimeField(
         auto_now_add=True,

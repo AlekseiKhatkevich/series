@@ -30,8 +30,8 @@ def generate_blacklist_ips(num_entries: int, num_active: int) -> List[IpBlacklis
         """
         entry = IpBlacklist(
             ip=generate_random_ip4(),
-            stretch=timezone.timedelta(days=1),
-            record_time=timezone.now() if active else (timezone.now() - timezone.timedelta(days=10)),
+            stretch=timezone.timedelta(days=random.randrange(1, 30)),
+            record_time=timezone.now() if active else (timezone.now() - timezone.timedelta(days=50)),
         )
         return entry
 
