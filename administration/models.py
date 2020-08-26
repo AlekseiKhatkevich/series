@@ -7,8 +7,9 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 from rest_framework.reverse import reverse
-import administration.managers
 
+import administration.managers
+from administration.custom_fields import IpAndNetworkField
 from administration.encoders import CustomEncoder
 from administration.helpers import validators as admin_validators
 from series import error_codes
@@ -118,16 +119,6 @@ class EntriesChangeLog(models.Model):
             )))
 
 
-class IpAndNetworkField(models.GenericIPAddressField):
-    """
-
-    """
-
-    def __init__(self, verbose_name=None, name=None, protocol='both', unpack_ipv4=False, *args, **kwargs):
-        super().__init__(verbose_name, name, protocol, unpack_ipv4, *args, **kwargs)
-        self.default_validators = []
-
-
 class IpBlacklist(models.Model):
     """
     Holds list of blacklisted ips.
@@ -140,7 +131,7 @@ class IpBlacklist(models.Model):
         db_index=True,
         primary_key=True,
         unpack_ipv4=True,
-        validators=[admin_validators.ValidateIpAddressOrNetwork(24),]
+        validators=[admin_validators.ValidateIpAddressOrNetwork(24), ]
     )
     record_time = models.DateTimeField(
         auto_now_add=True,
@@ -150,7 +141,7 @@ class IpBlacklist(models.Model):
         verbose_name='Time interval during which ip is blacklisted.',
         validators=[
             validators.MinValueValidator(
-                limit_value=timezone.timedelta(microseconds=0),
+                limit_value=timezone.timedelta(0),
                 message=error_codes.STRETCH_NOT_NEGATIVE.message,
             ), ])
 
@@ -163,7 +154,7 @@ class IpBlacklist(models.Model):
             #  Stretch should be > 0.
             models.CheckConstraint(
                 name='stretch_positive_check',
-                check=models.Q(stretch__gt=timezone.timedelta(microseconds=0))
+                check=models.Q(stretch__gt=timezone.timedelta(0))
             ), ]
 
     def __str__(self):
@@ -175,6 +166,15 @@ class IpBlacklist(models.Model):
         Returns True if ip is still blacklisted.
         """
         return (self.record_time + self.stretch) > timezone.now()
+
+    def stretch_remain(self) -> timezone.timedelta:
+        """
+        Time from now until ip release to freedom.
+        """
+        return max(
+            (self.record_time + self.stretch) - timezone.now(),
+            timezone.timedelta(0),
+        )
 
     def save(self, fc=True, *args, **kwargs):
         if fc:

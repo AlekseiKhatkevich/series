@@ -173,13 +173,13 @@ class CustomDjoserUserViewSet(djoser.views.UserViewSet):
 class CustomJWTTokenRefreshView(simplejwt_views.TokenRefreshView):
     """
     Subclass of simple-JWT token refresh view in order to add functionality for
-    writing user's ip address before new access token is rendered.
+    writing user'sip address before new access token is rendered.
     """
 
     def write_user_ip(self, request: HttpRequest, token: jwt_token) -> Optional[users.models.UserIP]:
         """
-        Method extracts user_id from JWT token, gets user ip address from request
-        and writes 'UserIP' models entry in DB successfully saving user's ip in DB.
+        Method extracts user_id from JWT token, gets userip address from request
+        and writes 'UserIP' models entry in DB successfully saving user'sip in DB.
         Returns None if something went wong.
         """
         if token is not None:

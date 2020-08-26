@@ -59,3 +59,14 @@ class IpBlackListModelPositiveTest(APITestCase):
         self.assertFalse(
             self.one_ip.is_active
         )
+
+    def test_stretch_remain_property(self):
+        """
+        Check that 'stretch_remain' returns time remain for ip to release to freedom.
+        """
+        # noinspection PyTypeChecker
+        self.assertAlmostEqual(
+            self.one_ip.stretch_remain(),
+            timezone.timedelta(days=1),
+            delta=timezone.timedelta(seconds=1)
+        )

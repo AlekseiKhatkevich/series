@@ -246,16 +246,16 @@ class UserIP(models.Model):
         related_name='user_ip',
     )
     ip = models.GenericIPAddressField(
-        verbose_name='User ip address'
+        verbose_name='User ip  address'
     )
     sample_time = models.DateTimeField(
         auto_now=True,
-        verbose_name='User ip sample time'
+        verbose_name='Userip sample time'
     )
 
     class Meta:
-        verbose_name = 'User ip address.'
-        verbose_name_plural = 'User ip addresses.'
+        verbose_name = 'Userip address.'
+        verbose_name_plural = 'Userip addresses.'
         get_latest_by = ('sample_time',)
         index_together = (
             ('user', 'ip',)
@@ -273,19 +273,19 @@ class UserIP(models.Model):
     @transaction.atomic
     def ip_deque(self, ip_num: int = 3) -> None:
         """
-        Method keeps only 3 last distinct ip address entries.
+        Method keeps only 3 last distinctip address entries.
         """
         cls = type(self)
         # List of user's ips.
         user_ips = cls.objects.filter(user=self.user, ip=self.ip)
-        # We update 'sample_time' if pair of (user, ip) is already exists.
+        # We update 'sample_time' if pair of (user,ip) is already exists.
         is_updated = user_ips.update(
             sample_time=(self.sample_time or timezone.now())
         )
-        # If pair of (user, ip) doesn't exists, we need to save model entry.
+        # If pair of (user,ip) doesn't exists, we need to save model entry.
         if not is_updated:
             super().save(force_insert=False, force_update=False, using=None, update_fields=None)
-        # Keep only 'ip_num' amount of fresh ip entries. Delete all others.
+        # Keep only 'ip_num' amount of freship entries. Delete all others.
         ips_to_be_deleted = models.Subquery(
             cls.objects.filter(user=self.user).
                 order_by('-sample_time')[ip_num:].values_list('pk', flat=True)

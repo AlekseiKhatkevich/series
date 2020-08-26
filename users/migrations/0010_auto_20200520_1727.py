@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='userip',
-            options={'get_latest_by': ('sample_time',), 'verbose_name': 'User ip address.', 'verbose_name_plural': 'User ip addresses.'},
+            options={'get_latest_by': ('sample_time',), 'verbose_name': 'ip', 'verbose_name_plural': 'User ip addresses.'},
         ),
         migrations.AddField(
             model_name='user',

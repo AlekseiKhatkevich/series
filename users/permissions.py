@@ -6,9 +6,9 @@ from series import error_codes
 
 class UserIPPermission(permissions.BasePermission):
     """
-    Permissions allows only requests that comes from one of account owner 3 last recently used ip addresses.
+    Permissions allows only requests that comes from one of account owner 3 last recently usedip addresses.
     Or from admins.
-    Or in case user doesnt have any ip entries yet.
+    Or in case user doesnt have anyip entries yet.
     """
     message = error_codes.SUSPICIOUS_REQUEST.message
 

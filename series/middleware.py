@@ -1,9 +1,8 @@
 import datetime
+import functools
 import ipaddress
-import itertools
-import operator
 from numbers import Integral
-from typing import Tuple
+from typing import Set, Tuple
 
 import django_redis
 from django.conf import settings
@@ -37,8 +36,9 @@ class IpBlackListMiddleware:
 
     def __call__(self, request):
         ip = self.get_ip_address(request)
-        # is_blacklisted = self.is_ip_blacklisted(ip)
-        is_blacklisted = self.is_ip_blacklisted_native_version(ip)
+        ip_set = self.prepare_ip_address(ip, min_bit=24)
+        is_blacklisted = self.is_ip_blacklisted(ip_set)
+
         if is_blacklisted:
             return JsonResponse({
                 'state': 'Forbidden',
@@ -56,10 +56,30 @@ class IpBlackListMiddleware:
         """
         return throttling.BaseThrottle().get_ident(request)
 
+    @staticmethod
+    @functools.lru_cache(maxsize=1000, )
+    def prepare_ip_address(ip: str, min_bit: int) -> Set[str]:
+        """
+        Returns set of ips address itself and it's supernets down to min_bit where
+        this ip might be located.
+        ['228.228.228.200/31', '228.228.228.200/30', '228.228.228.200/29',
+        '228.228.228.192/28', '228.228.228.192/27',
+        '228.228.228.192/26', '228.228.228.128/25', '228.228.228.0/24']
+        + ip address itself for '228.228.228.200'
+        In other words - all nets where this exact ip can be inside.
+        """
+        ip_obj = ipaddress.ip_network(ip)
+        supernets = set(
+            ip_obj.supernet(prefixlen_diff=step).exploded for step in range(1, 33 - min_bit)
+        )
+        supernets.add(ip)
+
+        return supernets
+
     def get_blacklisted_ips_from_db(self) -> Tuple[set, Integral]:
         """
         Fetches blacklisted ips from database. Returns set of blacklisted ips and minimal
-        time left to ip being liberated from blacklist. This time should be used as cache ttl
+        time left to ips being liberated from blacklist. This time should be used as cache ttl
         lately.
         """
         elapsed_time_to_lock_release = ExpressionWrapper(
@@ -70,62 +90,39 @@ class IpBlackListMiddleware:
             ips=ArrayAgg('ip'),
         )
 
-        # return set(blacklist_entries['ips']), blacklist_entries['ttl'].total_seconds()
         return blacklist_entries['ips'], blacklist_entries['ttl'].total_seconds()
 
-    def is_ip_blacklisted(self, ip: str) -> bool:
-        """
-        Checks whether IP blacklisted.
-        """
-        ips_from_cache = self.cache.get(key=self.cache_key)
-
-        if ips_from_cache is None:
-            ips_to_write, ttl = self.get_blacklisted_ips_from_db()
-            self.cache.set(
-                key=self.cache_key,
-                timeout=ttl,
-                value=ips_to_write,
-            )
-            ips_from_cache = ips_to_write
-
-        return ip in ips_from_cache
-
-    def is_ip_blacklisted_native_version(self, ip: str) -> bool:
+    def is_ip_blacklisted(self, ips_set: set) -> bool:
         """
         Checks whether ip is blacklisted inside cache without pulling data from cache.
         """
-        ip = ipaddress.ip_address(ip)
+        pipe = self.redis_client.pipeline()
 
-        is_key_exists = self.redis_client.exists(self.redis_native_cache_key)
-
-        if not is_key_exists:
+        # if key is not exists -fetch ips from db and set them in Redis.
+        if not self.redis_client.exists(self.redis_native_cache_key):
 
             ips_to_write, ttl = self.get_blacklisted_ips_from_db()
-            ips_to_write = map(
-                operator.attrgetter('packed'),
-                itertools.chain.from_iterable(
-                    ipaddress.ip_network(ip_or_net) for ip_or_net in ips_to_write
-                ))
+            # if there are no any ips in DB we create empty set(set with sentinel).
+            if not ips_to_write:
+                ips_to_write = ('SENTINEL', )
 
-            pipe = self.redis_client.pipeline()
-
-            result = pipe.sadd(
+            pipe.sadd(
                 self.redis_native_cache_key,
                 *ips_to_write,
             ).expire(
                 self.redis_native_cache_key,
                 time=int(ttl),
-            ).sismember(
-                self.redis_native_cache_key,
-                ip.packed,
             ).execute()
 
-            return result[-1]
+            return not ips_set.isdisjoint(ips_to_write)
 
+        # If key exists check if our ip and networks are in cache blacklist.
         else:
-            is_blacklisted = self.redis_client.sismember(
-                self.redis_native_cache_key,
-                ip.packed,
-            )
+            for ip in ips_set:
+                pipe.sismember(
+                    self.redis_native_cache_key,
+                    ip,
+                )
+            result = pipe.execute()
 
-            return bool(is_blacklisted)
+            return any(result)

@@ -127,20 +127,20 @@ class SignalsPositiveTest(APITestCase):
             delta=timezone.timedelta(seconds=1)
         )
 
-    def test_invalidate_blacklist_cache(self):
-        """
-        Check that 'invalidate_blacklist_cache' signal handler deletes cache key responsible
-        for storing set of blacklisted ips in the cache.
-        """
-        blacklist_cache = caches[settings.BLACKLIST_CACHE]
-        blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
-
-        blacklist_cache.set(
-            key=blacklist_cache_key,
-            value='test',
-        )
-        invalidate_blacklist_cache()
-
-        self.assertIsNone(
-            blacklist_cache.get(key=blacklist_cache_key)
-        )
+    # def test_invalidate_blacklist_cache(self):
+    #     """
+    #     Check that 'invalidate_blacklist_cache' signal handler deletes cache key responsible
+    #     for storing set of blacklisted ips in the cache.
+    #     """
+    #     blacklist_cache = caches[settings.BLACKLIST_CACHE]
+    #     blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
+    #
+    #     blacklist_cache.set(
+    #         key=blacklist_cache_key,
+    #         value='test',
+    #     )
+    #     invalidate_blacklist_cache()
+    #
+    #     self.assertIsNone(
+    #         blacklist_cache.get(key=blacklist_cache_key)
+    #     )

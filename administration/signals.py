@@ -21,7 +21,7 @@ from series import constants
 default_timeout = constants.TIMEOUTS['default']
 
 
-@receiver([post_save, post_delete, ], sender='administration.IpBlacklist')
+#@receiver([post_save, post_delete, ], sender='administration.IpBlacklist')
 def invalidate_blacklist_cache(sender: ModelBase, instance: IpBlacklist, **kwargs) -> None:
     """
     Adds or removes ip addresses in set in redis cache.
@@ -29,7 +29,7 @@ def invalidate_blacklist_cache(sender: ModelBase, instance: IpBlacklist, **kwarg
     blacklist_cache_key = constants.IP_BLACKLIST_CACHE_KEY
     redis_native_cache_key = BaseCache({}).make_key(blacklist_cache_key)
     redis_client = django_redis.get_redis_connection(settings.BLACKLIST_CACHE)
-#TTL???
+
     is_save = kwargs.get('created', None)
 
     # Returns byte repr. of individual IP or byte repr. of each ip in network.
@@ -41,9 +41,19 @@ def invalidate_blacklist_cache(sender: ModelBase, instance: IpBlacklist, **kwarg
         redis_native_cache_key,
         *ips_to_write_or_del,
     )
-    # on post_save add ips to cache.
+    # on post_save add ips to cache. Change cache TTL to min. of instance TTL or cache TTL.
     if is_save is not None:
-        redis_client.sadd(*args_for_func)
+        instance_ttl = instance.stretch_remain().total_seconds()
+        cache_ttl = redis_client.ttl(redis_native_cache_key)
+
+        pipe = redis_client.pipeline()
+        pipe.sadd(
+            *args_for_func,
+        ).expire(
+            redis_native_cache_key,
+            time=int(min(instance_ttl, cache_ttl)),
+        ).execute()
+
     # on post_delete remove ips from cache.
     else:
         redis_client.srem(*args_for_func)
