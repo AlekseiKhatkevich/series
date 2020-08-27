@@ -20,12 +20,13 @@ from series import constants
 
 class IpBlackListMiddleware:
     """
-    Declines request if ip address in blacklist.
+    Declines request if ip address is in blacklist.
     """
     cache = caches[settings.BLACKLIST_CACHE]
-    cache_ttl = datetime.timedelta(days=1)
+    default_cache_ttl = datetime.timedelta(days=1)
     cache_key = constants.IP_BLACKLIST_CACHE_KEY
     model = administration.models.IpBlacklist
+    sentinel = 'SENTINEL'
 
     # Class variables for native Redis ip in blacklisted ips check.
     redis_client = django_redis.get_redis_connection(settings.BLACKLIST_CACHE)
@@ -36,7 +37,7 @@ class IpBlackListMiddleware:
 
     def __call__(self, request):
         ip = self.get_ip_address(request)
-        ip_set = self.prepare_ip_address(ip, min_bit=24)
+        ip_set = self.prepare_ip_address(ip, bits_down=8)
         is_blacklisted = self.is_ip_blacklisted(ip_set)
 
         if is_blacklisted:
@@ -58,7 +59,7 @@ class IpBlackListMiddleware:
 
     @staticmethod
     @functools.lru_cache(maxsize=1000, )
-    def prepare_ip_address(ip: str, min_bit: int) -> Set[str]:
+    def prepare_ip_address(ip: str, bits_down: int) -> Set[str]:
         """
         Returns set of ips address itself and it's supernets down to min_bit where
         this ip might be located.
@@ -69,8 +70,10 @@ class IpBlackListMiddleware:
         In other words - all nets where this exact ip can be inside.
         """
         ip_obj = ipaddress.ip_network(ip)
+        #  Bit masks -- 32-24 for ipv4; 128-120 for ipv6 if bits_down == 8.
+        supernets_range = range(1, bits_down + 1)
         supernets = set(
-            ip_obj.supernet(prefixlen_diff=step).exploded for step in range(1, 33 - min_bit)
+            ip_obj.supernet(prefixlen_diff=step).compressed for step in supernets_range
         )
         supernets.add(ip)
 
@@ -86,7 +89,7 @@ class IpBlackListMiddleware:
             (F('record_time') + F('stretch')), output_field=DateTimeField()) - Now()
 
         blacklist_entries = self.model.objects.only_active().aggregate(
-            ttl=Coalesce(Min(elapsed_time_to_lock_release), self.cache_ttl),
+            ttl=Coalesce(Min(elapsed_time_to_lock_release), self.default_cache_ttl),
             ips=ArrayAgg('ip'),
         )
 
@@ -104,7 +107,7 @@ class IpBlackListMiddleware:
             ips_to_write, ttl = self.get_blacklisted_ips_from_db()
             # if there are no any ips in DB we create empty set(set with sentinel).
             if not ips_to_write:
-                ips_to_write = ('SENTINEL', )
+                ips_to_write = (self.sentinel, )
 
             pipe.sadd(
                 self.redis_native_cache_key,

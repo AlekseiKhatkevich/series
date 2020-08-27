@@ -1,3 +1,4 @@
+import ipaddress
 import random
 from datetime import datetime, timedelta
 from typing import Sequence
@@ -17,8 +18,34 @@ def generate_random_ip4() -> str:
     """
     Generates random ip4 address.
     """
-    ip = '.'.join(str(random.randint(0, 255)) for _ in range(4))
-    return ip
+    return ipaddress.IPv4Address(random.randint(0, 2 ** 32 - 1)).compressed
+
+
+def generate_random_ip6() -> str:
+    """
+    Generates random ip6 address.
+    """
+    return ipaddress.IPv6Address(random.randint(0, 2 ** 128 - 1)).compressed
+
+
+def generate_random_ip_network(protocol: int, max_bit_down: int) -> str:
+    """
+    Generates random ipv4 or ipv6 networks.
+    """
+    assert protocol in (4, 6, ), 'Choose protocol version 4 or 6.'
+
+    if protocol == 4:
+        return ipaddress.IPv4Network(
+            random.randint(0, 2 ** 32 - 1)
+        ).supernet(
+            prefixlen_diff=random.randint(1, max_bit_down)
+        ).compressed
+    else:
+        return ipaddress.IPv6Network(
+            random.randint(0, 2 ** 128 - 1)
+        ).supernet(
+            prefixlen_diff=random.randint(1, max_bit_down)
+        ).compressed
 
 
 def offset_time(time: datetime, max_offset: int, min_offset: int = 0) -> datetime:

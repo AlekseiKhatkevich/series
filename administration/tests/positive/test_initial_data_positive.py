@@ -1,3 +1,5 @@
+import ipaddress
+
 from rest_framework.test import APITestCase
 
 import administration.models
@@ -64,7 +66,7 @@ class InitialDataPositiveTest(APITestCase):
 
     def test_generate_blacklist_ips(self):
         """
-        check that 'generate_blacklist_ips'initial data generator creates 'IpBlacklist'
+        Check that 'generate_blacklist_ips'initial data generator creates 'IpBlacklist'
         entries in DB.
         """
         ips = generate_blacklist_ips(10, 6)
@@ -81,4 +83,40 @@ class InitialDataPositiveTest(APITestCase):
             len({entry.stretch for entry in ips}),
             1
         )
+        self.assertTrue(
+            all(ipaddress.ip_address(ip).version == 4 for ip in ips)
+        )
 
+    def test_generate_blacklist_ips_ip4_and_ip6(self):
+        """
+        Check that 'generate_blacklist_ips' function can generate both ipv6 and ipv4 addresses
+        in one go.
+        """
+        generate_blacklist_ips(10, 6, protocols=(4, 6))
+        ips = administration.models.IpBlacklist.objects.all()
+
+        self.assertEqual(
+            len(ips),
+            20,
+        )
+        self.assertEqual(
+            len([*filter(lambda obj: ipaddress.ip_address(obj).version == 6, ips)]),
+            10,
+        )
+
+    def test_generate_blacklist_ips_ip4_and_ip6_and_networks(self):
+        """
+        Check that 'generate_blacklist_ips' function can generate both ipv6 and ipv4 networks
+        in one go.
+        """
+        generate_blacklist_ips(0, 0, protocols=(4, 6), num_networks=3)
+        networks = administration.models.IpBlacklist.objects.all()
+
+        self.assertEqual(
+            len(networks),
+            6,
+        )
+        self.assertEqual(
+            len([*filter(lambda obj: ipaddress.ip_network(obj).version == 6, networks)]),
+            3,
+        )
