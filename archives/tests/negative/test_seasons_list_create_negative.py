@@ -73,7 +73,7 @@ class SeasonsListCreateNegativeTest(test_helpers.TestHelpers, APITestCase):
         test_series = self.series_2
         random_user = more_itertools.first_true(
             self.users,
-            lambda user: user != test_series.entry_author,
+            pred=lambda user: user != test_series.entry_author,
         )
         self.assertIsNone(
             random_user.master

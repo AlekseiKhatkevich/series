@@ -16,7 +16,7 @@ class CoveragePositiveTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
-        cls.admin = more_itertools.first_true(cls.users, lambda user: user.is_staff)
+        cls.admin = more_itertools.first_true(cls.users, pred=lambda user: user.is_staff)
 
     def test_response(self):
         """

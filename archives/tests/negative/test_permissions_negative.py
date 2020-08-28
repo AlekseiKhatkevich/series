@@ -163,7 +163,7 @@ class PermissionNegativeTest(APITestCase):
 
         slave = more_itertools.first_true(
             self.users,
-            lambda user: user != author and user != user_with_perm,
+            pred=lambda user: user != author and user != user_with_perm,
         )
         author.slaves.add(slave)
 

@@ -125,7 +125,7 @@ class PermissionPositiveTest(APITestCase):
         permission = archives.permissions.FriendsGuardianPermission()
         obj = self.season_1_1
         series = obj.series
-        friend = more_itertools.first_true(self.users, lambda user: user != series.entry_author)
+        friend = more_itertools.first_true(self.users, pred=lambda user: user != series.entry_author)
         perm_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
         assign_perm(perm_code, friend, series)
 

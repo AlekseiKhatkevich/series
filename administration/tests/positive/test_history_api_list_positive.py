@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
@@ -14,6 +15,9 @@ class HistoryAPIPositiveTest(APITestCase):
     administration/history/<model name>/<instance_pk>/.
     """
     maxDiff = None
+
+    def tearDown(self) -> None:
+        cache.clear()
 
     @classmethod
     def setUpTestData(cls):

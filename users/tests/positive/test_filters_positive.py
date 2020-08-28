@@ -32,7 +32,7 @@ class UsersFiltersPositiveTest(APITestCase):
 
         cls.superuser = more_itertools.first_true(
             cls.users,
-            operator.attrgetter('is_superuser')
+            pred=operator.attrgetter('is_superuser')
         )
         cls.series = initial_data.create_tvseries(cls.users)
         cls.series_1, cls.series_2 = cls.series

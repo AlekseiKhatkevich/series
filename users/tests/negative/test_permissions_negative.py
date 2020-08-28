@@ -61,7 +61,7 @@ class PermissionPositiveTest(APITestCase):
         #  Generate random ip and make sure it is not in users ips saved in DB.
         random_ip = more_itertools.first_true(
             (create_test_ips.generate_random_ip4() for _ in range(10)),
-            lambda ip: ip not in self.grouped_dict[test_user.pk],
+            pred=lambda ip: ip not in self.grouped_dict[test_user.pk],
         )
 
         request = APIRequestFactory().request(

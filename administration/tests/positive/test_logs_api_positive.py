@@ -17,7 +17,7 @@ class LogsAPIPositiveTest(APITestCase):
     def setUpTestData(cls):
         cls.users = create_test_users.create_users()
         cls.user_1, cls.user_2, cls.user_3 = cls.users
-        cls.admin = more_itertools.first_true(cls.users, lambda user: user.is_staff)
+        cls.admin = more_itertools.first_true(cls.users, pred=lambda user: user.is_staff)
 
     def test_list_api(self):
         """

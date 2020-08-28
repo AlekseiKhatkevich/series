@@ -149,13 +149,21 @@ class IpBlacklist(models.Model):
         verbose_name = 'Ip blacklist.'
         verbose_name_plural = 'Ip blacklists.'
         get_latest_by = ('record_time',)
-        index_together = ('record_time', 'stretch', )
+        index_together = ('record_time', 'stretch',)
         constraints = [
             #  Stretch should be > 0.
             models.CheckConstraint(
                 name='stretch_positive_check',
                 check=models.Q(stretch__gt=timezone.timedelta(0))
-            ), ]
+            ),
+            # Fake constraint. Real one in 0010_auto_20200828_1354.py migration file.
+            models.CheckConstraint(
+                name='netmask_check',
+                check=models.Q(
+                    models.Q(ip__family=4, ip__masklen__in=(24, 32)) |
+                    models.Q(ip__family=6, ip__masklen__in=(120, 128)
+                             )))
+        ]
 
     def __str__(self):
         return self.ip

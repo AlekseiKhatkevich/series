@@ -99,33 +99,33 @@ class IpBlackListMiddleware:
         """
         Checks whether ip is blacklisted inside cache without pulling data from cache.
         """
-        pipe = self.redis_client.pipeline()
+        with self.redis_client.pipeline() as pipe:
 
-        # if key is not exists -fetch ips from db and set them in Redis.
-        if not self.redis_client.exists(self.redis_native_cache_key):
+            # if key is not exists -fetch ips from db and set them in Redis.
+            if not self.redis_client.exists(self.redis_native_cache_key):
 
-            ips_to_write, ttl = self.get_blacklisted_ips_from_db()
-            # if there are no any ips in DB we create empty set(set with sentinel).
-            if not ips_to_write:
-                ips_to_write = (self.sentinel, )
+                ips_to_write, ttl = self.get_blacklisted_ips_from_db()
+                # if there are no any ips in DB we create empty set(set with sentinel).
+                if not ips_to_write:
+                    ips_to_write = (self.sentinel, )
 
-            pipe.sadd(
-                self.redis_native_cache_key,
-                *ips_to_write,
-            ).expire(
-                self.redis_native_cache_key,
-                time=int(ttl),
-            ).execute()
+                pipe.sadd(
+                    self.redis_native_cache_key,
+                    *ips_to_write,
+                ).expire(
+                    self.redis_native_cache_key,
+                    time=int(ttl),
+                ).execute()
 
-            return not ips_set.isdisjoint(ips_to_write)
+                return not ips_set.isdisjoint(ips_to_write)
 
         # If key exists check if our ip and networks are in cache blacklist.
-        else:
-            for ip in ips_set:
-                pipe.sismember(
-                    self.redis_native_cache_key,
-                    ip,
-                )
-            result = pipe.execute()
+            else:
+                for ip in ips_set:
+                    pipe.sismember(
+                        self.redis_native_cache_key,
+                        ip,
+                    )
+                result = pipe.execute()
 
-            return any(result)
+                return any(result)

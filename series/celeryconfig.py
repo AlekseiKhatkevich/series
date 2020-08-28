@@ -4,9 +4,9 @@ from celery.schedules import crontab
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
-broker_url = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+broker_url = f'redis://{REDIS_HOST}:{REDIS_PORT}/1'
 broker_transport_options = {'visibility_timeout': 3600}
-result_backend = f'redis://{REDIS_HOST}:{REDIS_PORT}/0'
+result_backend = f'redis://{REDIS_HOST}:{REDIS_PORT}/1'
 
 accept_content = ['json', 'pickle']
 task_serializer = 'pickle'

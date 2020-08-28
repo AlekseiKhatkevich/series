@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 from rest_framework.test import APITestCase
-from django.db import IntegrityError
+
 import administration.models
 from series import error_codes
 
@@ -15,7 +16,6 @@ class IpBlackListModelNegativeTest(APITestCase):
     def setUp(self):
         self.data = dict(
             ip='130.0.0.1',
-            record_time=timezone.now(),
             stretch=timezone.timedelta(days=1),
         )
 
@@ -40,3 +40,18 @@ class IpBlackListModelNegativeTest(APITestCase):
             self.data['stretch'] = timezone.timedelta(days=-1)
             model_entry = administration.models.IpBlacklist(**self.data)
             model_entry.save(fc=False)
+
+    def test_netmask_check_constraint(self):
+        """
+        Check that 'netmask_check' would not allow us to save nets with net masks lower then 24 bits
+        for ipv4 and lower then 120 bits for ipv6.
+        """
+        expected_error_message = 'netmask_check'
+
+        for net in ('164.243.145.0/23', 'e983:4632:9c33:ae30:a0dc:3237:2773:d60/119'):
+            with self.subTest(net=net):
+                with self.assertRaisesMessage(IntegrityError, expected_error_message):
+                    with transaction.atomic():
+                        self.data['ip'] = net
+                        entry = administration.models.IpBlacklist(**self.data)
+                        entry.save(fc=False)

@@ -30,8 +30,26 @@ class ToInteger(models.Transform):
     template = '%(expressions)s%(function)s'
 
 
+class Family(models.Transform):
+    """
+    Extracts protocol version from ip address.
+    """
+    lookup_name = 'family'
+    function = 'FAMILY'
+
+
+class Masklen(models.Transform):
+    """
+    Extracts length of the mask from ip address.
+    """
+    lookup_name = 'masklen'
+    function = 'MASKLEN'
+
+
 models.CharField.register_lookup(Length)
+models.CharField.register_lookup(ToInteger)
 
 HStoreField.register_lookup(CheckEpisodes)
 
-models.CharField.register_lookup(ToInteger)
+models.GenericIPAddressField.register_lookup(Family)
+models.GenericIPAddressField.register_lookup(Masklen)
