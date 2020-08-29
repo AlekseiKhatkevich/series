@@ -35,6 +35,10 @@ beat_schedule = {
         'task': 'administration.tasks.clear_old_logs',
         'schedule': crontab(hour=17, minute=4, day_of_week='sat'),
         'args': (10000, )
+    },
+    'delete_old_ip_blacklist_entries': {
+        'task': 'administration.tasks.delete_non_active_blacklisted_ips',
+        'schedule': crontab(hour=17, minute=5),
     }
 }
 

@@ -5,8 +5,11 @@ import smtplib
 from celery import shared_task
 from django.conf import settings
 from django.core.mail import send_mail
-from django.db.models import Min
+from django.db.models import F, Min
+from django.db.models.functions import Now
 from django_db_logger.models import StatusLog
+
+import administration.models
 
 
 @shared_task(
@@ -52,3 +55,13 @@ def clear_old_logs(keep_num: int) -> tuple:
         aggregate(min_dt=Min('create_datetime'))['min_dt']
 
     return StatusLog.objects.filter(create_datetime__lt=threshold_dt).delete()
+
+
+@shared_task
+def delete_non_active_blacklisted_ips() -> tuple:
+    """
+    Deletes non active ip blacklist entries from DB.
+    """
+    return administration.models.IpBlacklist.objects.exclude(
+        record_time__gt=Now() - F('stretch')
+    ).delete()
