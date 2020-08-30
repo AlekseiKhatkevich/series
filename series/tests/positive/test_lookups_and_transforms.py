@@ -1,8 +1,9 @@
 from django.db import connection
 from django.db.models import BooleanField, ExpressionWrapper, Q, F
 from rest_framework.test import APITestCase
-
+import datetime
 import archives.models
+import administration.models
 from archives.tests.data import initial_data
 from users.helpers import create_test_users
 
@@ -21,6 +22,11 @@ class LookupsAndTransformsPositiveTest(APITestCase):
 
         cls.seasons = initial_data.create_seasons(series=cls.series)
         cls.season_1, *tail = cls.seasons
+
+        cls.net = administration.models.IpBlacklist.objects.create(
+            ip='127.0.0.0/28',
+            stretch=datetime.timedelta(days=1),
+        )
 
     def test_check_episodes(self):
         """
@@ -52,4 +58,42 @@ class LookupsAndTransformsPositiveTest(APITestCase):
         self.assertIn(
             '(name)::integer',
             archives.models.TvSeriesModel.objects.filter(name__int=10).explain(),
+        )
+
+    def test_NetContainedOrEqual_lookup(self):
+        """
+        Check that 'NetContainedOrEqual' properly uses Postgres SQL operator <<=.
+        """
+        self.assertTrue(
+            administration.models.IpBlacklist.objects.filter(
+                ip__net_contained_or_equal='127.0.0.0/27'
+            ).exists()
+        )
+
+    def test_NetContainsOrEquals_lookup(self):
+        """
+        Check that 'NetContainsOrEquals' properly uses Postgres SQL operator >>= .
+        """
+        self.assertTrue(
+            administration.models.IpBlacklist.objects.filter(
+                ip__net_contains_or_equals='127.0.0.0/30'
+            ).exists()
+        )
+
+    def test_Family(self):
+        """
+        Check that 'Family' lookup would return ip address protocol version 4 or 6.
+        """
+        self.assertEqual(
+            administration.models.IpBlacklist.objects.all().values('ip__family',).first()['ip__family'],
+            4,
+        )
+
+    def test_Masklen(self):
+        """
+        Check that 'Masklen' lookup would return ip address or network mask bit length.
+        """
+        self.assertEqual(
+            administration.models.IpBlacklist.objects.all().values('ip__masklen',).first()['ip__masklen'],
+            28,
         )

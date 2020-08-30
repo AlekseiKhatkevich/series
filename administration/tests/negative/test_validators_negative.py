@@ -15,7 +15,7 @@ class ValidatorsNegativeTest(APISimpleTestCase):
         """
         Check that if 'min_bit' is out of range 1 to 32, than exception is arisen.
         """
-        expected_error_message = 'min_bit should be INTEGER in range 1 to 32.'
+        expected_error_message = 'bits_down should be INTEGER in range 1 to 32.'
 
         with self.assertRaisesMessage(AssertionError, expected_error_message):
             validators.ValidateIpAddressOrNetwork(50)
@@ -24,7 +24,7 @@ class ValidatorsNegativeTest(APISimpleTestCase):
         """
         Check that if not 'min_bit' is integer, than exception is arisen.
         """
-        expected_error_message = 'min_bit should be INTEGER.'
+        expected_error_message = 'bits_down should be INTEGER.'
 
         with self.assertRaisesMessage(AssertionError, expected_error_message):
             # noinspection PyTypeChecker

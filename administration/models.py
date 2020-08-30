@@ -131,7 +131,7 @@ class IpBlacklist(models.Model):
         db_index=True,
         primary_key=True,
         unpack_ipv4=True,
-        validators=[admin_validators.ValidateIpAddressOrNetwork(24), ]
+        validators=[admin_validators.ValidateIpAddressOrNetwork(8), ]
     )
     record_time = models.DateTimeField(
         auto_now_add=True,
@@ -156,13 +156,13 @@ class IpBlacklist(models.Model):
                 name='stretch_positive_check',
                 check=models.Q(stretch__gt=timezone.timedelta(0))
             ),
-            # Fake constraint. Real one in 0010_auto_20200828_1354.py migration file.
+            #  Restricts net masks for ipv4 and ipv6 networks.
             models.CheckConstraint(
                 name='netmask_check',
                 check=models.Q(
-                    models.Q(ip__family=4, ip__masklen__in=(24, 32)) |
-                    models.Q(ip__family=6, ip__masklen__in=(120, 128)
-                             )))
+                    models.Q(ip__family=4, ip__masklen__range=(24, 32)) |
+                    models.Q(ip__family=6, ip__masklen__range=(120, 128)
+                             ))),
         ]
 
     def __str__(self):

@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.functions import Length
 
 
+@HStoreField.register_lookup
 class CheckEpisodes(models.Transform):
     """
         Based on function in migration 0057:
@@ -21,6 +22,7 @@ class CheckEpisodes(models.Transform):
         return models.BooleanField()
 
 
+@models.CharField.register_lookup
 class ToInteger(models.Transform):
     """
     Casts text to integer.
@@ -30,26 +32,70 @@ class ToInteger(models.Transform):
     template = '%(expressions)s%(function)s'
 
 
+@models.GenericIPAddressField.register_lookup
+class NetContainsOrEquals(models.Lookup):
+    """
+    Address equals or inside range.
+    inet '192.168.1/24' >>= inet '192.168.1/24'
+    """
+    lookup_name = 'net_contains_or_equals'
+
+    def as_sql(self, qn, connection):
+        lhs, lhs_params = self.process_lhs(qn, connection)
+        rhs, rhs_params = self.process_rhs(qn, connection)
+        params = lhs_params + rhs_params
+        return '%s >>= %s' % (lhs, rhs), params
+
+
+@models.GenericIPAddressField.register_lookup
+class NetContainedOrEqual(models.Lookup):
+    """
+    Address equals or contained in range.
+    inet '192.168.1/24' <<= inet '192.168.1/24'
+    """
+    lookup_name = 'net_contained_or_equal'
+
+    def as_sql(self, qn, connection):
+        lhs, lhs_params = self.process_lhs(qn, connection)
+        rhs, rhs_params = self.process_rhs(qn, connection)
+        params = lhs_params + rhs_params
+        return '%s <<= %s' % (lhs, rhs), params
+
+
+@models.GenericIPAddressField.register_lookup
 class Family(models.Transform):
     """
-    Extracts protocol version from ip address.
+    Returns integer of ip address protocol version.
     """
     lookup_name = 'family'
-    function = 'FAMILY'
+
+    def as_sql(self, compiler, connection, *args, **kwargs):
+        lhs, params = compiler.compile(self.lhs)
+        return "family(%s)" % lhs, params
+
+    @property
+    def output_field(self):
+        return models.IntegerField()
 
 
+@models.GenericIPAddressField.register_lookup
 class Masklen(models.Transform):
     """
-    Extracts length of the mask from ip address.
+    Returns ip address or network net mask length.
     """
     lookup_name = 'masklen'
-    function = 'MASKLEN'
+
+    def as_sql(self, compiler, connection, *args, **kwargs):
+        lhs, params = compiler.compile(self.lhs)
+        return "masklen(%s)" % lhs, params
+
+    @property
+    def output_field(self):
+        return models.IntegerField()
 
 
 models.CharField.register_lookup(Length)
-models.CharField.register_lookup(ToInteger)
 
-HStoreField.register_lookup(CheckEpisodes)
 
-models.GenericIPAddressField.register_lookup(Family)
-models.GenericIPAddressField.register_lookup(Masklen)
+
+
