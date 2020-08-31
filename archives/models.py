@@ -20,7 +20,8 @@ from psycopg2.extras import DateRange
 from rest_framework.reverse import reverse
 
 import archives.managers
-from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators
+from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators,\
+    language_codes
 from series import constants, error_codes
 from series.helpers.custom_functions import available_range
 
@@ -691,4 +692,56 @@ class ImageModel(models.Model, metaclass=ImageModelMetaClass):
         """
         image_hash_from_db = cls.objects.exclude(image_hash__isnull=True).values_list('pk', 'image_hash', )
         return IOBTree(image_hash_from_db)
+
+
+class Subtitles(models.Model):
+    """
+    Model represents subtitles on specific episode.
+    """
+    season = models.ForeignKey(
+        SeasonModel,
+        on_delete=models.CASCADE,
+        related_name='subtitles',
+        verbose_name='Season',
+    )
+    episode_number = models.PositiveSmallIntegerField(
+        verbose_name='Number of the episode',
+    )
+    text = models.TextField(
+        verbose_name='Subtitles text',
+    )
+    language = models.CharField(
+        verbose_name='Subtitles language',
+        choices=language_codes.iso_639_choices,
+        max_length=2,
+    )
+
+    class Meta:
+        verbose_name = 'Subtitle'
+        verbose_name_plural = 'Subtitles'
+        permissions = (
+            ('permissiveness', 'Allow any action',),
+        )
+        unique_together = ('season', 'episode_number', 'language',)
+        constraints = [
+            models.CheckConstraint(
+                name='lng_check',
+                check=models.Q(language__in=language_codes.codes_iterator),
+            ), ]
+
+    def __str__(self):
+        return f'series-{self.season.series.name},' \
+               f' season-{self.season.season_number},' \
+               f' episode-{self.episode_number}'
+
+    def save(self, fc=True, *args, **kwargs):
+        if fc:
+            self.full_clean(validate_unique=True)
+        super().save(*args, **kwargs)
+
+    def clean(self):
+        if self.episode_number > self.season.number_of_episodes:
+            raise exceptions.ValidationError(
+                *error_codes.SUB_EPISODE_NUM_GT_SEASON_EPISODE_NUM
+            )
 

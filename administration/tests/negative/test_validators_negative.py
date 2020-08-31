@@ -44,4 +44,4 @@ class ValidatorsNegativeTest(APISimpleTestCase):
         expected_error_message = error_codes.NET_BIT_LOWER.message
 
         with self.assertRaisesMessage(ValidationError, expected_error_message):
-            validators.ValidateIpAddressOrNetwork(24)('127.0.0.0/10')
+            validators.ValidateIpAddressOrNetwork(8)('127.0.0.0/10')

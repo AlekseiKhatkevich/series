@@ -32,4 +32,7 @@ class ValidateIpAddressOrNetwork:
                 *error_codes.NET_BIT_LOWER
             )
 
+        return ip_obj.compressed
+
+
 

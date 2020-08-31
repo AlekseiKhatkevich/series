@@ -264,3 +264,8 @@ NET_BIT_LOWER = exc_msg(
     'Network mask bit is lover then threshold value specified in validator.',
     'net_bit_lower',
 )
+SUB_EPISODE_NUM_GT_SEASON_EPISODE_NUM = exc_msg(
+    'Subtitle episode number should be lte season number of episodes.',
+    'sub_episode_num_gt_season_episode_num',
+)
+

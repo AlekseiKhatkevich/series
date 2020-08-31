@@ -7,11 +7,10 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Q, Subquery, Sum, base, functions
 from django.shortcuts import get_object_or_404
-from rest_framework import exceptions, generics, mixins, parsers, status, viewsets
+from rest_framework import exceptions, generics, mixins, parsers, status, viewsets, decorators
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_extensions.mixins import DetailSerializerMixin
-
 import archives.filters
 import archives.models
 import archives.permissions
@@ -56,8 +55,8 @@ class TvSeriesBase(generics.GenericAPIView):
 
     @functools.lru_cache(maxsize=1)
     def get_object(self):
-
         return super().get_object()
+
 
 
 class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
@@ -248,6 +247,21 @@ class SeasonsViewSet(
     @functools.lru_cache(maxsize=1)
     def get_object(self):
         return super().get_object()
+
+    @decorators.action(detail=True, methods=['post'])
+    def add_subtitle(self, request, *args, **kwargs):
+        """
+        Creates subtitle entry in DB connected with current season.
+        """
+        serializer = archives.serializers.SubtitlesUploadSerializer(
+            data=request.data,
+            context={'season': self.get_object()},
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserObjectPermissionView(mixins.CreateModelMixin,

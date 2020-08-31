@@ -417,4 +417,23 @@ class ManagePermissionsSerializer(serializers.ModelSerializer):
         return assign_perm(permission_code, user, obj)
 
 
+class SubtitlesUploadSerializer(serializers.ModelSerializer):
+    """
+    Serializer for uploading and saving subtitles.
+    """
+    text = serializers.FileField(
+    )
+
+    class Meta:
+        model = archives.models.Subtitles
+        fields = (
+            'episode_number',
+            'text',
+            'language',
+        )
+
+    def create(self, validated_data):
+        validated_data['season'] = self.context['season']
+        return super().create(validated_data)
+
 

@@ -34,6 +34,7 @@ aiohttp = "*"
 django-db-logger = "*"
 drf-extensions = {file = "https://github.com/chibisov/drf-extensions/archive/master.zip"}
 hiredis = "*"
+pysubs2 = "*"
 
 [requires]
 python_version = "3.8"

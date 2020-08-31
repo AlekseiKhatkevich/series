@@ -1,4 +1,5 @@
 from django.db import models
+from administration.helpers.validators import ValidateIpAddressOrNetwork
 
 
 class IpAndNetworkField(models.GenericIPAddressField):
@@ -14,7 +15,8 @@ class IpAndNetworkField(models.GenericIPAddressField):
             return None
         if not isinstance(value, str):
             value = str(value)
-            # add validation logic
+        if ':' in value:
+            return ValidateIpAddressOrNetwork(8)(value)
         value = value.strip()
         return value
 

@@ -1,14 +1,23 @@
 import ipaddress
-from administration.helpers import validators as admin_validators
+
+from django import forms
 from django.contrib import admin
 from django.db.models import F, Func, GenericIPAddressField, Q
 from django.db.models.expressions import RawSQL
 from django.db.models.functions import Cast, Now
-from django import forms
+
+from administration.helpers import validators as admin_validators
 from administration.models import IpBlacklist
 
 
 class IpBlacklistAdminForm(forms.ModelForm):
+    """
+    Form for 'BlackListAdmin'.
+    """
+    ip = forms.CharField(
+        max_length=43,
+        validators=[admin_validators.ValidateIpAddressOrNetwork(8), ]
+    )
 
     class Meta:
         model = IpBlacklist
@@ -79,7 +88,7 @@ class BlackListAdmin(admin.ModelAdmin):
     ordering = ('-record_time',)
     save_as = True
     search_fields = ('^ip',)
-    #form = IpBlacklistAdminForm
+    form = IpBlacklistAdminForm
 
     def get_search_results(self, request, queryset, search_term):
         """
