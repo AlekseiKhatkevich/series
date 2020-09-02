@@ -1,6 +1,5 @@
 import guardian.models
-from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import InMemoryUploadedFile, File
+import langdetect
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -11,8 +10,7 @@ from django.utils import timezone
 from drf_extra_fields.fields import DateRangeField
 from guardian.shortcuts import assign_perm
 from rest_framework import permissions, serializers
-import pysubs2
-from pysubs2 import SSAFile
+
 import archives.models
 from archives.helpers import custom_fields
 from series import constants, error_codes
@@ -434,12 +432,19 @@ class SubtitlesUploadSerializer(serializers.ModelSerializer):
             'text',
             'language',
         )
+        extra_kwargs = {
+            'language': {
+                'required': False,
+            }, }
 
     def create(self, validated_data):
         validated_data['season'] = self.context['season']
         file_in_memory = validated_data['text']
         validated_data['text'] = file_in_memory.read().decode()
-        
+
+        if 'language' not in validated_data:
+            validated_data['language'] = langdetect.detect(validated_data['text'][: 200])
+
         return super().create(validated_data)
 
 

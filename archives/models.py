@@ -701,7 +701,7 @@ class Subtitles(models.Model):
     season = models.ForeignKey(
         SeasonModel,
         on_delete=models.CASCADE,
-        related_name='subtitles',
+        related_name='subtitle',
         verbose_name='Season',
     )
     episode_number = models.PositiveSmallIntegerField(

@@ -7,10 +7,11 @@ from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Q, Subquery, Sum, base, functions
 from django.shortcuts import get_object_or_404
-from rest_framework import exceptions, generics, mixins, parsers, status, viewsets, decorators
+from rest_framework import decorators, exceptions, generics, mixins, parsers, permissions, status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_extensions.mixins import DetailSerializerMixin
+
 import archives.filters
 import archives.models
 import archives.permissions
@@ -56,7 +57,6 @@ class TvSeriesBase(generics.GenericAPIView):
     @functools.lru_cache(maxsize=1)
     def get_object(self):
         return super().get_object()
-
 
 
 class TvSeriesDetailView(generics.RetrieveUpdateDestroyAPIView, TvSeriesBase):
@@ -173,7 +173,7 @@ class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
         Validates whether images with a given pks exist in database. raises exception if at least
         one of the images pks does not exist in the database.
         """
-        exists_in_db = series.images.filter(pk__in=self.kwargs['image_pk']).\
+        exists_in_db = series.images.filter(pk__in=self.kwargs['image_pk']). \
             values_list('pk', flat=True)
         wrong_image_pks = set(images_pks).difference(exists_in_db)
 
@@ -201,12 +201,20 @@ class SeasonsViewSet(
         'number_of_episodes',
     )
     non_safe_methods_permissions = (
+        permissions.IsAuthenticated,
         archives.permissions.MasterSlaveRelations |
         archives.permissions.FriendsGuardianPermission |
         archives.permissions.HandleDeletedUsersEntriesPermission,
     )
     permission_action_classes = dict.fromkeys(
-        ('create', 'destroy', 'update', 'partial_update',),
+        (
+            'create',
+            'destroy',
+            'update',
+            'partial_update',
+            'add_subtitle',
+            'delete_subtitle',
+        ),
         non_safe_methods_permissions,
     )
 
@@ -248,7 +256,7 @@ class SeasonsViewSet(
     def get_object(self):
         return super().get_object()
 
-    @decorators.action(detail=True, methods=['post'])
+    @decorators.action(detail=True, methods=['post'], )
     def add_subtitle(self, request, *args, **kwargs):
         """
         Creates subtitle entry in DB connected with current season.
@@ -257,11 +265,27 @@ class SeasonsViewSet(
             data=request.data,
             context={'season': self.get_object()},
         )
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
+
             return Response(status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @decorators.action(
+        detail=True,
+        methods=['delete'],
+        url_path=r'delete_subtitle/(?P<subtitle_id>\d+)',
+    )
+    def delete_subtitle(self, request, *args, **kwargs):
+        """
+        Deletes one subtitle entry.
+        """
+        deleted, _ = self.get_object().subtitle.filter(pk=kwargs['subtitle_id']).delete()
+        if not deleted:
+            raise exceptions.ValidationError(
+                *error_codes.NO_SUCH_SUBTITLE
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class UserObjectPermissionView(mixins.CreateModelMixin,
@@ -276,7 +300,7 @@ class UserObjectPermissionView(mixins.CreateModelMixin,
     permission_code = constants.DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
     pagination_class = pagination.FasterLimitOffsetPagination
     filterset_class = archives.filters.UserObjectPermissionFilterSet
-    ordering = ('content_type__model', )
+    ordering = ('content_type__model',)
     ordering_fields = (
         'pk',
         'user__email',
@@ -321,5 +345,3 @@ class UserObjectPermissionView(mixins.CreateModelMixin,
         )
 
         return super().get_queryset()
-
-

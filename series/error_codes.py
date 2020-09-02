@@ -268,4 +268,8 @@ SUB_EPISODE_NUM_GT_SEASON_EPISODE_NUM = exc_msg(
     'Subtitle episode number should be lte season number of episodes.',
     'sub_episode_num_gt_season_episode_num',
 )
+NO_SUCH_SUBTITLE = exc_msg(
+    'Subtitle with this ID does not exists.',
+    'no_such_subtitle',
+)
 
