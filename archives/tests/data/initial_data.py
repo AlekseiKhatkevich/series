@@ -74,7 +74,7 @@ def create_seasons(
     for single_series in series:
 
         lower_bound = single_series.translation_years.lower
-        upper_bound = single_series.translation_years.upper
+        upper_bound = single_series.translation_years.upper or datetime.date.max
         delta = upper_bound - lower_bound
         chunk = min(delta / (num_seasons + 1), datetime.timedelta(days=364))
 

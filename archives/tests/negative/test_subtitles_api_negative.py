@@ -1,3 +1,4 @@
+import io
 import os
 
 from django.conf import settings
@@ -5,8 +6,9 @@ from django.core.files import File
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
-from series import error_codes
+
 from archives.tests.data import initial_data
+from series import error_codes
 from series.helpers import test_helpers
 from users.helpers import create_test_users
 
@@ -60,6 +62,33 @@ class SubtitlesAPINegativeTest(test_helpers.TestHelpers, APITestCase):
             status.HTTP_403_FORBIDDEN,
         )
 
+    def test_upload_api_no_lng_can_not_determine_lng_automatically(self):
+        """
+        Check that if no language was provided on upload and language can;t be recognized
+        automatically by some reason or another, than validation error is arisen.
+        """
+        expected_error_message = error_codes.LANGUAGE_UNDETECTED.message
+        del self.data['language']
+        undetectable_string = '#############################'
+        self.data['text'] = File(io.StringIO(undetectable_string))
+
+        self.client.force_authenticate(user=self.season_1_1.entry_author)
+
+        response = self.client.post(
+            reverse(
+                'seasonmodel-add-subtitle',
+                args=(self.season_1_1.series_id, self.season_1_1.pk,)
+            ),
+            data=self.data,
+            format='multipart',
+        )
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            error_message=expected_error_message,
+            field=None,
+        )
+
     def test_delete_subtitle_api_permissions(self):
         """
         Check that permissions are involved in delete.
@@ -98,5 +127,7 @@ class SubtitlesAPINegativeTest(test_helpers.TestHelpers, APITestCase):
             error_message=error_codes.NO_SUCH_SUBTITLE.message,
             field=None,
         )
+
+
 
 

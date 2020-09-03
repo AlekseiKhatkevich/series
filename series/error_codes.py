@@ -272,4 +272,8 @@ NO_SUCH_SUBTITLE = exc_msg(
     'Subtitle with this ID does not exists.',
     'no_such_subtitle',
 )
+LANGUAGE_UNDETECTED = exc_msg(
+    'Subtitle language can not be detected automatically. Please specify it explicitly.',
+    'language_undetected',
+)
 

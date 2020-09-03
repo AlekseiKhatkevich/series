@@ -1,5 +1,4 @@
 import guardian.models
-import langdetect
 from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -9,6 +8,7 @@ from django.db.models.functions import Concat
 from django.utils import timezone
 from drf_extra_fields.fields import DateRangeField
 from guardian.shortcuts import assign_perm
+from langdetect import detect, lang_detect_exception
 from rest_framework import permissions, serializers
 
 import archives.models
@@ -442,8 +442,14 @@ class SubtitlesUploadSerializer(serializers.ModelSerializer):
         file_in_memory = validated_data['text']
         validated_data['text'] = file_in_memory.read().decode()
 
+        #  Detect language if subtitle automatically if not specified in request.data.
         if 'language' not in validated_data:
-            validated_data['language'] = langdetect.detect(validated_data['text'][: 200])
+            try:
+                validated_data['language'] = detect(validated_data['text'][: 200])
+            except lang_detect_exception.LangDetectException as err:
+                raise serializers.ValidationError(
+                    *error_codes.LANGUAGE_UNDETECTED
+                ) from err
 
         return super().create(validated_data)
 

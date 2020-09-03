@@ -34,15 +34,13 @@ class SubtitlesAPIPositiveTest(test_helpers.TestHelpers, APITestCase):
         )
         cls.season_1_1, cls.season_1_2, cls.season_1_3, *series_2_seasons = cls.seasons
 
-        test_srt_file_path = os.path.join(settings.MEDIA_ROOT, 'files_for_tests', 'test.srt')
-        cls.srt_file = File(open(test_srt_file_path, 'r'))
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        cls.srt_file.close()
+    def tearDown(self) -> None:
+        self.srt_file.close()
 
     def setUp(self) -> None:
+        test_srt_file_path = os.path.join(settings.MEDIA_ROOT, 'files_for_tests', 'test.srt')
+        self.srt_file = File(open(test_srt_file_path, 'r'))
+
         self.data = dict(
             episode_number=1,
             language='en',
