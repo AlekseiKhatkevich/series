@@ -6,9 +6,9 @@ from series.helpers import test_helpers
 from users.helpers import create_test_users
 
 
-class SubtitlesModelPositiveTest(test_helpers.TestHelpers, APITestCase):
+class ArchivesSignalsPositiveTest(test_helpers.TestHelpers, APITestCase):
     """
-    Positive test case on 'Subtitles' model in 'archives' app.
+    Positive test case on signals in 'archives' app.
     """
     maxDiff = None
 
@@ -31,7 +31,7 @@ class SubtitlesModelPositiveTest(test_helpers.TestHelpers, APITestCase):
         self.subtitles_data = dict(
             season=self.season_1_1,
             episode_number=1,
-            text='test',
+            text='A fat cat sat on a mat and ate a fat rat',
             language='en',
         )
 
@@ -41,10 +41,4 @@ class SubtitlesModelPositiveTest(test_helpers.TestHelpers, APITestCase):
         """
         archives.models.Subtitles.objects.create(
             **self.subtitles_data
-        )
-        self.assertTrue(
-            archives.models.Subtitles.objects.filter(**self.subtitles_data).exists()
-        )
-        self.assertIsNotNone(
-            archives.models.Subtitles.objects.filter(**self.subtitles_data).first().full_text
         )

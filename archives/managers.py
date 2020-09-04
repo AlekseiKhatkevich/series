@@ -4,8 +4,10 @@ from typing import List
 import guardian.models
 import more_itertools
 from django.contrib.postgres.aggregates import BoolAnd, StringAgg
-from django.db import models
-from django.db.models import Case, CharField, F, FloatField, Max, Min, OuterRef, Q, Subquery, When, functions
+from django.db import connection, models
+from django.db.models import Case, CharField, F, FloatField, Max, Min, OuterRef, \
+    Q, Subquery, When, functions
+from django.utils.functional import cached_property
 from psycopg2.extras import DateRange
 
 from series import error_codes
@@ -215,3 +217,34 @@ class GroupingQueryset(models.QuerySet):
     pass
 
 # -----------------------------------------------------------------------------------
+
+
+class SubtitlesQueryset(models.QuerySet):
+    """
+    Subtitles model  custom queryset.
+    """
+    pass
+
+
+class SubtitlesManager(models.Manager):
+    """
+    Subtitles custom manager.
+    """
+    analyzers_preferences = dict(
+        ru='russian_hunspell',
+    )
+
+    @cached_property
+    def list_of_analyzers(self):
+        """
+        Returns list of available FTS analyzers by their languages.
+        """
+        with connection.cursor() as cursor:
+            cursor.execute("""SELECT ARRAY(SELECT cfgname FROM pg_ts_config);""")
+            [list_of_analyzers] = cursor.fetchone()
+
+            return list_of_analyzers
+
+
+
+

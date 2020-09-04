@@ -88,6 +88,7 @@ def profiler(func):
     Counts number of calls to a function.
     """
     ncalls = 0
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         nonlocal ncalls
@@ -95,3 +96,5 @@ def profiler(func):
         return func(*args, **kwargs)
     wrapper.ncalls = lambda: ncalls
     return wrapper
+
+

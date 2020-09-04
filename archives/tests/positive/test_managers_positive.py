@@ -17,6 +17,16 @@ class ManagersPositiveTest(test_helpers.TestHelpers, APITestCase):
     fixtures = ('users.json', 'series.json',)
     maxDiff = None
 
+    def test_list_of_analyzers_SubtitlesManager(self):
+        """
+        Check that 'list_of_analyzers' property in 'SubtitlesManager' returns a list
+        of FTS analyzers available.
+        """
+        self.assertIn(
+            'simple',
+            archives.models.Subtitles.objects.list_of_analyzers,
+        )
+
     def test_select_x_percent_top(self):
         """
         Check whether or not 'select_x_percent' method returns top x % of series

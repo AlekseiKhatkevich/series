@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres import constraints as psgr_constraints, fields as psgr_fields, \
-    indexes as psgr_indexes
+    indexes as psgr_indexes, search as psgr_search
 from django.core import exceptions, validators
 from django.db import models
 from django.forms.models import model_to_dict
@@ -20,8 +20,8 @@ from psycopg2.extras import DateRange
 from rest_framework.reverse import reverse
 
 import archives.managers
-from archives.helpers import custom_fields, custom_functions, file_uploads, validators as custom_validators,\
-    language_codes
+from archives.helpers import custom_fields, custom_functions, file_uploads, language_codes, \
+    validators as custom_validators
 from series import constants, error_codes
 from series.helpers.custom_functions import available_range
 
@@ -698,6 +698,8 @@ class Subtitles(models.Model):
     """
     Model represents subtitles on specific episode.
     """
+    objects = archives.managers.SubtitlesManager.from_queryset(archives.managers.SubtitlesQueryset)()
+
     season = models.ForeignKey(
         SeasonModel,
         on_delete=models.CASCADE,
@@ -715,6 +717,11 @@ class Subtitles(models.Model):
         choices=language_codes.iso_639_choices,
         max_length=2,
     )
+    full_text = psgr_search.SearchVectorField(
+        verbose_name='full_text',
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Subtitle'
@@ -728,6 +735,9 @@ class Subtitles(models.Model):
                 name='lng_check',
                 check=models.Q(language__in=language_codes.codes_iterator),
             ), ]
+        indexes = [
+            psgr_indexes.GinIndex(fields=['full_text'], fastupdate=False)
+        ]
 
     def __str__(self):
         return f'series-{self.season.series.name},' \
@@ -744,4 +754,6 @@ class Subtitles(models.Model):
             raise exceptions.ValidationError(
                 *error_codes.SUB_EPISODE_NUM_GT_SEASON_EPISODE_NUM
             )
+
+
 
