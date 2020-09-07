@@ -1,8 +1,8 @@
+from django.contrib.postgres.search import SearchVector
+from django.db.models import F, Func, Value
 from django.db.models.base import ModelBase
-from django.db.models import F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.contrib.postgres.search import SearchVector
 
 from archives.models import Subtitles
 
@@ -24,6 +24,18 @@ def generate_lexemes(sender: ModelBase, instance: Subtitles, **kwargs) -> None:
             if language_full_name in sender.objects.list_of_analyzers:
                 config = language_full_name
 
+        #  Converts  times like 00:00:13,320 to 000013320 . This is needed to avoid FTS parsing it to a bunch
+        #  of plain integers. Update is used in order to avoid recursion in post_save.
+        #  re.sub(r'(\d\d):(\d\d):(\d\d),(\d\d\d)', r'\1\2\3\4', text) - an alternative pure python implementation.
         sender.objects.filter(pk=instance.pk).update(
-            full_text=SearchVector(F('text'), config=config)
-        )
+            full_text=SearchVector(
+                Func(
+                    F('text'),
+                    Value(r'(\d\d):(\d\d):(\d\d),(\d\d\d)'),
+                    Value(r'\1\2\3\4'),
+                    Value(r'g'),
+                    function='regexp_replace',
+                    arity=4,
+                ),
+                config=config,
+            ))

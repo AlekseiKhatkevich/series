@@ -189,4 +189,5 @@ iso_639_choices = [
     ('zu', 'Zulu'),
 ]
 
-codes_iterator = (country_code[0] for country_code in iso_639_choices)
+codes_iterator = dict(iso_639_choices)
+

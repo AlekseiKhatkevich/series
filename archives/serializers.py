@@ -353,7 +353,7 @@ class ManagePermissionsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = guardian.models.UserObjectPermission
-        exclude = ('content_type', 'permission', )
+        exclude = ('content_type', 'permission',)
 
     def validate_user(self, value):
 
@@ -454,3 +454,15 @@ class SubtitlesUploadSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class FTSSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelSerializer):
+    """
+    Serializer for FTSListView. Manages instances that match fts conditions.
+    """
+    subtitle_pk = serializers.IntegerField(
+        source='pk',
+        read_only=True,
+    )
+
+    class Meta:
+        model = archives.models.Subtitles
+        fields = ('subtitle_pk', 'episode_number', 'season_id', 'language', )

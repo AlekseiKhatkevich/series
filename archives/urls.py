@@ -50,6 +50,11 @@ urlpatterns = [
         name='tvseries',
     ),
     path(
+        'tvseries/full-text-search/',
+        archives.views.FTSListView.as_view(),
+        name='full-text-search',
+    ),
+    path(
         'manage-permissions/',
         include(router_2.urls),
     )

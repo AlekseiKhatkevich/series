@@ -30,11 +30,22 @@ class Migration(migrations.Migration):
                     version '1.0';
                 
                 comment on extension hunspell_ru_ru_aot is 'Russian Hunspell Dictionary (from AOT.ru group)';
+                
+                create extension hunspell_fr
+                    schema public
+                    version '1.0';
+
+                comment on extension hunspell_fr is 'French Hunspell Dictionary';
                """
             ],
             reverse_sql=[
                 """
-                DROP EXTENSION IF EXISTS hunspell_en_us, hunspell_ru_ru, hunspell_ru_ru_aot CASCADE 
+                DROP EXTENSION IF EXISTS
+                    hunspell_en_us,
+                    hunspell_ru_ru,
+                    hunspell_ru_ru_aot,
+                    hunspell_fr
+                CASCADE 
                 """
             ]
         )

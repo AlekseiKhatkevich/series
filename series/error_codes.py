@@ -276,4 +276,15 @@ LANGUAGE_UNDETECTED = exc_msg(
     'Subtitle language can not be detected automatically. Please specify it explicitly.',
     'language_undetected',
 )
+WRONG_LANGUAGE_CODE = exc_msg(
+    'Specified language code does not belong to ISO 639 language codes.',
+    'wrong_language_code',
+)
+NO_SEARCH = exc_msg(
+    '"search" query parameter is not specified.',
+    'no_search',
+)
+WRONG_SEARCH_TYPE = exc_msg('Allowed search types are "plain", "phrase", "raw", "websearch".',
+                            'wrong_search_type',
+)
 

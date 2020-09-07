@@ -1,8 +1,10 @@
+import collections
 import functools
 from typing import Sequence
 
 import guardian.models
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.search import SearchQuery
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, Prefetch, Q, Subquery, Sum, base, functions
@@ -17,6 +19,7 @@ import archives.filters
 import archives.models
 import archives.permissions
 import archives.serializers
+from archives.helpers import language_codes
 from series import constants, error_codes, pagination
 from series.helpers import custom_functions, view_mixins
 
@@ -346,3 +349,60 @@ class UserObjectPermissionView(mixins.CreateModelMixin,
         )
 
         return super().get_queryset()
+
+
+class FTSListView(generics.ListAPIView):
+    """
+    View displays list of series where key word(s) or key phrase(s) is(are) present.
+    """
+    serializer_class = archives.serializers.FTSSerializer
+    model = serializer_class.Meta.model
+
+    def validate_query_params(self):
+        """
+        """
+        errors = list()
+        allowed_search_types = {'plain', 'phrase', 'raw', 'websearch', }
+
+        try:
+            self.search = self.request.query_params['search']
+        except KeyError:
+            errors.append(error_codes.NO_SEARCH.message)
+
+        self.language_code = self.request.query_params.get('language', None)
+        if self.language_code is not None and self.language_code not in language_codes.codes_iterator:
+            errors.append(error_codes.WRONG_LANGUAGE_CODE.message)
+
+        self.search_type = self.request.query_params.get('search_type', 'plain')
+        if self.search_type not in allowed_search_types:
+            errors.append(error_codes.WRONG_SEARCH_TYPE.message)
+
+        if errors:
+            raise exceptions.ValidationError(
+                            {'query_parameters': errors},
+                            code='query_params_errors',
+            )
+
+    def get_queryset(self):
+        self.validate_query_params()
+        self.queryset = self.model.objects.filter(
+            full_text=SearchQuery('jalopy', config='english')
+        )
+        return super().get_queryset()
+
+    # def get_language_code(self, language_code: str) -> str:
+    #     """
+    #     """
+    #
+    #     else:
+    #         if language_code not in language_codes.codes_iterator:
+    #             raise exceptions.ValidationError(
+    #                 *error_codes.WRONG_LANGUAGE_CODE
+    #             )
+    #
+    #     return language_code
+
+
+
+
+

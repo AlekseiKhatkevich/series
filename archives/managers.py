@@ -232,6 +232,7 @@ class SubtitlesManager(models.Manager):
     """
     analyzers_preferences = dict(
         ru='russian_hunspell',
+        fr='french_hunspell',
     )
 
     @cached_property
