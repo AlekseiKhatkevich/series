@@ -63,3 +63,18 @@ class SubtitlesModelNegativeTest(test_helpers.TestHelpers, APITestCase):
             subtitle = archives.models.Subtitles(**self.subtitles_data)
             subtitle.save()
 
+    def test_search_configuration_check(self):
+        """
+        Check that 'search_configuration_check' would not allow to save in DB 'search_configuration' field that
+        does not in search configurations from DB.
+        """
+        expected_error_message = 'search_configuration_check'
+
+        with self.assertRaisesMessage(IntegrityError, expected_error_message):
+            subtitle = archives.models.Subtitles(
+                **self.subtitles_data,
+                search_configuration='Martian language',
+            )
+            subtitle.save(fc=False)
+
+

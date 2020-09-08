@@ -284,7 +284,11 @@ NO_SEARCH = exc_msg(
     '"search" query parameter is not specified.',
     'no_search',
 )
-WRONG_SEARCH_TYPE = exc_msg('Allowed search types are "plain", "phrase", "raw", "websearch".',
-                            'wrong_search_type',
+WRONG_SEARCH_TYPE = exc_msg(
+    'Allowed search types are "plain", "phrase", "raw", "websearch".',
+    'wrong_search_type',
 )
-
+WRONG_RAW_SEARCH = exc_msg(
+    'Wrong raw search formatting.',
+    'wrong_raw_search',
+)

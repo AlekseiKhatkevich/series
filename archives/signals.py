@@ -28,6 +28,7 @@ def generate_lexemes(sender: ModelBase, instance: Subtitles, **kwargs) -> None:
         #  of plain integers. Update is used in order to avoid recursion in post_save.
         #  re.sub(r'(\d\d):(\d\d):(\d\d),(\d\d\d)', r'\1\2\3\4', text) - an alternative pure python implementation.
         sender.objects.filter(pk=instance.pk).update(
+            search_configuration=config,
             full_text=SearchVector(
                 Func(
                     F('text'),

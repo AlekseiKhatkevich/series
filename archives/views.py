@@ -1,13 +1,13 @@
-import collections
 import functools
-from typing import Sequence
+from typing import Sequence, Tuple
 
 import guardian.models
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.search import SearchQuery
+from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, Prefetch, Q, Subquery, Sum, base, functions
+from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, base, functions
+from django.db.utils import ProgrammingError
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, exceptions, generics, mixins, parsers, permissions, \
     status, viewsets
@@ -357,24 +357,26 @@ class FTSListView(generics.ListAPIView):
     """
     serializer_class = archives.serializers.FTSSerializer
     model = serializer_class.Meta.model
+    default_search_configuration = 'simple'
 
-    def validate_query_params(self):
+    def validate_query_params(self) -> Tuple[str, str, str]:
         """
+        Validates query parameters.
         """
         errors = list()
-        allowed_search_types = {'plain', 'phrase', 'raw', 'websearch', }
+        allowed_search_types = SearchQuery.SEARCH_TYPES
 
         try:
-            self.search = self.request.query_params['search']
+            search = self.request.query_params['search']
         except KeyError:
             errors.append(error_codes.NO_SEARCH.message)
 
-        self.language_code = self.request.query_params.get('language', None)
-        if self.language_code is not None and self.language_code not in language_codes.codes_iterator:
+        language_code = self.request.query_params.get('language', None)
+        if language_code is not None and language_code not in language_codes.codes_iterator:
             errors.append(error_codes.WRONG_LANGUAGE_CODE.message)
 
-        self.search_type = self.request.query_params.get('search_type', 'plain')
-        if self.search_type not in allowed_search_types:
+        search_type = self.request.query_params.get('search_type', 'plain')
+        if search_type not in allowed_search_types:
             errors.append(error_codes.WRONG_SEARCH_TYPE.message)
 
         if errors:
@@ -382,25 +384,59 @@ class FTSListView(generics.ListAPIView):
                             {'query_parameters': errors},
                             code='query_params_errors',
             )
+        # noinspection PyUnboundLocalVariable
+
+        return search, language_code, search_type
 
     def get_queryset(self):
-        self.validate_query_params()
-        self.queryset = self.model.objects.filter(
-            full_text=SearchQuery('jalopy', config='english')
+        search, language_code, search_type = self.validate_query_params()
+        search_query = SearchQuery(
+            search,
+            config=F('search_configuration'),
+            search_type=search_type,
         )
+        fts_condition = Q(full_text=F('search_query'))
+        language_condition = Q(language=language_code)
+        condition = fts_condition & language_condition if language_code is not None else fts_condition
+        subtitles_deferred_fields_fields = (
+            'text',
+            'full_text',
+            'search_configuration',
+        )
+        season_deferred_fields = custom_functions.get_model_fields_subset(
+            model=archives.models.SeasonModel,
+            prefix='season__',
+            fields_to_remove=(
+                'series',
+                'season_number',
+            ),)
+        self.queryset = self.model.objects.annotate(
+            search_query=search_query,
+            rank=SearchRank(F('full_text'), search_query, cover_density=True, normalization=32,)
+        ).filter(condition).select_related(
+            'season',
+            'season__series',).defer(
+            *subtitles_deferred_fields_fields,
+            *season_deferred_fields,
+        ).order_by('-rank')
+
         return super().get_queryset()
 
-    # def get_language_code(self, language_code: str) -> str:
+    # def paginate_queryset(self, queryset):
     #     """
+    #     We validate here 'raw fts search' formatting.
     #     """
-    #
-    #     else:
-    #         if language_code not in language_codes.codes_iterator:
-    #             raise exceptions.ValidationError(
-    #                 *error_codes.WRONG_LANGUAGE_CODE
-    #             )
-    #
-    #     return language_code
+    #     try:
+    #         return super().paginate_queryset(queryset)
+    #     except ProgrammingError as err:
+    #         raise exceptions.ValidationError(
+    #             {'query_parameters': error_codes.WRONG_RAW_SEARCH.message},
+    #             code=error_codes.WRONG_RAW_SEARCH.code,
+    #         ) from err
+
+
+
+
 
 
 

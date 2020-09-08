@@ -3,7 +3,7 @@ import os
 from collections import defaultdict
 from fractions import Fraction
 from typing import KeysView, Optional, Tuple, Union
-
+from django.db.models.expressions import RawSQL
 import more_itertools
 from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model
@@ -12,7 +12,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres import constraints as psgr_constraints, fields as psgr_fields, \
     indexes as psgr_indexes, search as psgr_search
 from django.core import exceptions, validators
-from django.db import models
+from django.db import models, transaction
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.utils.functional import cached_property
@@ -96,6 +96,7 @@ class TvSeriesModel(models.Model):
     """
     Model represents TV series as a whole.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._original_model_state = model_to_dict(self, exclude='interrelationship')
@@ -722,6 +723,12 @@ class Subtitles(models.Model):
         null=True,
         blank=True,
     )
+    search_configuration = models.CharField(
+        verbose_name='FTS configuration',
+        max_length=30,
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Subtitle'
@@ -731,10 +738,18 @@ class Subtitles(models.Model):
         )
         unique_together = ('season', 'episode_number', 'language',)
         constraints = [
+            #  Checks that language code belongs to ISO 639 languages.
             models.CheckConstraint(
                 name='lng_check',
                 check=models.Q(language__in=language_codes.codes_iterator),
-            ), ]
+            ),
+            #  Checks that search_configuration with this name is present in DB search configurations.
+            models.CheckConstraint(
+                name='search_configuration_check',
+                check=models.ExpressionWrapper(
+                    models.Func(models.F('search_configuration'), function='fts_conf_check'),
+                    output_field=models.BooleanField(),
+                ), )]
         indexes = [
             psgr_indexes.GinIndex(fields=['full_text'], fastupdate=False)
         ]
@@ -744,6 +759,7 @@ class Subtitles(models.Model):
                f' season-{self.season.season_number},' \
                f' episode-{self.episode_number}'
 
+    @transaction.atomic()
     def save(self, fc=True, *args, **kwargs):
         if fc:
             self.full_clean(validate_unique=True)
@@ -754,6 +770,3 @@ class Subtitles(models.Model):
             raise exceptions.ValidationError(
                 *error_codes.SUB_EPISODE_NUM_GT_SEASON_EPISODE_NUM
             )
-
-
-

@@ -460,9 +460,31 @@ class FTSSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelS
     """
     subtitle_pk = serializers.IntegerField(
         source='pk',
-        read_only=True,
+    )
+    series_id = serializers.IntegerField(
+        source='season.series_id',
+    )
+    season_number = serializers.IntegerField(
+        source='season.season_number',
+    )
+    series_name = serializers.CharField(
+        source='season.series.name',
+    )
+    search_query = serializers.CharField(
+    )
+    rank = serializers.FloatField(
     )
 
     class Meta:
         model = archives.models.Subtitles
-        fields = ('subtitle_pk', 'episode_number', 'season_id', 'language', )
+        fields = (
+            'search_query',
+            'rank',
+            'subtitle_pk',
+            'episode_number',
+            'season_id',
+            'season_number',
+            'language',
+            'series_id',
+            'series_name',
+        )

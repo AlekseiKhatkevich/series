@@ -1,6 +1,6 @@
 import functools
 from unittest.mock import patch
-
+import re
 from django.db import connection
 from rest_framework.test import APITestCase
 
@@ -78,6 +78,17 @@ class ArchivesSignalsPositiveTest(test_helpers.TestHelpers, APITestCase):
             self.get_search_vector(
                 regconfig='english',
                 text='A fat cat sat on a mat and ate a fat rat',
+            ))
+
+        self.assertEqual(
+            self.subtitle.search_configuration,
+            archives.models.Subtitles.objects.analyzers_preferences['en'],
+        )
+        # noinspection PyTypeChecker
+        self.assertFalse(
+            re.findall(
+                r'(\d\d):(\d\d):(\d\d),(\d\d\d)',
+                self.subtitle.full_text,
             ))
 
     def test_test_generate_lexemes_signal_handler_language_in_analyzers_preferences(self):
