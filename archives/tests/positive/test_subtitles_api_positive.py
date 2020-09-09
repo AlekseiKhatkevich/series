@@ -18,6 +18,7 @@ class SubtitlesAPIPositiveTest(test_helpers.TestHelpers, APITestCase):
     /archives/tvseries/<int:pk>/seasons/<int:pk>/add_subtitle/ POST
     /archives/tvseries/<int:pk>/seasons/<int:pk>/delete_subtitle/<int:pk>/ DELETE
     """
+    maxDiff = None
 
     @classmethod
     def setUpTestData(cls):

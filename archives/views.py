@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchQuery, SearchRank
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, base, functions
+from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, base, functions, Window
 from django.db.utils import ProgrammingError
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, exceptions, generics, mixins, parsers, permissions, \
@@ -216,7 +216,7 @@ class SeasonsViewSet(
             'destroy',
             'update',
             'partial_update',
-            'add_subtitle',
+            #'add_subtitle',
             'delete_subtitle',
         ),
         non_safe_methods_permissions,
@@ -410,30 +410,46 @@ class FTSListView(generics.ListAPIView):
                 'series',
                 'season_number',
             ),)
+        search_rank = SearchRank(
+                F('full_text'),
+                search_query,
+                cover_density=True,
+                normalization=32,
+            )
+        # Rank like 1,2,3 instead of 0.9, 0.76, 0.044, etc
+        positional_rank = Window(
+            expression=functions.RowNumber(),
+            order_by=search_rank.desc(),
+        )
+
         self.queryset = self.model.objects.annotate(
             search_query=search_query,
-            rank=SearchRank(F('full_text'), search_query, cover_density=True, normalization=32,)
-        ).filter(condition).select_related(
+            positional_rank=positional_rank,
+        ).filter(
+            condition,
+        ).select_related(
             'season',
-            'season__series',).defer(
+            'season__series',
+        ).defer(
             *subtitles_deferred_fields_fields,
             *season_deferred_fields,
-        ).order_by('-rank')
+        ).order_by(
+            'positional_rank',
+        )
 
         return super().get_queryset()
 
-    # def paginate_queryset(self, queryset):
-    #     """
-    #     We validate here 'raw fts search' formatting.
-    #     """
-    #     try:
-    #         return super().paginate_queryset(queryset)
-    #     except ProgrammingError as err:
-    #         raise exceptions.ValidationError(
-    #             {'query_parameters': error_codes.WRONG_RAW_SEARCH.message},
-    #             code=error_codes.WRONG_RAW_SEARCH.code,
-    #         ) from err
-
+    def paginate_queryset(self, queryset):
+        """
+        We validate here 'raw fts search' formatting.
+        """
+        try:
+            return super().paginate_queryset(queryset)
+        except ProgrammingError as err:
+            raise exceptions.ValidationError(
+                {'query_parameters': error_codes.WRONG_RAW_SEARCH.message},
+                code=error_codes.WRONG_RAW_SEARCH.code,
+            ) from err
 
 
 

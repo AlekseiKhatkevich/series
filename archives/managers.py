@@ -248,5 +248,3 @@ class SubtitlesManager(models.Manager):
             return list_of_analyzers
 
 
-
-

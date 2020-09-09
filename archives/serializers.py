@@ -440,7 +440,14 @@ class SubtitlesUploadSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['season'] = self.context['season']
         file_in_memory = validated_data['text']
-        validated_data['text'] = file_in_memory.read().decode()
+        text_in_bytes = file_in_memory.read()
+
+        try:
+            plain_text = text_in_bytes.decode(encoding='utf-8-sig', errors='strict', )
+        except UnicodeDecodeError:
+            plain_text = text_in_bytes.decode(encoding='windows-1251', errors='strict', )
+
+        validated_data['text'] = plain_text
 
         #  Detect language if subtitle automatically if not specified in request.data.
         if 'language' not in validated_data:
@@ -472,7 +479,8 @@ class FTSSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelS
     )
     search_query = serializers.CharField(
     )
-    rank = serializers.FloatField(
+    rank = serializers.IntegerField(
+        source='positional_rank',
     )
 
     class Meta:
