@@ -3,7 +3,7 @@ from typing import Sequence, Tuple
 
 import guardian.models
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.search import SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchHeadline
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
 from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, base, functions, Window
@@ -14,7 +14,6 @@ from rest_framework import decorators, exceptions, generics, mixins, parsers, pe
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_extensions.mixins import DetailSerializerMixin
-
 import archives.filters
 import archives.models
 import archives.permissions
@@ -216,7 +215,7 @@ class SeasonsViewSet(
             'destroy',
             'update',
             'partial_update',
-            #'add_subtitle',
+            'add_subtitle',
             'delete_subtitle',
         ),
         non_safe_methods_permissions,
@@ -351,11 +350,12 @@ class UserObjectPermissionView(mixins.CreateModelMixin,
         return super().get_queryset()
 
 
-class FTSListView(generics.ListAPIView):
+class FTSListViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
     """
     View displays list of series where key word(s) or key phrase(s) is(are) present.
     """
     serializer_class = archives.serializers.FTSSerializer
+    serializer_detail_class = archives.serializers.FTSDetailSerializer
     model = serializer_class.Meta.model
     default_search_configuration = 'simple'
 
@@ -381,11 +381,10 @@ class FTSListView(generics.ListAPIView):
 
         if errors:
             raise exceptions.ValidationError(
-                            {'query_parameters': errors},
-                            code='query_params_errors',
+                {'query_parameters': errors},
+                code='query_params_errors',
             )
         # noinspection PyUnboundLocalVariable
-
         return search, language_code, search_type
 
     def get_queryset(self):
@@ -409,13 +408,13 @@ class FTSListView(generics.ListAPIView):
             fields_to_remove=(
                 'series',
                 'season_number',
-            ),)
+            ), )
         search_rank = SearchRank(
-                F('full_text'),
-                search_query,
-                cover_density=True,
-                normalization=32,
-            )
+            F('full_text'),
+            search_query,
+            cover_density=True,
+            normalization=32,
+        )
         # Rank like 1,2,3 instead of 0.9, 0.76, 0.044, etc
         positional_rank = Window(
             expression=functions.RowNumber(),
@@ -439,6 +438,31 @@ class FTSListView(generics.ListAPIView):
 
         return super().get_queryset()
 
+    @property
+    def queryset_detail(self):
+        search, language_code, search_type = self.validate_query_params()
+        search_query = SearchQuery(
+            search,
+            config=F('search_configuration'),
+            search_type=search_type,
+        )
+        subtitles_deferred_fields = custom_functions.get_model_fields_subset(
+            model=archives.models.Subtitles,
+            fields_to_remove=('id',)
+        )
+        self.queryset = self.model.objects.annotate(
+            headline=SearchHeadline(
+                expression=F('text'),
+                query=search_query,
+                config=F('search_configuration'),
+                max_words=25,
+                min_words=15,
+                short_word=3,
+                max_fragments=10,
+            )).defer(*subtitles_deferred_fields)
+
+        return self.queryset
+
     def paginate_queryset(self, queryset):
         """
         We validate here 'raw fts search' formatting.
@@ -450,11 +474,3 @@ class FTSListView(generics.ListAPIView):
                 {'query_parameters': error_codes.WRONG_RAW_SEARCH.message},
                 code=error_codes.WRONG_RAW_SEARCH.code,
             ) from err
-
-
-
-
-
-
-
-

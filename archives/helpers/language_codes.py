@@ -151,7 +151,7 @@ iso_639_choices = [
     ('sl', 'Slovene'),
     ('so', 'Somali'),
     ('st', 'Southern Sotho'),
-    ('es', 'Spanish; Castilian'),
+    ('es', 'Spanish'),
     ('su', 'Sundanese'),
     ('sw', 'Swahili'),
     ('ss', 'Swati'),

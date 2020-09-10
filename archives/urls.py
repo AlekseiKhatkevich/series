@@ -23,6 +23,13 @@ router_2.register(
     basename='manage-permissions',
 )
 
+router_3 = routers.SimpleRouter()
+router_3.register(
+    r'tvseries/full-text-search',
+    archives.views.FTSListViewSet,
+    basename='full-text-search',
+)
+
 
 urlpatterns = [
     path(
@@ -50,12 +57,9 @@ urlpatterns = [
         name='tvseries',
     ),
     path(
-        'tvseries/full-text-search/',
-        archives.views.FTSListView.as_view(),
-        name='full-text-search',
-    ),
-    path(
         'manage-permissions/',
         include(router_2.urls),
     )
 ]
+
+urlpatterns += router_3.urls

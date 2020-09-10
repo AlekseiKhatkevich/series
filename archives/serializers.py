@@ -1,3 +1,4 @@
+import chardet
 import guardian.models
 from django.apps import apps
 from django.conf import settings
@@ -10,7 +11,7 @@ from drf_extra_fields.fields import DateRangeField
 from guardian.shortcuts import assign_perm
 from langdetect import detect, lang_detect_exception
 from rest_framework import permissions, serializers
-
+import itertools
 import archives.models
 from archives.helpers import custom_fields
 from series import constants, error_codes
@@ -442,17 +443,23 @@ class SubtitlesUploadSerializer(serializers.ModelSerializer):
         file_in_memory = validated_data['text']
         text_in_bytes = file_in_memory.read()
 
-        try:
-            plain_text = text_in_bytes.decode(encoding='utf-8-sig', errors='strict', )
-        except UnicodeDecodeError:
-            plain_text = text_in_bytes.decode(encoding='windows-1251', errors='strict', )
+        #  Find out text encoding.
+        detector = chardet.UniversalDetector()
+        for num in range(100):
+            detector.feed(text_in_bytes[num * 1000: (num + 1) * 1000])
+            if detector.done:
+                break
+        detector.close()
 
+        #  Converts bytes to actual text.
+        codec = detector.result['encoding']
+        plain_text = text_in_bytes.decode(encoding=codec, errors='strict', )
         validated_data['text'] = plain_text
 
         #  Detect language if subtitle automatically if not specified in request.data.
         if 'language' not in validated_data:
             try:
-                validated_data['language'] = detect(validated_data['text'][: 200])
+                validated_data['language'] = detect(validated_data['text'][: 1000])
             except lang_detect_exception.LangDetectException as err:
                 raise serializers.ValidationError(
                     *error_codes.LANGUAGE_UNDETECTED
@@ -463,7 +470,7 @@ class SubtitlesUploadSerializer(serializers.ModelSerializer):
 
 class FTSSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelSerializer):
     """
-    Serializer for FTSListView. Manages instances that match fts conditions.
+    Serializer for FTSListView. Manages instances that match FTS conditions.
     """
     subtitle_pk = serializers.IntegerField(
         source='pk',
@@ -496,3 +503,12 @@ class FTSSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelS
             'series_id',
             'series_name',
         )
+
+
+class FTSDetailSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.Serializer):
+    """
+    Serializer for FTSListView, detail action. Shows highlighted text.
+    """
+    search_headline = serializers.CharField(
+        source='headline',
+    )
