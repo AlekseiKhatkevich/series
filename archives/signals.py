@@ -12,17 +12,9 @@ def generate_lexemes(sender: ModelBase, instance: Subtitles, **kwargs) -> None:
     """
     Fills field 'full_text' of model 'Subtitles' with lexemes.
     """
-    config = 'simple'
-
     if instance.full_text is None:
         language_code = instance.language
-        language_full_name = instance.get_language_display().lower()
-
-        try:
-            config = sender.objects.analyzers_preferences[language_code]
-        except KeyError:
-            if language_full_name in sender.objects.list_of_analyzers:
-                config = language_full_name
+        config = sender.objects.get_search_configuration(language_code)
 
         #  Converts  times like 00:00:13,320 to 000013320 . This is needed to avoid FTS parsing it to a bunch
         #  of plain integers. Update is used in order to avoid recursion in post_save.

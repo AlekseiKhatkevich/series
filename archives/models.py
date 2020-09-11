@@ -3,7 +3,7 @@ import os
 from collections import defaultdict
 from fractions import Fraction
 from typing import KeysView, Optional, Tuple, Union
-from django.db.models.expressions import RawSQL
+
 import more_itertools
 from BTrees.IOBTree import IOBTree
 from django.contrib.auth import get_user_model

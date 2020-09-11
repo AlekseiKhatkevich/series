@@ -491,6 +491,7 @@ class FTSSerializer(serializer_mixins.ReadOnlyAllFieldsMixin, serializers.ModelS
     )
 
     class Meta:
+        read_only_excludes = ('numnode',)
         model = archives.models.Subtitles
         fields = (
             'search_query',

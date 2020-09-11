@@ -10,6 +10,7 @@ from django.db.models import Case, CharField, F, FloatField, Max, Min, OuterRef,
 from django.utils.functional import cached_property
 from psycopg2.extras import DateRange
 
+from archives.helpers import language_codes
 from series import error_codes
 from series.constants import DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
 
@@ -246,5 +247,24 @@ class SubtitlesManager(models.Manager):
             [list_of_analyzers] = cursor.fetchone()
 
             return list_of_analyzers
+
+    def get_search_configuration(self, language_code: str) -> str:
+        """
+        Returns  defined FTS configuration by language code.
+        """
+        config = 'simple'
+
+        try:
+            config = self.analyzers_preferences[language_code]
+        except KeyError:
+            try:
+                language_full_name = language_codes.codes_iterator[language_code].lower()
+                if language_full_name in self.list_of_analyzers:
+                    config = language_full_name
+            except KeyError:
+                pass
+
+        return config
+
 
 

@@ -1,8 +1,11 @@
 import unittest
+from unittest.mock import patch
+
 from django.db import connection
 from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
+import archives.managers
 import archives.models
 from archives.tests.data import initial_data
 from series.constants import DEFAULT_OBJECT_LEVEL_PERMISSION_CODE
@@ -251,3 +254,24 @@ class ManagersPositiveRegularSetupTest(test_helpers.TestHelpers, APITestCase):
             empty_series[0].seasons.count(),
             0,
         )
+
+    def test_get_search_configuration(self):
+        """
+        Check that method 'get_search_configuration' correctly returns FTS search configuration
+        according the language.
+        """
+        mocked_analyzers_preferences = {'en': 'english_hunspell'}
+        language_codes = ('en', 'ru', 'xx',)
+        expected_fts_configs = ('english_hunspell', 'russian', 'simple',)
+
+        with patch.object(
+                archives.managers.SubtitlesManager,
+                'analyzers_preferences',
+                mocked_analyzers_preferences,
+        ):
+            for language_code, config in zip(language_codes, expected_fts_configs):
+                with self.subTest(language_code=language_code, config=config):
+                    self.assertEqual(
+                        archives.models.Subtitles.objects.get_search_configuration(language_code),
+                        config,
+                    )

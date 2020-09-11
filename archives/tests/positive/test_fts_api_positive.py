@@ -151,3 +151,33 @@ class SubtitlesFTSPositiveTest(test_helpers.TestHelpers, APITestCase):
                     status.HTTP_200_OK,
                 )
 
+    def test_detail_headline(self):
+        """
+        Check that detail api endpoint would show headline of fts.
+        """
+        search_data = dict(
+            search='Harry',
+            language='en',
+            search_type='plain',
+        )
+        self.query_dict.update(search_data)
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+                reverse(
+                    'full-text-search-detail',
+                    args=[self.subtitle.pk],
+                ) + '?' + self.query_dict.urlencode(),
+                data=None,
+                format='json',
+            )
+
+        self.assertEqual(
+                response.status_code,
+                status.HTTP_200_OK,
+            )
+        self.assertIn(
+            'Harry',
+            response.data['search_headline'],
+        )

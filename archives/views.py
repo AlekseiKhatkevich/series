@@ -3,17 +3,19 @@ from typing import Sequence, Tuple
 
 import guardian.models
 from django.contrib.auth import get_user_model
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchHeadline
+from django.contrib.postgres.search import SearchHeadline, SearchQuery, SearchRank
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, base, functions, Window
+from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, Window, base, functions
 from django.db.utils import ProgrammingError
+from django.db import connection
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, exceptions, generics, mixins, parsers, permissions, \
     status, viewsets
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_extensions.mixins import DetailSerializerMixin
+
 import archives.filters
 import archives.models
 import archives.permissions
@@ -359,6 +361,7 @@ class FTSListViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
     model = serializer_class.Meta.model
     default_search_configuration = 'simple'
 
+    @functools.lru_cache(maxsize=1)
     def validate_query_params(self) -> Tuple[str, str, str]:
         """
         Validates query parameters.
@@ -462,6 +465,30 @@ class FTSListViewSet(DetailSerializerMixin, viewsets.ReadOnlyModelViewSet):
             )).defer(*subtitles_deferred_fields)
 
         return self.queryset
+
+    def get_paginated_response(self, data):
+        """
+        If response returns zero found objects - we check whether or not search words combination makes
+        any sense or only consist of stop words and such.
+        """
+        search, language_code, search_type = self.validate_query_params()
+
+        if not data and language_code:
+            config = self.model.objects.get_search_configuration(language_code)
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    f"""
+                    SELECT numnode({SearchQuery.SEARCH_TYPES[search_type]}('{config}', '{search}'))
+                    """
+                )
+                [numnode] = cursor.fetchone()
+
+            if numnode == 0:
+                raise exceptions.ValidationError(
+                    *error_codes.WRONG_SEARCH_QUERY
+                )
+
+        return super().get_paginated_response(data)
 
     def paginate_queryset(self, queryset):
         """

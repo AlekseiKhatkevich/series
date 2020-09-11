@@ -70,3 +70,29 @@ class SubtitlesFTSPositiveTest(test_helpers.TestHelpers, APITestCase):
                     response.data['query_parameters'],
                 )
 
+    def test_search_query_with_only_stopwords(self):
+        """
+        Check that if no results has been found and search query contains only stop words, than validation
+        error would be arisen.
+        """
+        expected_error_message = error_codes.WRONG_SEARCH_QUERY.message
+        search_data = dict(
+            language='en',
+            search_type='raw',
+            search='the',
+        )
+        self.query_dict.update(search_data)
+
+        self.client.force_authenticate(user=self.user_1)
+
+        response = self.client.get(
+            reverse('full-text-search-list') + '?' + self.query_dict.urlencode(),
+            data=None,
+            format='json',
+        )
+        self.check_status_and_error_message(
+            response,
+            status_code=status.HTTP_400_BAD_REQUEST,
+            field=None,
+            error_message=expected_error_message,
+        )

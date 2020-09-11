@@ -292,3 +292,7 @@ WRONG_RAW_SEARCH = exc_msg(
     'Wrong raw search formatting.',
     'wrong_raw_search',
 )
+WRONG_SEARCH_QUERY = exc_msg(
+    'Your search query consists only of stop words. Please try to construct it in more meaningful way.',
+    'wrong_search_query',
+)
