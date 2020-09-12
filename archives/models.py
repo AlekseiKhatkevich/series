@@ -166,8 +166,14 @@ class TvSeriesModel(models.Model):
             ('permissiveness', 'Allow any action',),
         )
         indexes = [
-            psgr_indexes.GistIndex(fields=('translation_years',), ),
-        ]
+            psgr_indexes.GistIndex(
+                fields=('translation_years',),
+            ),
+            psgr_indexes.GinIndex(
+                fields=('name',),
+                opclasses=('gin_trgm_ops',),
+                name='n_gram_name_field_index',
+            )]
         constraints = [
             models.CheckConstraint(
                 name='rating_from_1_to_10',

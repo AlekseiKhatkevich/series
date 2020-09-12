@@ -6,9 +6,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.postgres.search import SearchHeadline, SearchQuery, SearchRank
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import UploadedFile
+from django.db import connection
 from django.db.models import Count, F, Prefetch, Q, Subquery, Sum, Window, base, functions
 from django.db.utils import ProgrammingError
-from django.db import connection
 from django.shortcuts import get_object_or_404
 from rest_framework import decorators, exceptions, generics, mixins, parsers, permissions, \
     status, viewsets
@@ -93,7 +93,7 @@ class TvSeriesListCreateView(generics.ListCreateAPIView, TvSeriesBase):
         'translation_years',
         'entry_author__last_name',
     )
-    search_fields = ('name',)
+    search_fields = ['^name', '%name', '*name', ]
 
 
 class FileUploadDeleteView(mixins.DestroyModelMixin, generics.CreateAPIView):
