@@ -165,10 +165,7 @@ class SubtitlesFTSPositiveTest(test_helpers.TestHelpers, APITestCase):
         self.client.force_authenticate(user=self.user_1)
 
         response = self.client.get(
-                reverse(
-                    'full-text-search-detail',
-                    args=[self.subtitle.pk],
-                ) + '?' + self.query_dict.urlencode(),
+                self.subtitle.get_absolute_url + '?' + self.query_dict.urlencode(),
                 data=None,
                 format='json',
             )

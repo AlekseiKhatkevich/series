@@ -207,7 +207,6 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'series.exception_handler.custom_exception_handler',
     'COMPACT_JSON': False,
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'DEFAULT_PAGINATION_CLASS': 'series.pagination.FasterLimitOffsetPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',

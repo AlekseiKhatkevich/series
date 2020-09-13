@@ -1,3 +1,4 @@
+from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
 import archives.models
@@ -48,3 +49,19 @@ class SubtitlesModelPositiveTest(test_helpers.TestHelpers, APITestCase):
         self.assertIsNotNone(
             archives.models.Subtitles.objects.filter(**self.subtitles_data).first().full_text
         )
+
+    def test_get_absolute_url(self):
+        """
+        Check that 'get_absolute_url' property correctly returns url to this exact subtitle.
+        """
+        subtitle = archives.models.Subtitles.objects.create(
+            **self.subtitles_data
+        )
+        expected_url = reverse('full-text-search-detail', args=(subtitle.pk,))
+        actual_url = subtitle.get_absolute_url
+
+        self.assertEqual(
+            expected_url,
+            actual_url,
+        )
+

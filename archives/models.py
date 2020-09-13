@@ -84,7 +84,7 @@ class GroupingModel(models.Model):
 
     def __eq__(self, other):
         """
-        Compare hashes im at least one of objects does not have pk yet.
+        Compare hashes if at least one of objects does not have pk yet.
         """
         if None in (self.pk, other.pk,):
             return self.__hash__() == other.__hash__()
@@ -173,7 +173,8 @@ class TvSeriesModel(models.Model):
                 fields=('name',),
                 opclasses=('gin_trgm_ops',),
                 name='n_gram_name_field_index',
-            )]
+            )
+        ]
         constraints = [
             models.CheckConstraint(
                 name='rating_from_1_to_10',
@@ -776,3 +777,7 @@ class Subtitles(models.Model):
             raise exceptions.ValidationError(
                 *error_codes.SUB_EPISODE_NUM_GT_SEASON_EPISODE_NUM
             )
+
+    @cached_property
+    def get_absolute_url(self):
+        return reverse('full-text-search-detail', args=(self.pk,))
