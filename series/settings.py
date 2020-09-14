@@ -11,6 +11,9 @@ load_dotenv()
 #  Turns to True when in test mode. Source code are in custom test runner.
 IM_IN_TEST_MODE = False
 
+# env 'I_AM_IN_DOCKER' defined in DOCKERFILE.
+I_AM_IN_DOCKER = bool(int(os.getenv('I_AM_IN_DOCKER', 0)))
+
 SITE_NAME = 'Series notebook'
 
 ADMINS = [('Aleksei Khatkevich', 'hardcase@inbox.ru',), ]
@@ -106,25 +109,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'HOST': 'localhost',
-    #     'USER': 'postgres',
-    #     'PASSWORD': os.getenv('DB_PASSWORD'),
-    #     'NAME': 'series_db',
-    #     'CONN_MAX_AGE': 30,
-    #     'TEST': {
-    #         'NAME': 'series_db_tests',
-    #         'SERIALIZE': False,
-    #     },
-    # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
-        'PORT': 5433,
         'USER': 'postgres',
-        'PASSWORD': '1q2w3e',
-        'NAME': 'postgres',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'NAME': 'series_db',
         'CONN_MAX_AGE': 30,
         'TEST': {
             'NAME': 'series_db_tests',
@@ -143,6 +133,23 @@ DATABASES = {
         'NAME': '.coverage',
     }
 }
+DOCKER_DEFAULT = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'db',
+        'PORT': 5432,
+        'USER': 'postgres',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'NAME': 'postgres',
+        'CONN_MAX_AGE': 30,
+        'TEST': {
+            'NAME': 'series_db_tests',
+            'SERIALIZE': False,
+        },
+    }
+#  Use 'DOCKER_DEFAULT' database settings for docker container.
+if I_AM_IN_DOCKER:
+    DATABASES['default'] = DOCKER_DEFAULT
+
 DEFAULT_DATABASE_STATEMENT_TIMEOUT = 30000
 DATABASE_ROUTERS = []
 

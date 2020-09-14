@@ -35,6 +35,8 @@ class Migration(migrations.Migration):
     # Do not run this in tests.
 
     operations = [
-            migrations.RunPython(forwards_func, reverse_func)
+        # This s**t is switched of because for some bizarre reason it does nto work in Docker.
+        # I don't want to figure out why exactly as i dont use this s**t at all since almost forever.
+            #migrations.RunPython(forwards_func, reverse_func)
         ]
 
