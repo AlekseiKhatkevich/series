@@ -106,12 +106,25 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'HOST': 'localhost',
+    #     'USER': 'postgres',
+    #     'PASSWORD': os.getenv('DB_PASSWORD'),
+    #     'NAME': 'series_db',
+    #     'CONN_MAX_AGE': 30,
+    #     'TEST': {
+    #         'NAME': 'series_db_tests',
+    #         'SERIALIZE': False,
+    #     },
+    # },
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
+        'PORT': 5433,
         'USER': 'postgres',
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'NAME': 'series_db',
+        'PASSWORD': '1q2w3e',
+        'NAME': 'postgres',
         'CONN_MAX_AGE': 30,
         'TEST': {
             'NAME': 'series_db_tests',
