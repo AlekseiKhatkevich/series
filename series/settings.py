@@ -323,20 +323,26 @@ CACHE_OPTIONS = {
             'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
             'PARSER_CLASS': 'redis.connection.HiredisParser',
         }
+
+if I_AM_IN_DOCKER:
+    REDIS_ADDRESS = 'redis://redis:6379'
+else:
+    REDIS_ADDRESS = 'redis://127.0.0.1:6379'
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/13',
+        'LOCATION': f'{REDIS_ADDRESS}/13',
         'OPTIONS': CACHE_OPTIONS,
     },
     SCOPE_THROTTLING_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/14',
+        'LOCATION': f'{REDIS_ADDRESS}/14',
         'OPTIONS':  CACHE_OPTIONS,
          },
     BLACKLIST_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/12',
+        'LOCATION': f'{REDIS_ADDRESS}/12',
         'OPTIONS': CACHE_OPTIONS,
     }, }
 

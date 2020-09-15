@@ -4,27 +4,27 @@ services:
   web:
     build: .
     command: python /code/manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./series/.env
     volumes:
       - .:/code
     ports:
       - 8000:8000
     depends_on:
       - db
+      - redis
 
   db:
-# new section
     build:
       context: .
       dockerfile: postgres.dockerfile
-# end of new section
-# old section
-#    image: postgres:12
-# end of old section
     restart: always
+    env_file:
+      - ./series/.env
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1q2w3e
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
@@ -33,5 +33,25 @@ services:
         protocol: tcp
         mode: host
 
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - target: 6379
+        published: 6380
+        protocol: tcp
+        mode: host
+    volumes:
+#      - $PWD/redis-data:/var/lib/redis
+#      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+        - redis-data:/var/lib/redis
+        - redis.conf:/usr/local/etc/redis/redis.conf
+    restart: always
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
 volumes:
     postgres_data:
+    redis-data:
+    redis.conf:
+
