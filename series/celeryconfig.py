@@ -1,9 +1,9 @@
 # Celery related settings.
 from celery.schedules import crontab
+from django.conf import settings
 
-
-REDIS_HOST = 'localhost'
-REDIS_PORT = '6379'
+REDIS_HOST = settings.REDIS_HOST
+REDIS_PORT = settings.REDIS_PORT
 broker_url = f'redis://{REDIS_HOST}:{REDIS_PORT}/1'
 broker_transport_options = {'visibility_timeout': 3600}
 result_backend = f'redis://{REDIS_HOST}:{REDIS_PORT}/1'

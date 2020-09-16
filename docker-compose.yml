@@ -13,6 +13,8 @@ services:
     depends_on:
       - db
       - redis
+    links:
+      - db
 
   db:
     build:
@@ -24,7 +26,6 @@ services:
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     ports:
@@ -35,23 +36,24 @@ services:
 
   redis:
     image: redis:alpine
-    command: redis-server
+    command: redis-server --appendonly yes
     ports:
       - target: 6379
         published: 6380
         protocol: tcp
         mode: host
     volumes:
-#      - $PWD/redis-data:/var/lib/redis
-#      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
-        - redis-data:/var/lib/redis
-        - redis.conf:/usr/local/etc/redis/redis.conf
+        - redis_data:/data
     restart: always
     environment:
       - REDIS_REPLICATION_MODE=master
 
+#  busybox:
+#    image: busybox:latest
+
 volumes:
     postgres_data:
-    redis-data:
-    redis.conf:
+    redis_data:
+
+
 

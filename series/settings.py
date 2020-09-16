@@ -1,6 +1,7 @@
 """Series project root settings."""
 
 import os
+import socket
 from datetime import timedelta
 
 from dotenv import load_dotenv
@@ -30,7 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
 
 # Application definition
 
@@ -188,7 +189,11 @@ FILES_FOR_TESTS = os.path.join(BASE_DIR, 'series', 'files_for_tests', )
 AUTH_USER_MODEL = 'users.User'
 
 #  for Django Debug toolbar
-INTERNAL_IPS = ['127.0.0.1', ]
+if not I_AM_IN_DOCKER:
+    INTERNAL_IPS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
+else:
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
 
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
@@ -325,24 +330,25 @@ CACHE_OPTIONS = {
         }
 
 if I_AM_IN_DOCKER:
-    REDIS_ADDRESS = 'redis://redis:6379'
+    REDIS_HOST = 'redis'
 else:
-    REDIS_ADDRESS = 'redis://127.0.0.1:6379'
+    REDIS_HOST = '127.0.0.1'
 
+REDIS_PORT = 6379
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'{REDIS_ADDRESS}/13',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/13',
         'OPTIONS': CACHE_OPTIONS,
     },
     SCOPE_THROTTLING_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'{REDIS_ADDRESS}/14',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/14',
         'OPTIONS':  CACHE_OPTIONS,
          },
     BLACKLIST_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': f'{REDIS_ADDRESS}/12',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/12',
         'OPTIONS': CACHE_OPTIONS,
     }, }
 
