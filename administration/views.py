@@ -170,7 +170,10 @@ def coverage_view(request: Request) -> Response:
                 })
         finally:
             file.close()
-            os.remove(file.name)
+            try:
+                os.remove(file.name)
+            except FileNotFoundError:
+                pass
 
     return Response(data=json_report)
 

@@ -170,12 +170,12 @@ class ValidateIfUrlIsAlive:
             response = urllib.request.urlopen(request, timeout=self._timeout)
         except urllib.error.HTTPError as err:
             raise ValidationError(
-                f'Url {value} does not exists  -- ({str(err)})',
+                f'Url {value} does not exists).',
                 code='404'
             ) from err
         except urllib.error.URLError as err:
             raise ValidationError(
-                f'Url {value} has wrong format. Please double-check -- ({str(err)})',
+                f'Url {value} has wrong format. Please double-check.',
                 code='url_format_error'
             ) from err
         else:

@@ -33,7 +33,7 @@ class ImageModelNegativeTest(APITestCase):
         expected_error_message = error_codes.NOT_AN_IMAGE.message
 
         with self.assertRaisesMessage(exceptions.ValidationError, expected_error_message):
-            with tempfile.TemporaryFile() as fake_image_file:
+            with tempfile.NamedTemporaryFile() as fake_image_file:
                 self.series_1.images.create(
                     image=File(fake_image_file),
                 )

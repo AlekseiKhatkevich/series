@@ -1,5 +1,9 @@
 version: '3.8'
 
+volumes:
+    postgres_data:
+    redis_data:
+
 services:
   web:
     build: .
@@ -13,6 +17,8 @@ services:
     depends_on:
       - db
       - redis
+      - celery
+      - celery-beat
     links:
       - db
 
@@ -48,12 +54,35 @@ services:
     environment:
       - REDIS_REPLICATION_MODE=master
 
-#  busybox:
-#    image: busybox:latest
+  celery:
+    build: .
+    command: celery worker -A series  --loglevel=INFO --concurrency=4 -E
+    restart: always
+    environment:
+      - C_FORCE_ROOT=1
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
 
-volumes:
-    postgres_data:
-    redis_data:
+  celery-beat:
+      build: .
+      command: celery -A series beat --loglevel=INFO --pidfile=
+      restart: always
+      volumes:
+        - .:/code
+      depends_on:
+        - db
+        - redis
+
+  flower:
+    image: mher/flower
+    command: ["flower", "--broker=redis://redis:6379/0", "--port=8888"]
+    ports:
+      - 8888:8888
+
+
 
 
 

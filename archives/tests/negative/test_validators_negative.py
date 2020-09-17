@@ -73,14 +73,13 @@ class validatorsNegativeTest(APISimpleTestCase):
         validator = validators.ValidateIfUrlIsAlive(3)
 
         wrong_url_1 = r'https://www.imdb.com/no-content-here'
-        expected_error_message_1 = f'Url {wrong_url_1} does not exists  -- (HTTP Error 404: Not Found)'
+        expected_error_message_1 = f'Url {wrong_url_1} does not exists).'
         with self.assertRaisesMessage(ValidationError, expected_error_message_1):
             validator(wrong_url_1)
 
         wrong_url_2 = r'https://yandex.ru1/search/'
         expected_error_message_2 = \
-            f'Url {wrong_url_2} has wrong format. Please double-check -- ' \
-            f'(<urlopen error [Errno 11001] getaddrinfo failed>)'
+            f'Url {wrong_url_2} has wrong format. Please double-check.'
         with self.assertRaisesMessage(ValidationError, expected_error_message_2):
             validator(wrong_url_2)
 
