@@ -225,8 +225,7 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
-        #'rest_framework.filters.SearchFilter',
-        'series.filters.CustomSearchFilter',  # new
+        'series.filters.CustomSearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
     'EXCEPTION_HANDLER': 'series.exception_handler.custom_exception_handler',
