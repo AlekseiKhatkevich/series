@@ -60,12 +60,14 @@ INSTALLED_APPS = [
     'guardian',
     'django_filters',
     'django_db_logger',
+    'whitenoise.runserver_nostatic',  # new
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # new
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'series.middleware.IpBlackListMiddleware',  # new
+    'series.middleware.IpBlackListMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -177,7 +179,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles',)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_ROOT = 'media/'
 MEDIA_ROOT_FULL_PATH = os.path.join(BASE_DIR, MEDIA_ROOT)
 
@@ -434,4 +437,9 @@ REST_FRAMEWORK_EXTENSIONS = {
     'DEFAULT_CACHE_ERRORS': False,
     'DEFAULT_KEY_CONSTRUCTOR_MEMOIZE_FOR_REQUEST': True,
 }
+#  White-noise settings.
+#  http://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
+if IM_IN_TEST_MODE:
+    WHITENOISE_AUTOREFRESH = True
+
 

@@ -35,6 +35,7 @@ django-db-logger = "*"
 drf-extensions = {file = "https://github.com/chibisov/drf-extensions/archive/master.zip"}
 hiredis = "*"
 langdetect = "*"
+whitenoise = "*"
 
 [requires]
 python_version = "3.8"
