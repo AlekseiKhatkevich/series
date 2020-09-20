@@ -1,4 +1,5 @@
 """Gunicorn WSGI server configuration."""
+
 import sys
 import threading
 import traceback
@@ -14,10 +15,12 @@ def max_workers():
 bind = '0.0.0.0:8000'
 backlog = 1000
 workers = max_workers()
-worker_class = 'sync'
+worker_class = 'gthread'
 worker_connections = 1000
 timeout = 30
+graceful_timeout = 5
 keepalive = 2
+max_request = max_requests_jitter = 30
 
 errorlog = '-'
 loglevel = 'info'
@@ -26,26 +29,10 @@ access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"
 
 proc_name = 'Gunicorn wsgi server in Docker web service'
 
-
 #  Auto-reload when code has changed. For debugging.
 if settings.DEBUG:
     reload = True
-
-
-def post_fork(server, worker):
-    server.log.info("Worker spawned (pid: %s)", worker.pid)
-
-
-def pre_fork(server, worker):
-    pass
-
-
-def pre_exec(server):
-    server.log.info("Forked child, re-executing.")
-
-
-def when_ready(server):
-    server.log.info("Server is ready. Spawning workers")
+reload_engine = 'inotify'
 
 
 def worker_int(worker):

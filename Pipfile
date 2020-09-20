@@ -36,6 +36,8 @@ drf-extensions = {file = "https://github.com/chibisov/drf-extensions/archive/mas
 hiredis = "*"
 langdetect = "*"
 whitenoise = "*"
+inotify = "*"
+psycogreen = "*"
 
 [requires]
 python_version = "3.8"

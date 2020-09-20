@@ -441,5 +441,3 @@ REST_FRAMEWORK_EXTENSIONS = {
 #  http://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 if IM_IN_TEST_MODE:
     WHITENOISE_AUTOREFRESH = True
-
-
