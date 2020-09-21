@@ -9,6 +9,7 @@ verify_ssl = true
 django = "*"
 djangorestframework = "*"
 psycopg2 = "*"
+# psycopg2-binary для ubuntu
 python-dotenv = "*"
 drf-yasg = "*"
 django-debug-toolbar = "*"
