@@ -43,7 +43,12 @@ services:
 
   redis:
     image: redis:alpine
-    command: redis-server --appendonly yes
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync no
+      --auto-aof-rewrite-percentage 100
+      --auto-aof-rewrite-min-size 64mb
     ports:
       - target: 6379
         published: 6380
