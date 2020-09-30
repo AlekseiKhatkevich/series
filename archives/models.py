@@ -1,4 +1,6 @@
 import datetime
+import functools
+import operator
 import os
 from collections import defaultdict
 from fractions import Fraction
@@ -80,7 +82,13 @@ class GroupingModel(models.Model):
         Make unique hash by combining 3 fields 'from_series_id', 'to_series_id' and 'reason_for_interrelationship'.
         """
         # return hash(f'{self.from_series_id}{self.from_series_id}{self.reason_for_interrelationship}')
-        return hash((self.from_series_id, self.from_series_id, self.reason_for_interrelationship))
+        # return hash((self.from_series_id, self.from_series_id, self.reason_for_interrelationship))
+
+        #  Recommended in 'Fluent Python' use XOR, page 290.
+        hash_members = (self.from_series_id, self.from_series_id, self.reason_for_interrelationship)
+        common_hash = functools.reduce(operator.xor, map(hash, hash_members))
+
+        return common_hash
 
     def __eq__(self, other):
         """

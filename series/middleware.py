@@ -99,7 +99,7 @@ class IpBlackListMiddleware:
         """
         Checks whether ip is blacklisted inside cache without pulling data from cache.
         """
-        with self.redis_client.pipeline() as pipe:
+        with self.redis_client.pipeline(False) as pipe:
 
             # if key is not exists -fetch ips from db and set them in Redis.
             if not self.redis_client.exists(self.redis_native_cache_key):
