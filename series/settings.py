@@ -61,12 +61,12 @@ INSTALLED_APPS = [
     'guardian',
     'django_filters',
     'django_db_logger',
-    'whitenoise.runserver_nostatic',  # new
+    #'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # new
+    #'whitenoise.middleware.WhiteNoiseMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'series.middleware.IpBlackListMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -182,7 +182,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles',)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+MEDIA_URL = '/mediafiles/'  # new
 MEDIA_ROOT = 'media/'
 MEDIA_ROOT_FULL_PATH = os.path.join(BASE_DIR, MEDIA_ROOT)
 

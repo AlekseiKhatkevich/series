@@ -13,3 +13,5 @@ RUN pip install pipenv gunicorn && pipenv install --system --ignore-pipfile
 #RUN pip install pipenv gunicorn && pipenv install --system
 
 COPY series /code/
+
+

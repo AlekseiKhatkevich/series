@@ -3,6 +3,8 @@ version: '3.8'
 volumes:
     postgres_data:
     redis_data:
+    static_volume:
+    media_volume:
 
 services:
   web:
@@ -13,8 +15,12 @@ services:
       - ./series/.env
     volumes:
       - .:/code
-    ports:
-      - 8000:8000
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+#    ports:
+#      - 8000:8000
+    expose:
+      - 8000
     depends_on:
       - db
       - redis
@@ -22,6 +28,16 @@ services:
       - celery-beat
     links:
       - db
+
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/app/web/staticfiles
+      - media_volume:/home/app/web/mediafiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
 
   db:
     build:
