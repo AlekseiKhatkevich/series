@@ -81,7 +81,6 @@ class GroupingModel(models.Model):
         """
         Make unique hash by combining 3 fields 'from_series_id', 'to_series_id' and 'reason_for_interrelationship'.
         """
-        # return hash(f'{self.from_series_id}{self.from_series_id}{self.reason_for_interrelationship}')
         # return hash((self.from_series_id, self.from_series_id, self.reason_for_interrelationship))
 
         #  Recommended in 'Fluent Python' use XOR, page 290.

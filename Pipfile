@@ -6,13 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "*"
-djangorestframework = "*"
-psycopg2 = "*"
-# psycopg2-binary для ubuntu
+django = "==3.1.0"
+djangorestframework = "==3.11.2"
 python-dotenv = "*"
-drf-yasg = "*"
-django-debug-toolbar = "*"
 pillow = "*"
 more-itertools = "*"
 tblib = "*"
@@ -22,23 +18,27 @@ djangorestframework-simplejwt = "*"
 cryptography = "*"
 django-cors-headers = "*"
 django-redis = "*"
-celery = "*"
+celery = "==4.4.7"
 redis = "*"
 future = "*"
 imagehash = "*"
-btrees = "*"
 django-guardian = "*"
-django-extra-fields = "*"
+django-extra-fields = "==3.0.0"
 django-filter = "*"
 cerberus = "*"
 aiohttp = "*"
 django-db-logger = "*"
-drf-extensions = {file = "https://github.com/chibisov/drf-extensions/archive/master.zip"}
 hiredis = "*"
 langdetect = "*"
 whitenoise = "*"
 inotify = "*"
 psycogreen = "*"
+packaging = "*"
+psycopg2 = "*"
+btrees = "*"
+# https://github.com/JoelLefkowitz/drf-yasg
+django-debug-toolbar = "*"
+drf-extensions = "*"
 
 [requires]
 python_version = "3.8"

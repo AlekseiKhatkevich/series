@@ -16,6 +16,15 @@ from series.helpers.typing import url
 from users.helpers import countries, validators as custom_validators
 from users.database_functions import IpCount
 
+# to monkey-patch drf-extension until True new release
+####################################################
+from django.db.models.sql import datastructures
+from django.core.exceptions import EmptyResultSet
+
+datastructures.EmptyResultSet = EmptyResultSet
+
+
+#####################################################
 
 class User(AbstractUser):
     """
@@ -125,8 +134,8 @@ class User(AbstractUser):
                     *error_codes.MASTER_CANT_BE_SLAVE, )}
             )
         #  We make sure that soft-deleted user can't have slaves, even soft-deleted ones.
-        if (self.master is None and self.deleted) and  \
-            self.__class__._default_manager.filter(master=self).exists():
+        if (self.master is None and self.deleted) and \
+                self.__class__._default_manager.filter(master=self).exists():
             errors.update(
                 {'master': exceptions.ValidationError(
                     *error_codes.DELETED_MASTER_SLAVES, )}

@@ -31,6 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
 
 # Application definition
@@ -54,8 +55,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'djoser',
-    'drf_yasg',
     'debug_toolbar',
+    #'drf_yasg',
     'corsheaders',
     'guardian',
     'django_filters',
@@ -115,6 +116,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',
+        'PORT': 5432,
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'NAME': 'series_db',
@@ -191,7 +193,8 @@ FILES_FOR_TESTS = os.path.join(BASE_DIR, 'series', 'files_for_tests', )
 #  https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#using-a-custom-user-model-when-starting-a-project
 AUTH_USER_MODEL = 'users.User'
 
-#  for Django Debug toolbar
+#  For Django Debug toolbar
+INTERNAL_IPS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
 if not I_AM_IN_DOCKER:
     INTERNAL_IPS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
 else:
@@ -441,3 +444,4 @@ REST_FRAMEWORK_EXTENSIONS = {
 #  http://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 if IM_IN_TEST_MODE:
     WHITENOISE_AUTOREFRESH = True
+
