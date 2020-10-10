@@ -1,736 +1,1046 @@
-ERROR || 2020-08-10 17:05:03,887 || log || Internal Server Error: /user-resources/operations-history/
+WARNING || 2020-10-10 07:13:32,305 || log || Forbidden: /auth/users/
+WARNING || 2020-10-10 07:13:34,650 || log || Not Found: /favicon.ico
+ERROR || 2020-10-10 07:15:39,996 || log || Internal Server Error: /auth/users/
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 125, in get_last_x_operations
-    pk_to_rank = queryset.annotate(rank=Window(
-TypeError: __init__() got an unexpected keyword argument 'filterable'
-ERROR || 2020-08-10 17:05:04,105 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&last_operations=&last_x_operations=4&model=tvseriesmodel&model=seasonmodel&model=imagemodel&ordering=content_type__model HTTP/1.1" 500 158227
-ERROR || 2020-08-10 17:30:40,212 || log || Internal Server Error: /user-resources/operations-history/
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+ERROR || 2020-10-10 07:15:43,217 || log || Internal Server Error: /auth/users/
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 125, in get_last_x_operations
-    pk_to_rank = Subquery(queryset.annotate(rank=Window(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 942, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 962, in _filter_or_exclude
-    clone._filter_or_exclude_inplace(negate, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 969, in _filter_or_exclude_inplace
-    self._query.add_q(Q(*args, **kwargs))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1358, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1377, in _add_q
-    child_clause, needed_inner = self.build_filter(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1261, in build_filter
-    self.check_filterable(reffed_expression)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1130, in check_filterable
-    raise NotSupportedError(
-django.db.utils.NotSupportedError: Window is disallowed in the filter clause.
-ERROR || 2020-08-10 17:30:40,536 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 196214
-ERROR || 2020-08-10 17:38:00,414 || log || Internal Server Error: /user-resources/operations-history/
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 125, in get_last_x_operations
-    pk_to_rank = queryset.annotate(rank=Window(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 942, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 962, in _filter_or_exclude
-    clone._filter_or_exclude_inplace(negate, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 969, in _filter_or_exclude_inplace
-    self._query.add_q(Q(*args, **kwargs))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1358, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1377, in _add_q
-    child_clause, needed_inner = self.build_filter(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1261, in build_filter
-    self.check_filterable(reffed_expression)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1136, in check_filterable
-    self.check_filterable(expr)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1136, in check_filterable
-    self.check_filterable(expr)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1136, in check_filterable
-    self.check_filterable(expr)
-  [Previous line repeated 1 more time]
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1130, in check_filterable
-    raise NotSupportedError(
-django.db.utils.NotSupportedError: Window is disallowed in the filter clause.
-ERROR || 2020-08-10 17:38:00,757 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 212682
-ERROR || 2020-08-10 17:53:29,443 || log || Internal Server Error: /user-resources/operations-history/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 125, in get_last_x_operations
-    pk_to_rank = queryset.annotate(rank=ExpressionWrapper(Window(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 942, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 962, in _filter_or_exclude
-    clone._filter_or_exclude_inplace(negate, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 969, in _filter_or_exclude_inplace
-    self._query.add_q(Q(*args, **kwargs))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1358, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1377, in _add_q
-    child_clause, needed_inner = self.build_filter(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1261, in build_filter
-    self.check_filterable(reffed_expression)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1136, in check_filterable
-    self.check_filterable(expr)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1130, in check_filterable
-    raise NotSupportedError(
-django.db.utils.NotSupportedError: Window is disallowed in the filter clause.
-ERROR || 2020-08-10 17:53:29,774 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 200349
-ERROR || 2020-08-10 19:46:32,012 || log || Internal Server Error: /user-resources/operations-history/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 136, in get_last_x_operations
-    cte.join(queryset, id=cte.col.id).with_cte(cte).annotate(
-AttributeError: 'QuerySet' object has no attribute 'with_cte'
-ERROR || 2020-08-10 19:46:32,295 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 157488
-WARNING || 2020-08-10 19:46:32,947 || log || Not Found: /favicon.ico
-WARNING || 2020-08-10 19:46:32,949 || basehttp || "GET /favicon.ico HTTP/1.1" 404 12390
-ERROR || 2020-08-10 19:47:32,201 || log || Internal Server Error: /user-resources/operations-history/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 136, in get_last_x_operations
-    return cte.join(queryset, id=cte.col.id).with_cte(cte).annotate(
-AttributeError: 'QuerySet' object has no attribute 'with_cte'
-ERROR || 2020-08-10 19:47:32,437 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 157245
-ERROR || 2020-08-10 19:49:09,476 || log || Internal Server Error: /user-resources/operations-history/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 136, in get_last_x_operations
-    return cte.join(queryset, id=cte.col.id).with_cte(cte).annotate(rank=cte.col.rank).filter(
-AttributeError: 'QuerySet' object has no attribute 'with_cte'
-ERROR || 2020-08-10 19:49:09,683 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 157382
-ERROR || 2020-08-10 19:49:24,132 || log || Internal Server Error: /user-resources/operations-history/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\rest_framework\backends.py", line 96, in filter_queryset
-    return filterset.qs
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 243, in qs
-    qs = self.filter_queryset(qs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filterset.py", line 230, in filter_queryset
-    queryset = self.filters[name].filter(queryset, value)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django_filters\filters.py", line 761, in __call__
-    return self.method(qs, self.f.field_name, value)
-  File "C:\Users\hardcase1\PycharmProjects\series\users\filters.py", line 136, in get_last_x_operations
-    return cte.join(queryset, id=cte.col.id).with_cte(cte).annotate(rank=cte.col.rank).filter(
-AttributeError: 'QuerySet' object has no attribute 'with_cte'
-ERROR || 2020-08-10 19:49:24,352 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 157382
-ERROR || 2020-08-10 19:52:13,106 || log || Internal Server Error: /user-resources/operations-history/
-Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-psycopg2.errors.AmbiguousColumn: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ..."cte" ON "administration_entrieschangelog"."id" = "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
 
 
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
-    page = self.paginate_queryset(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
-    return self.paginator.paginate_queryset(queryset, self.request, view=self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 373, in paginate_queryset
-    self.count = self.get_count(queryset)
-  File "C:\Users\hardcase1\PycharmProjects\series\series\pagination.py", line 13, in get_count
-    return len(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
-    self._fetch_all()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1154, in execute_sql
-    cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 198, in execute
-    return self._record(self.cursor.execute, sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 133, in _record
-    return method(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 98, in execute
-    return super().execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 66, in execute
-    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 75, in _execute_with_wrappers
-    return executor(sql, params, many, context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\utils.py", line 90, in __exit__
+  File "/usr/local/lib/python3.8/site-packages/debug_toolbar/middleware.py", line 48, in __call__
+    return self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
     raise dj_exc_value.with_traceback(traceback) from exc_value
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-django.db.utils.ProgrammingError: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ..."cte" ON "administration_entrieschangelog"."id" = "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
 
-ERROR || 2020-08-10 19:52:13,609 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 245421
-ERROR || 2020-08-10 19:53:11,509 || log || Internal Server Error: /user-resources/operations-history/
+ERROR || 2020-10-10 07:15:48,475 || log || Internal Server Error: /auth/users/
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-psycopg2.errors.AmbiguousColumn: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ..."cte" ON "administration_entrieschangelog"."id" = "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
 
 
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
-    page = self.paginate_queryset(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
-    return self.paginator.paginate_queryset(queryset, self.request, view=self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 373, in paginate_queryset
-    self.count = self.get_count(queryset)
-  File "C:\Users\hardcase1\PycharmProjects\series\series\pagination.py", line 13, in get_count
-    return len(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
-    self._fetch_all()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1154, in execute_sql
-    cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 198, in execute
-    return self._record(self.cursor.execute, sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 133, in _record
-    return method(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 98, in execute
-    return super().execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 66, in execute
-    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 75, in _execute_with_wrappers
-    return executor(sql, params, many, context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\utils.py", line 90, in __exit__
+  File "/usr/local/lib/python3.8/site-packages/debug_toolbar/middleware.py", line 48, in __call__
+    return self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
     raise dj_exc_value.with_traceback(traceback) from exc_value
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-django.db.utils.ProgrammingError: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ..."cte" ON "administration_entrieschangelog"."id" = "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
 
-ERROR || 2020-08-10 19:53:12,003 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 245289
-ERROR || 2020-08-10 19:55:26,952 || log || Internal Server Error: /user-resources/operations-history/
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-psycopg2.errors.AmbiguousColumn: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ..."cte" ON "administration_entrieschangelog"."id" = "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
 
 
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
-    page = self.paginate_queryset(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
-    return self.paginator.paginate_queryset(queryset, self.request, view=self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 373, in paginate_queryset
-    self.count = self.get_count(queryset)
-  File "C:\Users\hardcase1\PycharmProjects\series\series\pagination.py", line 13, in get_count
-    return len(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
-    self._fetch_all()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1154, in execute_sql
-    cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 198, in execute
-    return self._record(self.cursor.execute, sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 133, in _record
-    return method(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 98, in execute
-    return super().execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 66, in execute
-    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 75, in _execute_with_wrappers
-    return executor(sql, params, many, context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\utils.py", line 90, in __exit__
+  File "/usr/local/lib/python3.8/site-packages/django/utils/deprecation.py", line 114, in __call__
+    response = response or self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
     raise dj_exc_value.with_traceback(traceback) from exc_value
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-django.db.utils.ProgrammingError: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ..."cte" ON "administration_entrieschangelog"."id" = "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
 
-ERROR || 2020-08-10 19:55:27,468 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&model=tvseriesmodel&model=seasonmodel&model=imagemodel&last_operations=&last_x_operations=4 HTTP/1.1" 500 245420
-ERROR || 2020-08-10 20:06:51,960 || log || Internal Server Error: /user-resources/operations-history/
+ERROR || 2020-10-10 07:15:54,642 || log || Internal Server Error: /auth/users/me/
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-psycopg2.errors.AmbiguousColumn: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ...content_type"."model" = 'tvseriesmodel'))) SELECT "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+ERROR || 2020-10-10 07:15:57,839 || log || Internal Server Error: /auth/users/me/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
 
 
 The above exception was the direct cause of the following exception:
 
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 40, in list
-    page = self.paginate_queryset(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 171, in paginate_queryset
-    return self.paginator.paginate_queryset(queryset, self.request, view=self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\pagination.py", line 373, in paginate_queryset
-    self.count = self.get_count(queryset)
-  File "C:\Users\hardcase1\PycharmProjects\series\series\pagination.py", line 13, in get_count
-    return len(queryset)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 269, in __len__
-    self._fetch_all()
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1303, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\compiler.py", line 1154, in execute_sql
-    cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 198, in execute
-    return self._record(self.cursor.execute, sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\sql\tracking.py", line 133, in _record
-    return method(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 98, in execute
-    return super().execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 66, in execute
-    return self._execute_with_wrappers(sql, params, many=False, executor=self._execute)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 75, in _execute_with_wrappers
-    return executor(sql, params, many, context)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\utils.py", line 90, in __exit__
+  File "/usr/local/lib/python3.8/site-packages/debug_toolbar/middleware.py", line 48, in __call__
+    return self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
     raise dj_exc_value.with_traceback(traceback) from exc_value
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
-    return self.cursor.execute(sql, params)
-django.db.utils.ProgrammingError: ОШИБКА:  неоднозначная ссылка на столбец "id"
-LINE 1: ...content_type"."model" = 'tvseriesmodel'))) SELECT "cte"."id"...
-                                                             ^
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
 
-ERROR || 2020-08-10 20:06:52,339 || basehttp || "GET /user-resources/operations-history/?access_time__gte=&access_time__lte=&last_operations=&last_x_operations=4&model=tvseriesmodel&model=seasonmodel&model=imagemodel HTTP/1.1" 500 230604
-WARNING || 2020-08-11 12:21:21,363 || log || Not Found: /favicon.ico
-WARNING || 2020-08-11 12:21:21,383 || basehttp || "GET /favicon.ico HTTP/1.1" 404 12390
-ERROR || 2020-08-11 12:33:27,875 || log || Internal Server Error: /user-resources/user-objects-history/
+ERROR || 2020-10-10 07:16:03,105 || log || Internal Server Error: /auth/users/me/
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 165, in _get_response
-    callback, callback_args, callback_kwargs = self.resolve_request(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 288, in resolve_request
-    resolver_match = resolver.resolve(request.path_info)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\resolvers.py", line 547, in resolve
-    sub_match = pattern.resolve(new_path)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\resolvers.py", line 547, in resolve
-    sub_match = pattern.resolve(new_path)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\resolvers.py", line 358, in resolve
-    kwargs.update(self.default_args)
-ValueError: dictionary update sequence element #0 has length 1; 2 is required
-ERROR || 2020-08-11 12:33:28,082 || log || Internal Server Error: /user-resources/user-objects-history/
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\middleware.py", line 92, in __call__
-    panel.generate_stats(request, response)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\debug_toolbar\panels\request.py", line 43, in generate_stats
-    match = resolve(request.path)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\base.py", line 25, in resolve
-    return get_resolver(urlconf).resolve(path)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\resolvers.py", line 547, in resolve
-    sub_match = pattern.resolve(new_path)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\resolvers.py", line 547, in resolve
-    sub_match = pattern.resolve(new_path)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\urls\resolvers.py", line 358, in resolve
-    kwargs.update(self.default_args)
-ValueError: dictionary update sequence element #0 has length 1; 2 is required
-ERROR || 2020-08-11 12:33:28,086 || basehttp || "GET /user-resources/user-objects-history/ HTTP/1.1" 500 113663
-ERROR || 2020-08-11 13:58:34,085 || log || Internal Server Error: /user-resources/user-objects-history/
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+
+During handling of the above exception, another exception occurred:
+
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
-    response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 150, in filter_queryset
-    queryset = backend().filter_queryset(self.request, queryset, self)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\filters.py", line 121, in filter_queryset
-    queryset = queryset.filter(reduce(operator.and_, conditions))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 942, in filter
-    return self._filter_or_exclude(False, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 962, in _filter_or_exclude
-    clone._filter_or_exclude_inplace(negate, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 969, in _filter_or_exclude_inplace
-    self._query.add_q(Q(*args, **kwargs))
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1358, in add_q
-    clause, _ = self._add_q(q_object, self.used_aliases)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1377, in _add_q
-    child_clause, needed_inner = self.build_filter(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1237, in build_filter
-    return self._add_q(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1377, in _add_q
-    child_clause, needed_inner = self.build_filter(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1258, in build_filter
-    lookups, parts, reffed_expression = self.solve_lookup_type(arg)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1084, in solve_lookup_type
-    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1481, in names_to_path
-    raise FieldError("Cannot resolve keyword '%s' into field. "
-django.core.exceptions.FieldError: Cannot resolve keyword 'user.get_full_name' into field. Choices are: access_time, as_who, content_object, content_type, content_type_id, diff, id, images, object_id, operation_type, seasons, series, state, user, user_id
-ERROR || 2020-08-11 13:58:34,457 || basehttp || "GET /user-resources/user-objects-history/?search=vasya HTTP/1.1" 500 194267
-ERROR || 2020-08-11 14:30:45,097 || log || Internal Server Error: /user-resources/user-objects-history/
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+The above exception was the direct cause of the following exception:
+
 Traceback (most recent call last):
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
     response = get_response(request)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\core\handlers\base.py", line 179, in _get_response
-    response = wrapped_callback(request, *callback_args, **callback_kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\decorators\csrf.py", line 54, in wrapped_view
-    return view_func(*args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\views\generic\base.py", line 73, in view
-    return self.dispatch(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 505, in dispatch
-    response = self.handle_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 465, in handle_exception
-    self.raise_uncaught_exception(exc)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 476, in raise_uncaught_exception
-    raise exc
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\views.py", line 502, in dispatch
-    response = handler(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\generics.py", line 199, in get
-    return self.list(request, *args, **kwargs)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\rest_framework\mixins.py", line 38, in list
-    queryset = self.filter_queryset(self.get_queryset())
-  File "C:\Users\hardcase1\PycharmProjects\series\users\views.py", line 310, in get_queryset
-    qs = qs.filter(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\query.py", line 1116, in annotate
-    clone.query.add_annotation(annotation, alias, is_summary=False)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1018, in add_annotation
-    annotation = annotation.resolve_expression(self, allow_joins=True, reuse=None,
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\expressions.py", line 637, in resolve_expression
-    c.source_expressions[pos] = arg.resolve_expression(query, allow_joins, reuse, summarize, for_save)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\expressions.py", line 637, in resolve_expression
-    c.source_expressions[pos] = arg.resolve_expression(query, allow_joins, reuse, summarize, for_save)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\expressions.py", line 637, in resolve_expression
-    c.source_expressions[pos] = arg.resolve_expression(query, allow_joins, reuse, summarize, for_save)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\expressions.py", line 539, in resolve_expression
-    return query.resolve_ref(self.name, allow_joins, reuse, summarize)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1683, in resolve_ref
-    join_info = self.setup_joins(field_list, self.get_meta(), self.get_initial_alias(), can_reuse=reuse)
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1565, in setup_joins
-    path, final_field, targets, rest = self.names_to_path(
-  File "C:\Users\hardcase1\.virtualenvs\series-EAOB5IHD\lib\site-packages\django\db\models\sql\query.py", line 1481, in names_to_path
-    raise FieldError("Cannot resolve keyword '%s' into field. "
-django.core.exceptions.FieldError: Cannot resolve keyword ' ' into field. Choices are: access_time, as_who, content_object, content_type, content_type_id, diff, id, images, object_id, operation_type, seasons, series, state, user, user_id
-ERROR || 2020-08-11 14:30:45,353 || basehttp || "GET /user-resources/user-objects-history/?search=%27Aleksei+khatkevich%27 HTTP/1.1" 500 179267
+  File "/usr/local/lib/python3.8/site-packages/debug_toolbar/middleware.py", line 48, in __call__
+    return self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/deprecation.py", line 114, in __call__
+    response = response or self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
+
+ERROR || 2020-10-10 07:18:05,659 || log || Internal Server Error: /auth/users/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+ERROR || 2020-10-10 07:18:08,891 || log || Internal Server Error: /auth/users/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/debug_toolbar/middleware.py", line 48, in __call__
+    return self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
+
+ERROR || 2020-10-10 07:18:14,212 || log || Internal Server Error: /auth/users/
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 559, in connect
+    sock = self._connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 584, in _connect
+    for res in socket.getaddrinfo(self.host, self.port, self.socket_type,
+  File "/usr/local/lib/python3.8/socket.py", line 918, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno -2] Name or service not known
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/code/series/middleware.py", line 41, in __call__
+    is_blacklisted = self.is_ip_blacklisted(ip_set)
+  File "/code/series/middleware.py", line 105, in is_ip_blacklisted
+    if not self.redis_client.exists(self.redis_native_cache_key):
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 1581, in exists
+    return self.execute_command('EXISTS', *names)
+  File "/usr/local/lib/python3.8/site-packages/redis/client.py", line 898, in execute_command
+    conn = self.connection or pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 1192, in get_connection
+    connection.connect()
+  File "/usr/local/lib/python3.8/site-packages/redis/connection.py", line 563, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error -2 connecting to redis:6379. Name or service not known.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/debug_toolbar/middleware.py", line 48, in __call__
+    return self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: could not translate host name "db" to address: Name or service not known
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/deprecation.py", line 114, in __call__
+    response = response or self.get_response(request)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 49, in inner
+    response = response_for_exception(request, exc)
+  File "/usr/local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 104, in response_for_exception
+    log_response(
+  File "/usr/local/lib/python3.8/site-packages/django/utils/log.py", line 224, in log_response
+    getattr(logger, level)(
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1463, in error
+    self._log(ERROR, msg, args, **kwargs)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1577, in _log
+    self.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1587, in handle
+    self.callHandlers(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 1649, in callHandlers
+    hdlr.handle(record)
+  File "/usr/local/lib/python3.8/logging/__init__.py", line 950, in handle
+    self.emit(record)
+  File "/usr/local/lib/python3.8/site-packages/django_db_logger/db_log_handler.py", line 30, in emit
+    StatusLog.objects.create(**kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 447, in create
+    obj.save(force_insert=True, using=self.db)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 750, in save
+    self.save_base(using=using, force_insert=force_insert,
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 787, in save_base
+    updated = self._save_table(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 892, in _save_table
+    results = self._do_insert(cls._base_manager, using, fields, returning_fields, raw)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/base.py", line 930, in _do_insert
+    return manager._insert(
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/query.py", line 1249, in _insert
+    return query.get_compiler(using=using).execute_sql(returning_fields)
+  File "/usr/local/lib/python3.8/site-packages/django/db/models/sql/compiler.py", line 1393, in execute_sql
+    with self.connection.cursor() as cursor:
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 259, in cursor
+    return self._cursor()
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 235, in _cursor
+    self.ensure_connection()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/db/utils.py", line 90, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 219, in ensure_connection
+    self.connect()
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/base/base.py", line 200, in connect
+    self.connection = self.get_new_connection(conn_params)
+  File "/usr/local/lib/python3.8/site-packages/django/utils/asyncio.py", line 26, in inner
+    return func(*args, **kwargs)
+  File "/usr/local/lib/python3.8/site-packages/django/db/backends/postgresql/base.py", line 187, in get_new_connection
+    connection = Database.connect(**conn_params)
+  File "/usr/local/lib/python3.8/site-packages/psycopg2/__init__.py", line 127, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+django.db.utils.OperationalError: could not translate host name "db" to address: Name or service not known
+

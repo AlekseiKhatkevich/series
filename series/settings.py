@@ -31,7 +31,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
 
 # Application definition
@@ -56,17 +55,17 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'djoser',
     'debug_toolbar',
-    #'drf_yasg',
+    # 'drf_yasg',
     'corsheaders',
     'guardian',
     'django_filters',
     'django_db_logger',
-    #'whitenoise.runserver_nostatic',
+    # 'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    #'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'series.middleware.IpBlackListMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -139,18 +138,18 @@ DATABASES = {
     }
 }
 DOCKER_DEFAULT = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'db',
-        'PORT': 5432,
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'NAME': 'postgres',
-        'CONN_MAX_AGE': 30,
-        'TEST': {
-            'NAME': 'series_db_tests',
-            'SERIALIZE': False,
-        },
-    }
+    'ENGINE': 'django.db.backends.postgresql',
+    'HOST': 'db',
+    'PORT': 5432,
+    'USER': 'postgres',
+    'PASSWORD': os.getenv('DB_PASSWORD'),
+    'NAME': 'postgres',
+    'CONN_MAX_AGE': 30,
+    'TEST': {
+        'NAME': 'series_db_tests',
+        'SERIALIZE': False,
+    },
+}
 #  Use 'DOCKER_DEFAULT' database settings for docker container.
 if I_AM_IN_DOCKER:
     DATABASES['default'] = DOCKER_DEFAULT
@@ -176,13 +175,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles',)
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles', )
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/mediafiles/'  # new
 MEDIA_ROOT = 'media/'
 MEDIA_ROOT_FULL_PATH = os.path.join(BASE_DIR, MEDIA_ROOT)
@@ -195,12 +193,13 @@ FILES_FOR_TESTS = os.path.join(BASE_DIR, 'series', 'files_for_tests', )
 AUTH_USER_MODEL = 'users.User'
 
 #  For Django Debug toolbar
-INTERNAL_IPS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
+
 if not I_AM_IN_DOCKER:
     INTERNAL_IPS = ['127.0.0.1', 'localhost', '0.0.0.0', ]
 else:
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
     INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
+
 
 DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.versions.VersionsPanel',
@@ -328,12 +327,12 @@ VALIDATOR_SWITCH_OFF_KEY = 'switch_off_in_tests'
 
 #  Caches related settings
 CACHE_OPTIONS = {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'SOCKET_CONNECT_TIMEOUT': 5,
-            'SOCKET_TIMEOUT': 5,
-            'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
-            'PARSER_CLASS': 'redis.connection.HiredisParser',
-        }
+    'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+    'SOCKET_CONNECT_TIMEOUT': 5,
+    'SOCKET_TIMEOUT': 5,
+    'COMPRESSOR': 'django_redis.compressors.zlib.ZlibCompressor',
+    'PARSER_CLASS': 'redis.connection.HiredisParser',
+}
 
 if I_AM_IN_DOCKER:
     REDIS_HOST = 'redis'
@@ -350,8 +349,8 @@ CACHES = {
     SCOPE_THROTTLING_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/14',
-        'OPTIONS':  CACHE_OPTIONS,
-         },
+        'OPTIONS': CACHE_OPTIONS,
+    },
     BLACKLIST_CACHE: {
         'BACKEND': 'django_redis.cache.RedisCache',
         'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/12',
@@ -445,4 +444,3 @@ REST_FRAMEWORK_EXTENSIONS = {
 #  http://whitenoise.evans.io/en/stable/django.html#whitenoise-makes-my-tests-run-slow
 if IM_IN_TEST_MODE:
     WHITENOISE_AUTOREFRESH = True
-
